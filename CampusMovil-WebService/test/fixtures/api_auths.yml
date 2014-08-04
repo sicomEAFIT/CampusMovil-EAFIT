@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  token: MyString
+  lifetime: MyString
+  activated: false
+
+two:
+  token: MyString
+  lifetime: MyString
+  activated: false
