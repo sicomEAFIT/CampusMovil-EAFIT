@@ -9,6 +9,8 @@
 #ifndef CampusMovil_CMApp_h
 #define CampusMovil_CMApp_h
 
+#define CM_API_HOST @"http://10.0.53.122:3000/api/v1"
+
 // Diseño de la App
 #define CM_CELL_BUTTON_COLOR [UIColor colorWithRed:0.114 green:0.384 blue:0.941 alpha:1] /*#1d62f0*/
 #define CM_TINT_COLOR [UIColor whiteColor] /*#1d62f0*/

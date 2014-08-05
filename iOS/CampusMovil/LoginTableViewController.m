@@ -104,9 +104,64 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 2 && indexPath.row == 0) {
+    if (indexPath.section == 1 && indexPath.row == 0) {
+        [self login];
+    } else if (indexPath.section == 2 && indexPath.row == 0) {
         [self performSegueWithIdentifier:@"register_segue" sender:nil];
     }
+}
+
+- (void)login {
+    NSDictionary * sender = @{@"user": @{@"username": username.text, @"password": password.text}};
+    
+    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/auth", CM_API_HOST]];
+    
+    NSData * json = [NSJSONSerialization dataWithJSONObject:sender options:kNilOptions error:nil];
+    
+    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setTimeoutInterval:80];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[json length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:json];
+    
+    NSHTTPURLResponse * response;
+    NSError * error;
+    
+    NSData * data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    
+    if (error) {
+        [self dispatchAlertWithError:error.localizedDescription];
+    } else {
+        if (response.statusCode == 200) {
+            NSError * jsonError;
+            
+            NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data
+                                                                 options:NSJSONReadingMutableContainers|NSJSONReadingAllowFragments
+                                                                   error:&error];
+            
+            if (jsonError) {
+                [self dispatchAlertWithError:error.localizedDescription];
+            }
+            
+            if (dic && [[dic objectForKey:@"success"] boolValue] == true && [dic objectForKey:@"auth"]) {
+                [[NSUserDefaults standardUserDefaults] setObject:[[dic objectForKey:@"auth"] objectForKey:@"token"]
+                                                          forKey:@"token"];
+                
+                [self.navigationController dismissViewControllerAnimated:true completion:nil];
+            }
+        }
+    }
+}
+
+- (void)dispatchAlertWithError:(NSString *)error {
+    [[[UIAlertView alloc] initWithTitle:@"Error"
+                                message:error
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil] show];
 }
 
 /*

@@ -1112,3 +1112,82 @@ Processing by Api::V1::AuthController#create as JSON
   [1m[35m (0.9ms)[0m  commit transaction
 Completed 200 OK in 59ms (Views: 0.4ms | ActiveRecord: 2.7ms)
   [1m[36mUser Load (3.0ms)[0m  [1mSELECT "users".* FROM "users"[0m
+
+
+Started POST "/api/v1/auth" for 127.0.0.1 at 2014-08-04 12:46:03 -0500
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by Api::V1::AuthController#create as JSON
+  Parameters: {"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}, "auth"=>{"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}}}
+  [1m[35mUser Load (1.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."username" = 'asanch41' LIMIT 1
+  [1m[36mApiAuth Exists (0.7ms)[0m  [1mSELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1[0m
+  [1m[35mApiAuth Load (0.2ms)[0m  SELECT  "api_auths".* FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mApiAuth Exists (0.6ms)[0m  SELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."token" = '362c5d6bde607fcdb5d4b3530072ffc0084946376e2c4d19270dbf12fbc73214659334780dba71806c5972f0963ddcb44d94b061ae173f1b5df82a54feaeace55fcbe5ee4c70f67972f719d3e3540d3e074747e74a1b7e08e3f2d858f4e789631b7bd147513cb73f4705b8caf35c5b24497c3f08cc5126a965828cfcaf158d8c65146d2e0c96d46c7c7e4bcdb66fcc97767c4372c50d2b279bb21cc39c0edb2675164d10cef8ffa2fac095b93b20fe42d91de4c5213ba006ee1f8cbc8c538909f2f3e0a69d9c31444814d12e801a253867a07c4097028b696dbda22d2d1a5a879cc631d2ea9315b5a43118e89e3b5f04742aba751062311b7866863c2236979d' LIMIT 1
+  [1m[36mSQL (0.5ms)[0m  [1mUPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1[0m  [["expires", "2014-09-03 17:46:03.647080"], ["token", "362c5d6bde607fcdb5d4b3530072ffc0084946376e2c4d19270dbf12fbc73214659334780dba71806c5972f0963ddcb44d94b061ae173f1b5df82a54feaeace55fcbe5ee4c70f67972f719d3e3540d3e074747e74a1b7e08e3f2d858f4e789631b7bd147513cb73f4705b8caf35c5b24497c3f08cc5126a965828cfcaf158d8c65146d2e0c96d46c7c7e4bcdb66fcc97767c4372c50d2b279bb21cc39c0edb2675164d10cef8ffa2fac095b93b20fe42d91de4c5213ba006ee1f8cbc8c538909f2f3e0a69d9c31444814d12e801a253867a07c4097028b696dbda22d2d1a5a879cc631d2ea9315b5a43118e89e3b5f04742aba751062311b7866863c2236979d"], ["updated_at", "2014-08-04 17:46:03.647644"]]
+  [1m[35m (0.9ms)[0m  commit transaction
+Completed 200 OK in 78ms (Views: 0.6ms | ActiveRecord: 4.8ms)
+
+
+Started POST "/api/v1/auth" for 127.0.0.1 at 2014-08-04 13:14:47 -0500
+Processing by Api::V1::AuthController#create as JSON
+  Parameters: {"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}, "auth"=>{"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}}}
+  [1m[36mUser Load (0.2ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."username" = 'asanch41' LIMIT 1[0m
+  [1m[35mApiAuth Exists (0.1ms)[0m  SELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1
+  [1m[36mApiAuth Load (0.1ms)[0m  [1mSELECT  "api_auths".* FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36mApiAuth Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."token" = 'cb7c70f0faf8dad7943e0feb4992f98ed04e03f2bae3bc0f5652f171c54ef825765627947109af3799f2e9655f23fdb2643dac6b0be1343f8da3b8247943140483211075bef422cc9183f76cc50a196d686cb0554a28892138dfa83ab3d384d55bc062f741b54a64fde640a69eef9ee04b74de61f2f2c33ecf742bba9bd78ceaa479d0caa2cbb7d432030ed2d3423fb931899186859d06c34ee0e3238e19b5cadd963769f4026bdaaa0a45681daf5298dcc12aa7417b5b4a6ca69dcc50c96948675881cf573daf1d5fcfb0bd4d16c9d51f2a826cf1903ba4d40533f1af3de68294027ff00dcc22cf8fc484212a76405c64c540a401cbf2576a3cf4ac5d995e37' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  UPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1  [["expires", "2014-09-03 18:14:47.951543"], ["token", "cb7c70f0faf8dad7943e0feb4992f98ed04e03f2bae3bc0f5652f171c54ef825765627947109af3799f2e9655f23fdb2643dac6b0be1343f8da3b8247943140483211075bef422cc9183f76cc50a196d686cb0554a28892138dfa83ab3d384d55bc062f741b54a64fde640a69eef9ee04b74de61f2f2c33ecf742bba9bd78ceaa479d0caa2cbb7d432030ed2d3423fb931899186859d06c34ee0e3238e19b5cadd963769f4026bdaaa0a45681daf5298dcc12aa7417b5b4a6ca69dcc50c96948675881cf573daf1d5fcfb0bd4d16c9d51f2a826cf1903ba4d40533f1af3de68294027ff00dcc22cf8fc484212a76405c64c540a401cbf2576a3cf4ac5d995e37"], ["updated_at", "2014-08-04 18:14:47.951833"]]
+  [1m[36m (1.1ms)[0m  [1mcommit transaction[0m
+Completed 200 OK in 8ms (Views: 0.4ms | ActiveRecord: 1.9ms)
+
+
+Started POST "/api/v1/auth" for 127.0.0.1 at 2014-08-04 13:17:46 -0500
+Processing by Api::V1::AuthController#create as JSON
+  Parameters: {"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}, "auth"=>{"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}}}
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."username" = 'asanch41' LIMIT 1
+  [1m[36mApiAuth Exists (0.3ms)[0m  [1mSELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1[0m
+  [1m[35mApiAuth Load (0.2ms)[0m  SELECT  "api_auths".* FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mApiAuth Exists (0.2ms)[0m  SELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."token" = '56d5b67038f2b5ab4acd3b195c914338b21455839aeec40c1ede372ecc98d6e5c86b3c43309b871951fd8f42f70acc914abc19ae887a59cc82f9e583282a6dcbd8357e243138e4b9527a4526f14314cbd0dfe8ce122043b5a69454fa0753d47251881eea3427523e00de9eece3c7a056dbe13c11bcaa9b89e35e5729c150db6db02477942229cddf7cc73f04a8dd706dc3d77fb14f9d9583b474ce4c397e1a6491e905b4363947bcd8f68a77cfb3a4eaa5e3d20114d6d99dfec83416618b63fc02d0dcaafddd377f39e0fabf0dadc383b0e8fc70846ff8ec0446980b1754c81c086244f23b768b2cf0800afdbc91b603c635b0c7bc4936f115cf8e76b969bdbb' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1[0m  [["expires", "2014-09-03 18:17:46.687870"], ["token", "56d5b67038f2b5ab4acd3b195c914338b21455839aeec40c1ede372ecc98d6e5c86b3c43309b871951fd8f42f70acc914abc19ae887a59cc82f9e583282a6dcbd8357e243138e4b9527a4526f14314cbd0dfe8ce122043b5a69454fa0753d47251881eea3427523e00de9eece3c7a056dbe13c11bcaa9b89e35e5729c150db6db02477942229cddf7cc73f04a8dd706dc3d77fb14f9d9583b474ce4c397e1a6491e905b4363947bcd8f68a77cfb3a4eaa5e3d20114d6d99dfec83416618b63fc02d0dcaafddd377f39e0fabf0dadc383b0e8fc70846ff8ec0446980b1754c81c086244f23b768b2cf0800afdbc91b603c635b0c7bc4936f115cf8e76b969bdbb"], ["updated_at", "2014-08-04 18:17:46.688265"]]
+  [1m[35m (9.4ms)[0m  commit transaction
+Completed 200 OK in 18ms (Views: 0.7ms | ActiveRecord: 10.7ms)
+
+
+Started POST "/api/v1/auth" for 10.0.49.111 at 2014-08-04 13:37:00 -0500
+Processing by Api::V1::AuthController#create as JSON
+  Parameters: {"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}, "auth"=>{"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}}}
+  [1m[36mUser Load (0.3ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."username" = 'asanch41' LIMIT 1[0m
+  [1m[35mApiAuth Exists (0.2ms)[0m  SELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1
+  [1m[36mApiAuth Load (0.2ms)[0m  [1mSELECT  "api_auths".* FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36mApiAuth Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."token" = '80b8a8b40386a979c423b58943e605fdc6fcc7336c22bd6deaf000776e1692511be07be6fcfcf78490bb013eab681d600ab43d7fc637c3ed14dd8400750e1e97e7a5af2193be4a6c575eee208fa6ca7f3f88d999b5d681146d8dcda334dabcf8c7d367997c2165fe0714305b7d96a417e22f308d0fb4bdc43e3eb4e1e2e8cc00ff89498aef45982ef14a2fa2abe3572c535773cc7e3fddef027f525145e882a4ba7ee07701e51dc0c11968f65a1d39b69af179d985ec48fcc4e5afa753c3417c5f1d7231d5e5c26586a8d2f181d2c9c893891042f401b207544bf56c0c83b619512f348ea9ab73e011c76d9c67b6c06eeda79f1db0352b690750df7fabfb6b30' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1  [["expires", "2014-09-03 18:37:00.923874"], ["token", "80b8a8b40386a979c423b58943e605fdc6fcc7336c22bd6deaf000776e1692511be07be6fcfcf78490bb013eab681d600ab43d7fc637c3ed14dd8400750e1e97e7a5af2193be4a6c575eee208fa6ca7f3f88d999b5d681146d8dcda334dabcf8c7d367997c2165fe0714305b7d96a417e22f308d0fb4bdc43e3eb4e1e2e8cc00ff89498aef45982ef14a2fa2abe3572c535773cc7e3fddef027f525145e882a4ba7ee07701e51dc0c11968f65a1d39b69af179d985ec48fcc4e5afa753c3417c5f1d7231d5e5c26586a8d2f181d2c9c893891042f401b207544bf56c0c83b619512f348ea9ab73e011c76d9c67b6c06eeda79f1db0352b690750df7fabfb6b30"], ["updated_at", "2014-08-04 18:37:00.924214"]]
+  [1m[36m (1.0ms)[0m  [1mcommit transaction[0m
+Completed 200 OK in 9ms (Views: 0.5ms | ActiveRecord: 2.2ms)
+
+
+Started POST "/api/v1/auth" for 10.0.49.111 at 2014-08-04 13:38:49 -0500
+Processing by Api::V1::AuthController#create as JSON
+  Parameters: {"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}, "auth"=>{"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}}}
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."username" = 'asanch41' LIMIT 1
+  [1m[36mApiAuth Exists (0.2ms)[0m  [1mSELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1[0m
+  [1m[35mApiAuth Load (0.2ms)[0m  SELECT  "api_auths".* FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mApiAuth Exists (0.2ms)[0m  SELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."token" = '743c62ec5b16d30b2db32b5185bb3181531e99d02f0befb80412d967257b590b153838ee159746f0c66f652dd3608c8bf6f47102b958805f349e3f41e0b81196da9b762ca8504f69204a4c30721b95d54b170e705bef6ae44c8c58207b8ccd8532f4480a9706d0781b06368879ec014a0c119138a3e3b499023ad80f96adcfa9ba6ddfb486c8d14414c1d609d3c31f1ea91a263aa0acf58aea07daaa5f199e0b357ec0f71aecca01c8dae9af5ba3c041e85c11719a6aced8261bf19d6f4bfae86a3899bd34f9142d322eb9c65919edb7940a1dd5f05450abfab84abf1627dec6b59aab7aaad72d6a7f9e2b77da2f071d0d1b3065dae11aeec81b1f547814dac4' LIMIT 1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1[0m  [["expires", "2014-09-03 18:38:49.998131"], ["token", "743c62ec5b16d30b2db32b5185bb3181531e99d02f0befb80412d967257b590b153838ee159746f0c66f652dd3608c8bf6f47102b958805f349e3f41e0b81196da9b762ca8504f69204a4c30721b95d54b170e705bef6ae44c8c58207b8ccd8532f4480a9706d0781b06368879ec014a0c119138a3e3b499023ad80f96adcfa9ba6ddfb486c8d14414c1d609d3c31f1ea91a263aa0acf58aea07daaa5f199e0b357ec0f71aecca01c8dae9af5ba3c041e85c11719a6aced8261bf19d6f4bfae86a3899bd34f9142d322eb9c65919edb7940a1dd5f05450abfab84abf1627dec6b59aab7aaad72d6a7f9e2b77da2f071d0d1b3065dae11aeec81b1f547814dac4"], ["updated_at", "2014-08-04 18:38:49.998545"]]
+  [1m[35m (9.1ms)[0m  commit transaction
+Completed 200 OK in 18ms (Views: 0.5ms | ActiveRecord: 10.4ms)
+
+
+Started POST "/api/v1/auth" for 10.0.49.111 at 2014-08-04 13:48:38 -0500
+Processing by Api::V1::AuthController#create as JSON
+  Parameters: {"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}, "auth"=>{"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}}}
+  [1m[36mUser Load (0.4ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."username" = 'asanch41' LIMIT 1[0m
+  [1m[35mApiAuth Exists (0.2ms)[0m  SELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1
+  [1m[36mApiAuth Load (0.2ms)[0m  [1mSELECT  "api_auths".* FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36mApiAuth Exists (0.2ms)[0m  [1mSELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."token" = '3299c370494d9c4a7d8050e8a7613deeec0013878bdef55ef5bc6f6cb197eccb848b15840854dec7c57cf86c33b5c952f39ccc9b7d94e8ce323c3bbb828080326c8b77df4cb1df2a51695835bfb98a3adf263453ebe229f8288dcc2c79d043a0f22d8ec531101db7470c765676834dcfad52d589fe9735bff91b21739015bd8156ce0040f65202049aed89a23522d853e3d601d4ae5c2ec9a163b6b48c46a60adbe159b3948bca277a8d1aac5ee044c8e6e710f9ba4d8814da6d6f3c46a913119fe3feffdd5a05c8bbbea70c981a58e653a0483a1f69e4ec5937cac4a8dc36186e7c480c7bdb3660abe7cc1d46a70b7cb041c68983a82273113c14d0d99e2fd1' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1  [["expires", "2014-09-03 18:48:38.901955"], ["token", "3299c370494d9c4a7d8050e8a7613deeec0013878bdef55ef5bc6f6cb197eccb848b15840854dec7c57cf86c33b5c952f39ccc9b7d94e8ce323c3bbb828080326c8b77df4cb1df2a51695835bfb98a3adf263453ebe229f8288dcc2c79d043a0f22d8ec531101db7470c765676834dcfad52d589fe9735bff91b21739015bd8156ce0040f65202049aed89a23522d853e3d601d4ae5c2ec9a163b6b48c46a60adbe159b3948bca277a8d1aac5ee044c8e6e710f9ba4d8814da6d6f3c46a913119fe3feffdd5a05c8bbbea70c981a58e653a0483a1f69e4ec5937cac4a8dc36186e7c480c7bdb3660abe7cc1d46a70b7cb041c68983a82273113c14d0d99e2fd1"], ["updated_at", "2014-08-04 18:48:38.902277"]]
+  [1m[36m (1.4ms)[0m  [1mcommit transaction[0m
+Completed 200 OK in 10ms (Views: 0.3ms | ActiveRecord: 2.7ms)
