@@ -1191,3 +1191,36 @@ Processing by Api::V1::AuthController#create as JSON
   [1m[35mSQL (0.3ms)[0m  UPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1  [["expires", "2014-09-03 18:48:38.901955"], ["token", "3299c370494d9c4a7d8050e8a7613deeec0013878bdef55ef5bc6f6cb197eccb848b15840854dec7c57cf86c33b5c952f39ccc9b7d94e8ce323c3bbb828080326c8b77df4cb1df2a51695835bfb98a3adf263453ebe229f8288dcc2c79d043a0f22d8ec531101db7470c765676834dcfad52d589fe9735bff91b21739015bd8156ce0040f65202049aed89a23522d853e3d601d4ae5c2ec9a163b6b48c46a60adbe159b3948bca277a8d1aac5ee044c8e6e710f9ba4d8814da6d6f3c46a913119fe3feffdd5a05c8bbbea70c981a58e653a0483a1f69e4ec5937cac4a8dc36186e7c480c7bdb3660abe7cc1d46a70b7cb041c68983a82273113c14d0d99e2fd1"], ["updated_at", "2014-08-04 18:48:38.902277"]]
   [1m[36m (1.4ms)[0m  [1mcommit transaction[0m
 Completed 200 OK in 10ms (Views: 0.3ms | ActiveRecord: 2.7ms)
+
+
+Started POST "/api/v1/auth" for 127.0.0.1 at 2014-08-05 00:04:32 -0500
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+
+SyntaxError (/Users/molayab/Desktop/campusmovilapp/app/controllers/api/v1/auth_controller.rb:45: syntax error, unexpected tIDENTIFIER, expecting '}'
+              user: { 
+                  ^
+/Users/molayab/Desktop/campusmovilapp/app/controllers/api/v1/auth_controller.rb:49: syntax error, unexpected '}', expecting keyword_end
+          } if auth else nil
+           ^):
+  app/controllers/api/v1/auth_controller.rb:45: syntax error, unexpected tIDENTIFIER, expecting '}'
+  app/controllers/api/v1/auth_controller.rb:49: syntax error, unexpected '}', expecting keyword_end
+
+
+  Rendered /Users/molayab/.rvm/gems/ruby-2.1.2/gems/actionpack-4.1.4/lib/action_dispatch/middleware/templates/rescues/_source.erb (1.9ms)
+  Rendered /Users/molayab/.rvm/gems/ruby-2.1.2/gems/actionpack-4.1.4/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (2.4ms)
+  Rendered /Users/molayab/.rvm/gems/ruby-2.1.2/gems/actionpack-4.1.4/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (22.5ms)
+  Rendered /Users/molayab/.rvm/gems/ruby-2.1.2/gems/actionpack-4.1.4/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (64.9ms)
+
+
+Started POST "/api/v1/auth" for 127.0.0.1 at 2014-08-05 00:05:04 -0500
+Processing by Api::V1::AuthController#create as JSON
+  Parameters: {"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}, "auth"=>{"user"=>{"username"=>"asanch41", "password"=>"[FILTERED]"}}}
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."username" = 'asanch41' LIMIT 1
+  [1m[36mApiAuth Exists (0.3ms)[0m  [1mSELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1[0m
+  [1m[35mApiAuth Load (0.1ms)[0m  SELECT  "api_auths".* FROM "api_auths"  WHERE "api_auths"."user_id" = 1 LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mApiAuth Exists (0.2ms)[0m  SELECT  1 AS one FROM "api_auths"  WHERE "api_auths"."token" = '7b3780037e44c3fac0a99c93fc9ccef7eed02b4f20cdf70d204cbde7a7ebc68f5fc9ee32d66bd7356a0e0c6461d15ba9a76f4138ca9528b7c42587dc76582bfe8e645a0690d2054c7c440220e954471efe3a6b2ba463edd1f37e9688d51fbe76928a31eb4681b50221f70852e217c4f8c54ace49aa151ff40d337d99485ea78d04484f704a837e193a6c3f0f5215b73531428a9e95dab5df511f7f255800ae6447fb7bc151eddac66f74ebbe416d5ccc036afa06084ae9f843afc6fc838860bfd3167d8fff1e67723927bee6f6f1be3e763073ec1dc616121552d6382f8cb368229dccf0074818599708e63d693091b35214a1e46beb35a62f612c72586daf09' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "api_auths" SET "expires" = ?, "token" = ?, "updated_at" = ? WHERE "api_auths"."id" = 1[0m  [["expires", "2014-09-04 05:05:04.738301"], ["token", "7b3780037e44c3fac0a99c93fc9ccef7eed02b4f20cdf70d204cbde7a7ebc68f5fc9ee32d66bd7356a0e0c6461d15ba9a76f4138ca9528b7c42587dc76582bfe8e645a0690d2054c7c440220e954471efe3a6b2ba463edd1f37e9688d51fbe76928a31eb4681b50221f70852e217c4f8c54ace49aa151ff40d337d99485ea78d04484f704a837e193a6c3f0f5215b73531428a9e95dab5df511f7f255800ae6447fb7bc151eddac66f74ebbe416d5ccc036afa06084ae9f843afc6fc838860bfd3167d8fff1e67723927bee6f6f1be3e763073ec1dc616121552d6382f8cb368229dccf0074818599708e63d693091b35214a1e46beb35a62f612c72586daf09"], ["updated_at", "2014-08-05 05:05:04.738983"]]
+  [1m[35m (1.1ms)[0m  commit transaction
+  [1m[36mUser Load (0.2ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."id" = ? LIMIT 1[0m  [["id", 1]]
+Completed 200 OK in 71ms (Views: 0.5ms | ActiveRecord: 3.4ms)

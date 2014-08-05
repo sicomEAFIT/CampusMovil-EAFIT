@@ -41,7 +41,11 @@ module Api
         def render_token(success, code, auth, error = nil)
           token = {
               token: auth.token,
-              expires: auth.expires
+              expires: auth.expires,
+              user: { 
+                username: auth.user.username, 
+                email: auth.user.email
+              }
           } if auth else nil
 
           render json: {

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root 'site#welcome'
+
     namespace :api, defaults: { format: 'json' } do
       namespace :v1 do
         # resources => varios recursos, se pasa por id /controller/1 <- recurso 1

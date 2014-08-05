@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20011C231991626100A0978E /* CMCoreService.m in Sources */ = {isa = PBXBuildFile; fileRef = 20011C221991626100A0978E /* CMCoreService.m */; };
 		206E5D84198EEA1600837A2C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D83198EEA1600837A2C /* main.m */; };
 		206E5D87198EEA1600837A2C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D86198EEA1600837A2C /* AppDelegate.m */; };
 		206E5D8A198EEA1600837A2C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D89198EEA1600837A2C /* ViewController.m */; };
@@ -18,6 +19,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		20011C24199193BA00A0978E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 206E5D76198EEA1600837A2C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 206E5D7D198EEA1600837A2C;
+			remoteInfo = CampusMovil;
+		};
 		206E5D95198EEA1600837A2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 206E5D76198EEA1600837A2C /* Project object */;
@@ -28,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		20011C211991626100A0978E /* CMCoreService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCoreService.h; sourceTree = "<group>"; };
+		20011C221991626100A0978E /* CMCoreService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCoreService.m; sourceTree = "<group>"; };
 		206E5D7E198EEA1600837A2C /* CampusMovil.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusMovil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		206E5D82198EEA1600837A2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		206E5D83198EEA1600837A2C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -98,6 +108,8 @@
 				206E5DA7198F03F100837A2C /* RegisterTableViewController.h */,
 				206E5DA8198F03F100837A2C /* RegisterTableViewController.m */,
 				206E5DAA198F05CC00837A2C /* CMApp.h */,
+				20011C211991626100A0978E /* CMCoreService.h */,
+				20011C221991626100A0978E /* CMCoreService.m */,
 			);
 			path = CampusMovil;
 			sourceTree = "<group>";
@@ -160,6 +172,7 @@
 			);
 			dependencies = (
 				206E5D96198EEA1600837A2C /* PBXTargetDependency */,
+				20011C25199193BA00A0978E /* PBXTargetDependency */,
 			);
 			name = CampusMovilTests;
 			productName = CampusMovilTests;
@@ -230,6 +243,7 @@
 			files = (
 				206E5D8A198EEA1600837A2C /* ViewController.m in Sources */,
 				206E5DA9198F03F100837A2C /* RegisterTableViewController.m in Sources */,
+				20011C231991626100A0978E /* CMCoreService.m in Sources */,
 				206E5DA6198EEE8E00837A2C /* LoginTableViewController.m in Sources */,
 				206E5D87198EEA1600837A2C /* AppDelegate.m in Sources */,
 				206E5D84198EEA1600837A2C /* main.m in Sources */,
@@ -247,6 +261,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		20011C25199193BA00A0978E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 206E5D7D198EEA1600837A2C /* CampusMovil */;
+			targetProxy = 20011C24199193BA00A0978E /* PBXContainerItemProxy */;
+		};
 		206E5D96198EEA1600837A2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 206E5D7D198EEA1600837A2C /* CampusMovil */;

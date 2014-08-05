@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CMCoreService.h"
 
-@interface RegisterTableViewController : UITableViewController
+@interface RegisterTableViewController : UITableViewController<CMCoreServicesDelgate>
 {
     UITextField * username;
     UITextField * password;
