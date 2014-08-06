@@ -31,7 +31,7 @@ class ApiAuth < ActiveRecord::Base
   private
     def generate_token(timelife = 30)
       begin
-        self.token = SecureRandom.hex 256
+        self.token = SecureRandom.hex 64
       end while ApiAuth.exists? token: self.token
 
       self.expires = DateTime.now + timelife

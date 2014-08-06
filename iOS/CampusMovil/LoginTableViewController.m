@@ -104,9 +104,39 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 2 && indexPath.row == 0) {
+    if (indexPath.section == 1 && indexPath.row == 0) {
+        [self login];
+    } else if (indexPath.section == 2 && indexPath.row == 0) {
         [self performSegueWithIdentifier:@"register_segue" sender:nil];
     }
+}
+
+- (void)login {
+    CMCoreService * login = [CMCoreService sharedInstance];
+    
+    [login setDelegate:self];
+    NSLog(@"hola");
+    [login loginWithUsername:username.text password:password.text];
+}
+
+- (void)CMCore:(CMCoreService *)cm didError:(NSError *)error {
+    [[[UIAlertView alloc] initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+- (void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict {
+    if ([[dict objectForKey:@"success"] boolValue] == true) {
+        [[NSUserDefaults standardUserDefaults] setObject:[dict objectForKey:@"auth"] forKey:@"auth"];
+        
+        [self performSegueWithIdentifier:@"loginToMap_Segue" sender:nil];
+    }
+}
+
+- (void)dispatchAlertWithError:(NSString *)error {
+    [[[UIAlertView alloc] initWithTitle:@"Error"
+                                message:error
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil] show];
 }
 
 /*

@@ -4,7 +4,7 @@ module Api
       respond_to :json
 
       skip_before_filter :verify_authenticity_token
-      before_filter :restrict_access
+      before_filter :restrict_access, except:[:index] 
       before_action :restrict_standard_user, only: [:create, :destroy, :update]
       before_action :set_marker, only: [:update, :destroy]
 
@@ -60,7 +60,7 @@ module Api
 
       private
         def marker_params
-          params.require(:marker).permit(:title, :subtitle, :latitude, :longitude)
+          params.require(:marker).permit(:title, :subtitle, :latitude, :longitude, :category)
         end
 
         def set_marker

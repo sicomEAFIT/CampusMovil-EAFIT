@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20011C231991626100A0978E /* CMCoreService.m in Sources */ = {isa = PBXBuildFile; fileRef = 20011C221991626100A0978E /* CMCoreService.m */; };
 		206E5D84198EEA1600837A2C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D83198EEA1600837A2C /* main.m */; };
 		206E5D87198EEA1600837A2C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D86198EEA1600837A2C /* AppDelegate.m */; };
 		206E5D8A198EEA1600837A2C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D89198EEA1600837A2C /* ViewController.m */; };
@@ -15,9 +16,30 @@
 		206E5D9B198EEA1600837A2C /* CampusMovilTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D9A198EEA1600837A2C /* CampusMovilTests.m */; };
 		206E5DA6198EEE8E00837A2C /* LoginTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5DA5198EEE8E00837A2C /* LoginTableViewController.m */; };
 		206E5DA9198F03F100837A2C /* RegisterTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5DA8198F03F100837A2C /* RegisterTableViewController.m */; };
+		6513E94A1991E1B600999424 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9491991E1B600999424 /* GoogleMaps.framework */; };
+		6513E94C1991E1DA00999424 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E94B1991E1DA00999424 /* CoreLocation.framework */; };
+		6513E96D1991E31700999424 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E96C1991E31700999424 /* CoreData.framework */; };
+		6513E96F1991E32300999424 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E96E1991E32300999424 /* SystemConfiguration.framework */; };
+		6513E9711991E35100999424 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9701991E35100999424 /* AVFoundation.framework */; };
+		6513E9731991E36400999424 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9721991E36400999424 /* CoreText.framework */; };
+		6513E9751991E37500999424 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9741991E37500999424 /* GLKit.framework */; };
+		6513E9771991E38700999424 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9761991E38700999424 /* ImageIO.framework */; };
+		6513E9791991E39300999424 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9781991E39300999424 /* libc++.dylib */; };
+		6513E97B1991E39F00999424 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E97A1991E39F00999424 /* libicucore.dylib */; };
+		6513E97D1991E3AB00999424 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E97C1991E3AB00999424 /* libz.dylib */; };
+		6513E97F1991E3B900999424 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E97E1991E3B900999424 /* OpenGLES.framework */; };
+		6513E9811991E3C400999424 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9801991E3C400999424 /* QuartzCore.framework */; };
+		6513E9831991E4BC00999424 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6513E9821991E4BC00999424 /* GoogleMaps.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		20011C24199193BA00A0978E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 206E5D76198EEA1600837A2C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 206E5D7D198EEA1600837A2C;
+			remoteInfo = CampusMovil;
+		};
 		206E5D95198EEA1600837A2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 206E5D76198EEA1600837A2C /* Project object */;
@@ -28,6 +50,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		20011C211991626100A0978E /* CMCoreService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCoreService.h; sourceTree = "<group>"; };
+		20011C221991626100A0978E /* CMCoreService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCoreService.m; sourceTree = "<group>"; };
 		206E5D7E198EEA1600837A2C /* CampusMovil.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusMovil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		206E5D82198EEA1600837A2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		206E5D83198EEA1600837A2C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -45,6 +69,20 @@
 		206E5DA7198F03F100837A2C /* RegisterTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterTableViewController.h; path = ../RegisterTableViewController.h; sourceTree = "<group>"; };
 		206E5DA8198F03F100837A2C /* RegisterTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegisterTableViewController.m; path = ../RegisterTableViewController.m; sourceTree = "<group>"; };
 		206E5DAA198F05CC00837A2C /* CMApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMApp.h; sourceTree = "<group>"; };
+		6513E9491991E1B600999424 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
+		6513E94B1991E1DA00999424 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		6513E96C1991E31700999424 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		6513E96E1991E32300999424 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		6513E9701991E35100999424 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		6513E9721991E36400999424 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		6513E9741991E37500999424 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		6513E9761991E38700999424 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		6513E9781991E39300999424 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		6513E97A1991E39F00999424 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		6513E97C1991E3AB00999424 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		6513E97E1991E3B900999424 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		6513E9801991E3C400999424 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		6513E9821991E4BC00999424 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +90,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6513E9811991E3C400999424 /* QuartzCore.framework in Frameworks */,
+				6513E97F1991E3B900999424 /* OpenGLES.framework in Frameworks */,
+				6513E97D1991E3AB00999424 /* libz.dylib in Frameworks */,
+				6513E97B1991E39F00999424 /* libicucore.dylib in Frameworks */,
+				6513E9791991E39300999424 /* libc++.dylib in Frameworks */,
+				6513E9771991E38700999424 /* ImageIO.framework in Frameworks */,
+				6513E9751991E37500999424 /* GLKit.framework in Frameworks */,
+				6513E9731991E36400999424 /* CoreText.framework in Frameworks */,
+				6513E9711991E35100999424 /* AVFoundation.framework in Frameworks */,
+				6513E96F1991E32300999424 /* SystemConfiguration.framework in Frameworks */,
+				6513E96D1991E31700999424 /* CoreData.framework in Frameworks */,
+				6513E94C1991E1DA00999424 /* CoreLocation.framework in Frameworks */,
+				6513E94A1991E1B600999424 /* GoogleMaps.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +119,8 @@
 		206E5D75198EEA1600837A2C = {
 			isa = PBXGroup;
 			children = (
+				6513E9821991E4BC00999424 /* GoogleMaps.bundle */,
+				6513E96B1991E27A00999424 /* Frameworks */,
 				206E5D80198EEA1600837A2C /* CampusMovil */,
 				206E5D97198EEA1600837A2C /* CampusMovilTests */,
 				206E5D7F198EEA1600837A2C /* Products */,
@@ -98,6 +151,8 @@
 				206E5DA7198F03F100837A2C /* RegisterTableViewController.h */,
 				206E5DA8198F03F100837A2C /* RegisterTableViewController.m */,
 				206E5DAA198F05CC00837A2C /* CMApp.h */,
+				20011C211991626100A0978E /* CMCoreService.h */,
+				20011C221991626100A0978E /* CMCoreService.m */,
 			);
 			path = CampusMovil;
 			sourceTree = "<group>";
@@ -126,6 +181,26 @@
 				206E5D99198EEA1600837A2C /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6513E96B1991E27A00999424 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6513E9801991E3C400999424 /* QuartzCore.framework */,
+				6513E97E1991E3B900999424 /* OpenGLES.framework */,
+				6513E97C1991E3AB00999424 /* libz.dylib */,
+				6513E97A1991E39F00999424 /* libicucore.dylib */,
+				6513E9781991E39300999424 /* libc++.dylib */,
+				6513E9761991E38700999424 /* ImageIO.framework */,
+				6513E9741991E37500999424 /* GLKit.framework */,
+				6513E9721991E36400999424 /* CoreText.framework */,
+				6513E9701991E35100999424 /* AVFoundation.framework */,
+				6513E96E1991E32300999424 /* SystemConfiguration.framework */,
+				6513E96C1991E31700999424 /* CoreData.framework */,
+				6513E94B1991E1DA00999424 /* CoreLocation.framework */,
+				6513E9491991E1B600999424 /* GoogleMaps.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,6 +235,7 @@
 			);
 			dependencies = (
 				206E5D96198EEA1600837A2C /* PBXTargetDependency */,
+				20011C25199193BA00A0978E /* PBXTargetDependency */,
 			);
 			name = CampusMovilTests;
 			productName = CampusMovilTests;
@@ -209,6 +285,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6513E9831991E4BC00999424 /* GoogleMaps.bundle in Resources */,
 				206E5D8D198EEA1600837A2C /* Main.storyboard in Resources */,
 				206E5D8F198EEA1600837A2C /* Images.xcassets in Resources */,
 			);
@@ -230,6 +307,7 @@
 			files = (
 				206E5D8A198EEA1600837A2C /* ViewController.m in Sources */,
 				206E5DA9198F03F100837A2C /* RegisterTableViewController.m in Sources */,
+				20011C231991626100A0978E /* CMCoreService.m in Sources */,
 				206E5DA6198EEE8E00837A2C /* LoginTableViewController.m in Sources */,
 				206E5D87198EEA1600837A2C /* AppDelegate.m in Sources */,
 				206E5D84198EEA1600837A2C /* main.m in Sources */,
@@ -247,6 +325,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		20011C25199193BA00A0978E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 206E5D7D198EEA1600837A2C /* CampusMovil */;
+			targetProxy = 20011C24199193BA00A0978E /* PBXContainerItemProxy */;
+		};
 		206E5D96198EEA1600837A2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 206E5D7D198EEA1600837A2C /* CampusMovil */;
@@ -348,9 +431,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = CampusMovil/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -361,9 +453,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = CampusMovil/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -381,6 +481,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = CampusMovilTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -396,6 +497,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = CampusMovilTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";

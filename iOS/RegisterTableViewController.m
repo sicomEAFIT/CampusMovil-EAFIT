@@ -102,6 +102,26 @@
     return cell;
 }
 
+- (void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict{
+    
+    NSLog(@"funciona");
+    [self.navigationController dismissViewControllerAnimated:true completion:nil];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (indexPath.row == 0 && indexPath.section == 1 ) {
+        
+        CMCoreService * reg = [CMCoreService sharedInstance];
+        
+        [reg setDelegate:self];
+        [reg registerWithUsername:username.text password:password.text email:email.text];
+        
+    }
+}
+
+
+
 
 /*
 // Override to support conditional editing of the table view.
