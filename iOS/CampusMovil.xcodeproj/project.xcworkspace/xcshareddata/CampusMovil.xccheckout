@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4BCB13F5-98B0-4B21-868D-18EB82A81F0F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>CampusMovil</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D593995B-7BFE-42D9-AA7B-D86943F5734F</key>
+		<string>https://github.com/klinkert0728/CampusMovil-EAFIT.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>iOS/CampusMovil.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D593995B-7BFE-42D9-AA7B-D86943F5734F</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/klinkert0728/CampusMovil-EAFIT.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D593995B-7BFE-42D9-AA7B-D86943F5734F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D593995B-7BFE-42D9-AA7B-D86943F5734F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CampusMovil-EAFIT</string>
+		</dict>
+	</array>
+</dict>
+</plist>
