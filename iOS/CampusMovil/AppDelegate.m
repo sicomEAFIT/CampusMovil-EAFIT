@@ -35,6 +35,22 @@
         NSShadowAttributeName : shadow
     }];
     
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"auth"]) {
+        
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main"
+                                                                 bundle: nil];
+        ViewController *mapView = (ViewController *) [mainStoryboard instantiateViewControllerWithIdentifier:@"mapView"];
+        
+        
+        UINavigationController *nv= [[UINavigationController alloc]initWithRootViewController:mapView];
+        
+        
+        [self.window setRootViewController:nv];
+        
+        
+    }
+    
     // Override point for customization after application launch.
     return YES;
 }

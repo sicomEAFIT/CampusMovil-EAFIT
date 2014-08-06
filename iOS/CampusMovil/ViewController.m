@@ -15,10 +15,9 @@
 @implementation ViewController
             
 - (void)viewDidLoad {
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"user"]) {
-        [self performSegueWithIdentifier:@"login_segue" sender:nil];
-    }
-    
+//    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"user"]) {
+//        [self performSegueWithIdentifier:@"login_segue" sender:nil];
+//    }
     
     [GMSServices provideAPIKey:@"AIzaSyC9_DsDPl74mP4SUa9Zd1XNaB1nE0bPcYg"];
     
