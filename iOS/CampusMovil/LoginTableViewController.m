@@ -127,7 +127,7 @@
     if ([[dict objectForKey:@"success"] boolValue] == true) {
         [[NSUserDefaults standardUserDefaults] setObject:[dict objectForKey:@"auth"] forKey:@"auth"];
         
-        [self performSegueWithIdentifier:@"loginToMap_Segue" sender:nil];
+        [self.navigationController dismissViewControllerAnimated:true completion:nil];
     }
 }
 

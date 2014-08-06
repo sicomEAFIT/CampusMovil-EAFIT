@@ -15,10 +15,15 @@
 @implementation ViewController
             
 - (void)viewDidLoad {
-//    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"user"]) {
-//        [self performSegueWithIdentifier:@"login_segue" sender:nil];
-//    }
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"auth"]) {
+        [self performSegueWithIdentifier:@"login_segue" sender:nil];
+    }
     
+    [super viewDidLoad];
+    // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
     [GMSServices provideAPIKey:@"AIzaSyC9_DsDPl74mP4SUa9Zd1XNaB1nE0bPcYg"];
     
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:6.195100
@@ -35,9 +40,6 @@
     marker.title = @"Mi casa Perro";
     marker.snippet = @"Colombia";
     marker.map = mapview;
-    
-    [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)didReceiveMemoryWarning {
