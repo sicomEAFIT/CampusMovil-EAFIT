@@ -103,7 +103,7 @@
     UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"DetailController"];
 
 
-    [[SlideNavigationController sharedInstance] pushViewController:vc animated:false];
+    [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
     
 }
 
