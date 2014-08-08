@@ -70,8 +70,6 @@
                                                                     error:&error];
             if (error) {
                 [delegate CMCore:self didError:error];
-                
-                
                 return;
             }
             
@@ -90,6 +88,13 @@
     [request setURL:[NSURL URLWithString:@"http://campusmovilapp.herokuapp.com/api/v1/register"]];
     [request setHTTPBody:[self request:sender]];
     [request setHTTPMethod:@"POST"];
+    [self send];
+    
+}
+
+- (void)bringAllMarkersWithUserName:(NSString *)username{
+    [request setURL:[NSURL URLWithString:@"http://campusmovilapp.herokuapp.com/api/v1/markers?auth=3e48e2d68d9ad6caefc37b517cd788a1b7a2f656ac89a8d554225bc86a07014222d20baad211193862da8f1241eb273afcfecf73b77c5afb34c062203adce831"]];
+    [request setHTTPMethod:@"GET"];
     [self send];
     
 }
