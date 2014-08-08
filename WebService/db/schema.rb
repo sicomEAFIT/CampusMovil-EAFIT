@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140728023148) do
+ActiveRecord::Schema.define(version: 20140808052525) do
 
   create_table "api_auths", force: true do |t|
     t.string   "token"
@@ -23,6 +23,13 @@ ActiveRecord::Schema.define(version: 20140728023148) do
 
   add_index "api_auths", ["token"], name: "index_token", unique: true
 
+  create_table "comments", force: true do |t|
+    t.text     "message"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "markers", force: true do |t|
     t.string   "title"
     t.string   "subtitle"
@@ -31,6 +38,7 @@ ActiveRecord::Schema.define(version: 20140728023148) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "category"
   end
 
   add_index "markers", ["user_id"], name: "index_user_id"
