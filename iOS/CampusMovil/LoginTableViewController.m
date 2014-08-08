@@ -115,7 +115,6 @@
     CMCoreService * login = [CMCoreService sharedInstance];
     
     [login setDelegate:self];
-    NSLog(@"hola");
     [login loginWithUsername:username.text password:password.text];
 }
 
@@ -127,7 +126,7 @@
     if ([[dict objectForKey:@"success"] boolValue] == true) {
         [[NSUserDefaults standardUserDefaults] setObject:[dict objectForKey:@"auth"] forKey:@"auth"];
         
-        [self performSegueWithIdentifier:@"loginToMap_Segue" sender:nil];
+        [self.navigationController dismissViewControllerAnimated:true completion:nil];
     }
 }
 
