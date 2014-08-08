@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <SlideNavigationController.h>
+#import "MenuTableViewController.h"
 #import <GoogleMaps/GoogleMaps.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>

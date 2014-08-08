@@ -15,11 +15,19 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
+    
+    
+    [self showGoogleMaps];
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    
+    UINavigationController *nav = (UINavigationController *)[[SlideNavigationController sharedInstance] rightMenu];
+    [nav popToRootViewControllerAnimated:true];
+    
     if (![CMCoreService isUserLogged]) {
         [self performSegueWithIdentifier:@"login_segue" sender:nil];
     }
@@ -30,7 +38,7 @@
     
     NSLog(@"User: %@", markers.user.username);
     
-    [self showGoogleMaps];
+    
 }
 
 - (void)showGoogleMaps {
@@ -66,19 +74,13 @@
         marker.map = mapview;
         
     }
-    
-    
-    //[[dic objectAtIndex:0] objectForKey:@"latitude"];
-    
-    //            GMSMarker *marker = [[GMSMarker alloc]init];
-    //           marker.position = CLLocationCoordinate2DMake((double)[[dic objectAtIndex:0] objectForKey:@"latitude"], (double)[[dic objectAtIndex:0]objectForKey:@"longitude"]);
-    //           [marker setTitle:[[dic objectAtIndex:0]objectForKey:@"title"] ];
-    //           [marker setSnippet:[[dic objectAtIndex:0]objectForKey:@"subtitle"]];
-    //           NSLog(@"%@",marker.title);
-    //           marker.map = mapview;
-    
 }
 
+
+- (BOOL)slideNavigationControllerShouldDisplayRightMenu{
+    
+    return true;
+}
 - (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
     AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);

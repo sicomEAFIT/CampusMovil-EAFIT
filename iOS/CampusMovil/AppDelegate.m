@@ -39,6 +39,11 @@
         NSLog(@"Fallo el registro del API-KEY de Google Maps");
     }
     
+    UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UINavigationController *nav = (UINavigationController *)[main instantiateViewControllerWithIdentifier:@"LeftMenu"];
+    
+    [[SlideNavigationController sharedInstance]setRightMenu:nav];
+    
     // Override point for customization after application launch.
     return YES;
 }
