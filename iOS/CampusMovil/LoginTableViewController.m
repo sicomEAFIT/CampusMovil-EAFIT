@@ -115,7 +115,6 @@
     CMCoreService * login = [CMCoreService sharedInstance];
     
     [login setDelegate:self];
-    NSLog(@"hola");
     [login loginWithUsername:username.text password:password.text];
 }
 

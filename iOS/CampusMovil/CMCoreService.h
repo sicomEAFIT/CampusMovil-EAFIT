@@ -30,5 +30,6 @@
 - (NSData *)request:(NSDictionary *)dic;
 - (void)loginWithUsername:(NSString *)username password:(NSString *)password;
 - (void)registerWithUsername:(NSString *)username password:(NSString *)password email:(NSString *)email;
+- (void)bringAllMarkersWithUserName:(NSString *)username;
 
 @end
