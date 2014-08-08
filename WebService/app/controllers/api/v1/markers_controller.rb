@@ -7,15 +7,15 @@ module Api
       before_filter :restrict_access, except:[:index] 
       before_action :restrict_standard_user, only: [:create, :destroy, :update]
       before_action :set_marker, only: [:update, :destroy]
+      before_filter :render_json_errors;
 
       def index
-        markers = Marker.where('(title LIKE :q OR subtitle LIKE :q)',
-                               q: '%#{params[:search]}%')
-
-        if markers.any?
+        if params[:search] and !params[:search].empty?
+          markers = Marker.where('(lower(title) LIKE :q OR lower(subtitle) LIKE :q)',
+                                 q: "%#{params[:search].downcase}%")
           respond_with markers
         else
-          respond_with Marker.all
+          respond_with Marker.all.order(title: :asc)
         end
       end
 
@@ -65,6 +65,10 @@ module Api
 
         def set_marker
           @marker = Marker.find params[:id]
+        end
+
+        def render_json_errors
+          render(json: @errors, status: @errors.code) if @errors
         end
     end
   end

@@ -12,6 +12,9 @@ Rails.application.routes.draw do
 
         match 'register', to: 'users#create',
                           via: :post
+
+        match 'comment', to: 'users#comment',
+              via: :post
       end
   end
 

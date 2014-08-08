@@ -47,14 +47,12 @@ module Api
         end
 
         def not_found
-          render json: { success: false, code: 404, error: 'Content/Page not found' }, status: 404
+          @errors = { success: false, code: 404, error: 'Content/Page not found' }
         end
 
         def unauthorized_response
-          sender = { success: false, code: 401,
+          @errors = { success: false, code: 401,
                      error: 'Not authorized: Token/Session is invalid or don\'t have permissions' }
-
-          respond_with sender, status: 401
         end
     end
   end
