@@ -10,7 +10,12 @@
 #import "CMCoreService.h"
 #import <GoogleMaps/GoogleMaps.h>
 
-@interface ViewController : UIViewController<GMSMapViewDelegate,CMCoreServicesDelgate>{
+#if TARGET_OS_IPHONE
+    #import <AudioToolbox/AudioServices.h>
+#endif
+
+
+@interface ViewController : UIViewController <GMSMapViewDelegate, CMCoreServicesDelgate> {
     GMSMapView*mapview;
 }
 

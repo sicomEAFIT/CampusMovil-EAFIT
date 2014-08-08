@@ -35,6 +35,10 @@
         NSShadowAttributeName : shadow
     }];
     
+    if (![GMSServices provideAPIKey:CM_GMAP_API_KEY]) {
+        NSLog(@"Fallo el registro del API-KEY de Google Maps");
+    }
+    
     // Override point for customization after application launch.
     return YES;
 }

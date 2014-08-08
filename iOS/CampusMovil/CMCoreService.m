@@ -11,6 +11,7 @@
 @implementation CMCoreService
 @synthesize request;
 @synthesize delegate;
+@synthesize user;
 
 #pragma mark - Singleton Instance
 
@@ -35,7 +36,20 @@
         [request setTimeoutInterval:10];
         [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
         [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-
+        
+        NSDictionary * loggedUser = (NSDictionary *)[[NSUserDefaults standardUserDefaults] objectForKey:@"CMLoggedUser"];
+        
+        if (loggedUser) {
+            user = [[CMUser alloc] initWithToken:[loggedUser objectForKey:@"token"]
+                                        lifetime:[loggedUser objectForKey:@"expires"]];
+            
+            [user setUsername:[[loggedUser objectForKey:@"user"] objectForKey:@"username"]];
+            [user setEmail:[[loggedUser objectForKey:@"user"] objectForKey:@"email"]];
+            
+            [self assignHTTPTokenAuth];
+            
+            NSLog(@"Using tokken for user: %@", user.username);
+        }
     }
     
     return self;
@@ -56,8 +70,6 @@
 }
 
 - (void)send {
-    
-  
     NSOperationQueue *queue = [NSOperationQueue mainQueue];
     
     [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
@@ -73,6 +85,34 @@
                 return;
             }
             
+            NSDictionary * auth;
+            
+            @try {
+                if ((auth = [dict objectForKey:@"auth"]) != nil) {
+                    NSString * token = [auth objectForKey:@"token"];
+                    
+                    NSDateFormatter *lt = [[NSDateFormatter alloc] init];
+                    [lt setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZ"];
+                    
+                    NSString *lifetime = [auth objectForKey:@"expires"];
+                    
+                    CMUser * newUser = [[CMUser alloc] initWithToken:token lifetime:[lt dateFromString:lifetime]];
+                    [newUser setUsername:[[auth objectForKey:@"user"] objectForKey:@"username"]];
+                    [newUser setEmail:[[auth objectForKey:@"user"] objectForKey:@"email"]];
+                    
+                    user = newUser;
+                    
+                    if (user) {
+                        [[NSUserDefaults standardUserDefaults] setObject:auth forKey:@"CMLoggedUser"];
+                    }
+                    
+                    [self assignHTTPTokenAuth];
+                }
+            }
+            @catch (NSException *exception) { }
+            @finally { }
+            
+            
             [delegate CMCore:self didReciveResponse:dict];
         }
         
@@ -82,21 +122,31 @@
     }];
 }
 
+- (void)assignHTTPTokenAuth {
+    if (user && user.token) {
+        [request setValue:[NSString stringWithFormat:@"Token %@", user.token] forHTTPHeaderField:@"Authorization"];
+    }
+}
+
 - (void)registerWithUsername:(NSString *)username password:(NSString *)password email:(NSString *)email{
     NSDictionary * sender = @{@"user":@{@"username":username,@"password":password,@"email":email}};
     
     [request setURL:[NSURL URLWithString:@"http://campusmovilapp.herokuapp.com/api/v1/register"]];
     [request setHTTPBody:[self request:sender]];
     [request setHTTPMethod:@"POST"];
-    [self send];
     
+    [self send];
 }
 
-- (void)bringAllMarkersWithUserName:(NSString *)username{
-    [request setURL:[NSURL URLWithString:@"http://campusmovilapp.herokuapp.com/api/v1/markers?auth=3e48e2d68d9ad6caefc37b517cd788a1b7a2f656ac89a8d554225bc86a07014222d20baad211193862da8f1241eb273afcfecf73b77c5afb34c062203adce831"]];
+- (void)bringAllMarkers {
+    [request setURL:[NSURL URLWithString:@"http://campusmovilapp.herokuapp.com/api/v1/markers"]];
     [request setHTTPMethod:@"GET"];
-    [self send];
     
+    [self send];
+}
+
++ (BOOL)isUserLogged {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"CMLoggedUser"] != nil;
 }
 
 

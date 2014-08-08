@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CMUser.h"
+
 #define CM_URL_MAKER(A) [NSString stringWithFormat:@"http://campusmovilapp.heroapp.com/%@", A]
 #define CM_API_V1_AUTH @"api/v1/auth"
 
@@ -22,14 +24,16 @@
 @interface CMCoreService : NSObject
 @property (nonatomic, weak) id<CMCoreServicesDelgate> delegate;
 @property (nonatomic, strong, readonly) NSMutableURLRequest * request;
+@property (nonatomic, strong, readonly) CMUser * user;
 
 + (id)sharedInstance;
++ (BOOL)isUserLogged;
 
 - (instancetype)init;
 
 - (NSData *)request:(NSDictionary *)dic;
 - (void)loginWithUsername:(NSString *)username password:(NSString *)password;
 - (void)registerWithUsername:(NSString *)username password:(NSString *)password email:(NSString *)email;
-- (void)bringAllMarkersWithUserName:(NSString *)username;
+- (void)bringAllMarkers;
 
 @end

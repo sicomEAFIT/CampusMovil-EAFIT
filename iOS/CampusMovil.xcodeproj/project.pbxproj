@@ -16,6 +16,7 @@
 		206E5D9B198EEA1600837A2C /* CampusMovilTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5D9A198EEA1600837A2C /* CampusMovilTests.m */; };
 		206E5DA6198EEE8E00837A2C /* LoginTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5DA5198EEE8E00837A2C /* LoginTableViewController.m */; };
 		206E5DA9198F03F100837A2C /* RegisterTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206E5DA8198F03F100837A2C /* RegisterTableViewController.m */; };
+		207239181994A23F001116A9 /* CMUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 207239171994A23F001116A9 /* CMUser.m */; };
 		6513E94A1991E1B600999424 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9491991E1B600999424 /* GoogleMaps.framework */; };
 		6513E94C1991E1DA00999424 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E94B1991E1DA00999424 /* CoreLocation.framework */; };
 		6513E96D1991E31700999424 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E96C1991E31700999424 /* CoreData.framework */; };
@@ -69,6 +70,8 @@
 		206E5DA7198F03F100837A2C /* RegisterTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterTableViewController.h; path = ../RegisterTableViewController.h; sourceTree = "<group>"; };
 		206E5DA8198F03F100837A2C /* RegisterTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegisterTableViewController.m; path = ../RegisterTableViewController.m; sourceTree = "<group>"; };
 		206E5DAA198F05CC00837A2C /* CMApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMApp.h; sourceTree = "<group>"; };
+		207239161994A23F001116A9 /* CMUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMUser.h; sourceTree = "<group>"; };
+		207239171994A23F001116A9 /* CMUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMUser.m; sourceTree = "<group>"; };
 		6513E9491991E1B600999424 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		6513E94B1991E1DA00999424 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		6513E96C1991E31700999424 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -153,6 +156,8 @@
 				206E5DAA198F05CC00837A2C /* CMApp.h */,
 				20011C211991626100A0978E /* CMCoreService.h */,
 				20011C221991626100A0978E /* CMCoreService.m */,
+				207239161994A23F001116A9 /* CMUser.h */,
+				207239171994A23F001116A9 /* CMUser.m */,
 			);
 			path = CampusMovil;
 			sourceTree = "<group>";
@@ -309,6 +314,7 @@
 				206E5DA9198F03F100837A2C /* RegisterTableViewController.m in Sources */,
 				20011C231991626100A0978E /* CMCoreService.m in Sources */,
 				206E5DA6198EEE8E00837A2C /* LoginTableViewController.m in Sources */,
+				207239181994A23F001116A9 /* CMUser.m in Sources */,
 				206E5D87198EEA1600837A2C /* AppDelegate.m in Sources */,
 				206E5D84198EEA1600837A2C /* main.m in Sources */,
 			);

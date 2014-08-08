@@ -13,39 +13,47 @@
 @end
 
 @implementation ViewController
-            
-- (void)viewDidLoad {
 
+- (void)viewDidLoad {
     [super viewDidLoad];
-//    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"auth"]) {
-//        [self performSegueWithIdentifier:@"login_segue" sender:nil];
-//    }
     // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    if (![CMCoreService isUserLogged]) {
+        [self performSegueWithIdentifier:@"login_segue" sender:nil];
+    }
+    
     CMCoreService * markers = [CMCoreService sharedInstance];
     [markers setDelegate:self];
-    [markers bringAllMarkersWithUserName:@"a"];
+    [markers bringAllMarkers];
     
-   }
+    NSLog(@"User: %@", markers.user.username);
+    
+    [self showGoogleMaps];
+}
 
--(void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict {
-    
-    [GMSServices provideAPIKey:@"AIzaSyC9_DsDPl74mP4SUa9Zd1XNaB1nE0bPcYg"];
-    
-    
+- (void)showGoogleMaps {
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:6.200396
                                                             longitude:-75.578698
-                                                                 zoom:16];
-    [mapview setDelegate:self];
+                                                                 zoom:18];
+    
     mapview = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-    [mapview setMapType:kGMSTypeHybrid];
+    
+    [mapview setDelegate:self];
+    [mapview setMinZoom:16 maxZoom:20];
+    [mapview setMapType:kGMSTypeSatellite];
+    [mapview setIndoorEnabled:false];
+    
     self.view = mapview;
+}
+
+- (void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict {
+    
+    //[GMSServices provideAPIKey:@"AIzaSyC9_DsDPl74mP4SUa9Zd1XNaB1nE0bPcYg"];
     
     for (NSDictionary *markers in dict) {
-        
-         GMSMarker *marker = [[GMSMarker alloc]init];
+        GMSMarker *marker = [[GMSMarker alloc]init];
         double la=[[markers objectForKey:@"latitude"] doubleValue];
         double lo=[[markers objectForKey:@"longitude"] doubleValue];
         
@@ -57,22 +65,33 @@
         marker.snippet = [markers objectForKey:@"subtitle"];
         marker.map = mapview;
         
-        }
+    }
     
     
     //[[dic objectAtIndex:0] objectForKey:@"latitude"];
     
-//            GMSMarker *marker = [[GMSMarker alloc]init];
-//           marker.position = CLLocationCoordinate2DMake((double)[[dic objectAtIndex:0] objectForKey:@"latitude"], (double)[[dic objectAtIndex:0]objectForKey:@"longitude"]);
-//           [marker setTitle:[[dic objectAtIndex:0]objectForKey:@"title"] ];
-//           [marker setSnippet:[[dic objectAtIndex:0]objectForKey:@"subtitle"]];
-//           NSLog(@"%@",marker.title);
-//           marker.map = mapview;
+    //            GMSMarker *marker = [[GMSMarker alloc]init];
+    //           marker.position = CLLocationCoordinate2DMake((double)[[dic objectAtIndex:0] objectForKey:@"latitude"], (double)[[dic objectAtIndex:0]objectForKey:@"longitude"]);
+    //           [marker setTitle:[[dic objectAtIndex:0]objectForKey:@"title"] ];
+    //           [marker setSnippet:[[dic objectAtIndex:0]objectForKey:@"subtitle"]];
+    //           NSLog(@"%@",marker.title);
+    //           marker.map = mapview;
+    
+}
 
+- (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
+    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 - (void)CMCore:(CMCoreService *)cm didError:(NSError *)error{
-    NSLog(@"eror");
+    //NSLog(@"eror");
+    
+    [[[UIAlertView alloc] initWithTitle:@"Error"
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles: nil] show];
 }
 
 - (void)didReceiveMemoryWarning {
