@@ -91,12 +91,14 @@
 
 
 
-- (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
-    if ((position.target.latitude > 6.1932748 && position.target.longitude < -75.5823696)
-        || (position.target.latitude < 6.203500 && position.target.longitude > -75.577057)) {
+- (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {    
+    if (!(position.target.latitude > 6.1932748 && position.target.latitude < 6.203500)
+        || !(position.target.longitude > -75.5823696 && position.target.longitude < -75.577057)) {
         
-        AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"CMVibrateOption"]) {
+            AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+        }
         
         GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:6.200396
                                                                 longitude:-75.578698
