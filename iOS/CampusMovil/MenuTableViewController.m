@@ -79,13 +79,14 @@
     
     if (indexPath.section == 0){
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [cell.customLabelText setText:[markers.allKeys objectAtIndex:indexPath.row]];
-        cell.customImageView.image = [UIImage imageNamed:@"block"];
+        
+        [cell.textLabel setText:[markers.allKeys objectAtIndex:indexPath.row]];
+        //cell.customImageView.image = [UIImage imageNamed:@"block"];
         
         
     }else{
         
-        [cell.customLabelText setText:[dataSource objectAtIndex:indexPath.row]];
+        [cell.textLabel setText:[dataSource objectAtIndex:indexPath.row]];
     }
     
     [cell.textLabel setTextAlignment:NSTextAlignmentRight];
