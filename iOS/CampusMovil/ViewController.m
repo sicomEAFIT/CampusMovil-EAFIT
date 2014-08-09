@@ -38,7 +38,7 @@
     
     NSLog(@"User: %@", markers.user.username);
     
-    
+    [super viewDidAppear:animated];
 }
 
 - (void)showGoogleMaps {
@@ -61,7 +61,8 @@
     //[GMSServices provideAPIKey:@"AIzaSyC9_DsDPl74mP4SUa9Zd1XNaB1nE0bPcYg"];
     
     for (NSDictionary *markers in dict) {
-        GMSMarker *marker = [[GMSMarker alloc]init];
+        GMSMarker *marker;
+        
         double la=[[markers objectForKey:@"latitude"] doubleValue];
         double lo=[[markers objectForKey:@"longitude"] doubleValue];
         
