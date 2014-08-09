@@ -58,7 +58,6 @@
 
 - (void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict {
     
-    //[GMSServices provideAPIKey:@"AIzaSyC9_DsDPl74mP4SUa9Zd1XNaB1nE0bPcYg"];
     
     for (NSDictionary *markers in dict) {
         GMSMarker *marker;
@@ -72,6 +71,7 @@
         marker=[GMSMarker markerWithPosition:coordi];
         [marker setTitle:[markers objectForKey:@"title"]];
         marker.snippet = [markers objectForKey:@"subtitle"];
+        [marker setIcon:[UIImage imageNamed:@"map_marker"]];
         marker.map = mapview;
         
     }
@@ -88,7 +88,6 @@
 }
 
 - (void)CMCore:(CMCoreService *)cm didError:(NSError *)error{
-    //NSLog(@"eror");
     
     [[[UIAlertView alloc] initWithTitle:@"Error"
                                 message:error.localizedDescription
