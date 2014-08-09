@@ -9,6 +9,8 @@
 #ifndef CampusMovil_CMApp_h
 #define CampusMovil_CMApp_h
 
+#define CM_GMAP_API_KEY @"AIzaSyC9_DsDPl74mP4SUa9Zd1XNaB1nE0bPcYg"
+
 #define CM_API_HOST @"http://10.0.53.122:3000/api/v1"
 
 // Diseño de la App

@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "CMCoreService.h"
+#import <SlideNavigationController.h>
 #import <GoogleMaps/GoogleMaps.h>
 
-@interface ViewController : UIViewController<GMSMapViewDelegate,CMCoreServicesDelgate>{
+#if TARGET_OS_IPHONE
+    #import <AudioToolbox/AudioServices.h>
+#endif
+
+
+@interface ViewController : UIViewController <GMSMapViewDelegate, CMCoreServicesDelgate,SlideNavigationControllerDelegate> {
     GMSMapView*mapview;
 }
 
