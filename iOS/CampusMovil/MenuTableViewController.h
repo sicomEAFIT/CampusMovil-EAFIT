@@ -15,6 +15,8 @@
 @interface MenuTableViewController : UITableViewController<CMCoreServicesDelgate>{
     NSMutableDictionary * markers;
     NSMutableArray * dataSource;
+    
+    NSMutableArray *markersArray;
 }
 @property (nonatomic, assign) BOOL slideOutAnimationEnabled;
 

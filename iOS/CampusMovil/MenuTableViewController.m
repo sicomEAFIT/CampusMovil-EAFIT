@@ -17,7 +17,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    markersArray = [[NSMutableArray alloc] init];
+
     CMCoreService * markerService = [[CMCoreService alloc] init];
     [markerService setDelegate:self];
     [markerService bringAllMarkers];
@@ -44,7 +45,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     if (section == 0 ) {
-        return [markers.allKeys count];
+        return [markersArray count];
     }else{
         return [dataSource count];
     }
@@ -77,16 +78,28 @@
     
     // Configure the cell...
     
+    
     if (indexPath.section == 0){
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         
-        [cell.textLabel setText:[markers.allKeys objectAtIndex:indexPath.row]];
-        //cell.customImageView.image = [UIImage imageNamed:@"block"];
+        [cell.customLabelText setText:[[markersArray objectAtIndex:indexPath.row] objectForKey:@"title"]];
+        
+        if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"biblioteca"]) {
+            cell.customImageView.image = [UIImage imageNamed:@"library"];
+        }else if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"auditorio"]){
+            cell.customImageView.image = [UIImage imageNamed:@"auditorium"];
+        }else if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"bloque"]){
+            cell.customImageView.image = [UIImage imageNamed:@"block"];
+        }else if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"cec"]){
+            cell.customImageView.image = [UIImage imageNamed:@"cec"];
+        }
         
         
-    }else{
         
-        [cell.textLabel setText:[dataSource objectAtIndex:indexPath.row]];
+    }else if (indexPath.section ==1){
+        
+        
+        [cell.customLabelText setText:[dataSource objectAtIndex:indexPath.row]];
     }
     
     [cell.textLabel setTextAlignment:NSTextAlignmentRight];
@@ -96,6 +109,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (indexPath.section == 0) {
+        
         UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         
         UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"DetailController"];
@@ -128,14 +142,22 @@
 #pragma Service
 
 - (void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict{
-    
     for (NSDictionary *allMarkers in dict) {
        
-       
-        [markers setObject:[allMarkers objectForKey:@"title"] forKey:[allMarkers objectForKey:@"subtitle"]];
         
+        
+        [markersArray addObject:allMarkers];
+        
+        
+       
+        //[markers setObject:[allMarkers objectForKey:@"title"] forKey:[allMarkers objectForKey:@"subtitle"]];
+    
+        NSLog(@"%@",markersArray);
     }
     
+  
+    
+   
     [self.tableView reloadData];
     
 }
