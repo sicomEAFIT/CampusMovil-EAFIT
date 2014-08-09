@@ -33,6 +33,7 @@
 		6513E9811991E3C400999424 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6513E9801991E3C400999424 /* QuartzCore.framework */; };
 		6513E9831991E4BC00999424 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6513E9821991E4BC00999424 /* GoogleMaps.bundle */; };
 		6539EA611995C9D700C4CD3D /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6539EA601995C9D700C4CD3D /* SettingsTableViewController.m */; };
+		6539EA641995D5A200C4CD3D /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6539EA631995D5A200C4CD3D /* CustomTableViewCell.m */; };
 		6562EAF4199595FB00CBF0C8 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6562EAF3199595FB00CBF0C8 /* DetailViewController.m */; };
 		65D5691D19959F59002EEF2E /* auditorium.png in Resources */ = {isa = PBXBuildFile; fileRef = 65D5691519959F59002EEF2E /* auditorium.png */; };
 		65D5691E19959F59002EEF2E /* block.png in Resources */ = {isa = PBXBuildFile; fileRef = 65D5691619959F59002EEF2E /* block.png */; };
@@ -100,6 +101,8 @@
 		6513E9821991E4BC00999424 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		6539EA5F1995C9D700C4CD3D /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
 		6539EA601995C9D700C4CD3D /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
+		6539EA621995D5A200C4CD3D /* CustomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewCell.h; sourceTree = "<group>"; };
+		6539EA631995D5A200C4CD3D /* CustomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewCell.m; sourceTree = "<group>"; };
 		6562EAF2199595FB00CBF0C8 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		6562EAF3199595FB00CBF0C8 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		65D5691519959F59002EEF2E /* auditorium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = auditorium.png; sourceTree = "<group>"; };
@@ -184,6 +187,8 @@
 				206E5D8B198EEA1600837A2C /* Main.storyboard */,
 				6539EA5F1995C9D700C4CD3D /* SettingsTableViewController.h */,
 				6539EA601995C9D700C4CD3D /* SettingsTableViewController.m */,
+				6539EA621995D5A200C4CD3D /* CustomTableViewCell.h */,
+				6539EA631995D5A200C4CD3D /* CustomTableViewCell.m */,
 				206E5D8E198EEA1600837A2C /* Images.xcassets */,
 				206E5D81198EEA1600837A2C /* Supporting Files */,
 				206E5DA4198EEE8E00837A2C /* LoginTableViewController.h */,
@@ -411,6 +416,7 @@
 				6539EA611995C9D700C4CD3D /* SettingsTableViewController.m in Sources */,
 				6562EAF4199595FB00CBF0C8 /* DetailViewController.m in Sources */,
 				206E5DA9198F03F100837A2C /* RegisterTableViewController.m in Sources */,
+				6539EA641995D5A200C4CD3D /* CustomTableViewCell.m in Sources */,
 				20011C231991626100A0978E /* CMCoreService.m in Sources */,
 				206E5DA6198EEE8E00837A2C /* LoginTableViewController.m in Sources */,
 				207239181994A23F001116A9 /* CMUser.m in Sources */,

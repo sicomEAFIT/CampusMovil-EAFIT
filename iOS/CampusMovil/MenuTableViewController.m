@@ -73,17 +73,19 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
     // Configure the cell...
     
     if (indexPath.section == 0){
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [cell.textLabel setText:[markers.allKeys objectAtIndex:indexPath.row]];
+        [cell.customLabelText setText:[markers.allKeys objectAtIndex:indexPath.row]];
+        cell.customImageView.image = [UIImage imageNamed:@"block"];
+        
         
     }else{
         
-        [cell.textLabel setText:[dataSource objectAtIndex:indexPath.row]];
+        [cell.customLabelText setText:[dataSource objectAtIndex:indexPath.row]];
     }
     
     [cell.textLabel setTextAlignment:NSTextAlignmentRight];
