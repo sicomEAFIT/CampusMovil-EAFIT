@@ -49,12 +49,16 @@
                                                             longitude:-75.578698
                                                                  zoom:18];
     
+//    GMSCoordinateBounds *mapBounds = [[GMSCoordinateBounds alloc] initWithCoordinate:CLLocationCoordinate2DMake(6.1932748, -75.5823696) coordinate:CLLocationCoordinate2DMake(6.203500, -75.577057)];
+    
     mapview = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     
     [mapview setDelegate:self];
     [mapview setMinZoom:16 maxZoom:20];
     [mapview setMapType:kGMSTypeSatellite];
     [mapview setIndoorEnabled:false];
+    
+//    [mapview animateWithCameraUpdate:[GMSCameraUpdate fitBounds:mapBounds withPadding:10]];
     
     self.view = mapview;
 }
@@ -81,14 +85,26 @@
     }
 }
 
-
 - (BOOL)slideNavigationControllerShouldDisplayRightMenu{
-    
     return true;
 }
+
+
+
 - (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
-    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    if ((position.target.latitude > 6.1932748 && position.target.longitude < -75.5823696)
+        || (position.target.latitude < 6.203500 && position.target.longitude > -75.577057)) {
+        
+        AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+        
+        GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:6.200396
+                                                                longitude:-75.578698
+                                                                     zoom:18];
+        
+        [mapview animateToCameraPosition:camera];
+    }
+    
 }
 
 - (void)CMCore:(CMCoreService *)cm didError:(NSError *)error{
