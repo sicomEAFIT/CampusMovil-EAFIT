@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.sicomeafit.campusmovil.Suggestions" >
+
+     <item
+        android:id="@+id/action_guide"
+        android:icon="@drawable/ic_action_overflow"
+        android:title="@string/user_menu"
+        android:showAsAction="always" >
+        
+        <menu>
+            <item android:id="@+id/map"
+                  android:title="@string/map" />
+            <item android:id="@+id/places"
+                  android:title="@string/places" />
+            <item android:id="@+id/aboutUs"
+                  android:title="@string/about_us" />
+        </menu>
+      
+    </item>
+
+</menu>
