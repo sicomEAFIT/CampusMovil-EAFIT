@@ -22,10 +22,9 @@
     [markerService setDelegate:self];
     [markerService bringAllMarkers];
     
-    
     markers = [[NSMutableDictionary alloc] init];
     
-    dataSource = [[NSMutableArray alloc] initWithObjects:@"Suggestions",@"About Us",@"LogOut", nil];
+    dataSource = [[NSMutableArray alloc] initWithObjects:@"Suggestions",@"About Us",@"Settings",@"LogOut", nil];
    // markers = [[NSMutableArray alloc]initWithObjects:@"marker1", nil];
 }
 
@@ -34,12 +33,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-	self.slideOutAnimationEnabled = YES;
-	
-	return [super initWithCoder:aDecoder];
-}
 
 #pragma mark - Table view data source
 
@@ -98,12 +91,34 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     
-    UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"DetailController"];
-
-
-    [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+    if (indexPath.section == 0) {
+        UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        
+        UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"DetailController"];
+        
+        
+        [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+    }else if (indexPath.section == 1){
+        
+        switch (indexPath.row) {
+            case 0:
+                
+                break;
+            case 1:
+                break;
+            case 2:
+                [self performSegueWithIdentifier:@"settings_Segue" sender:nil];
+                break;
+            case 3:
+                break;
+                
+            default:
+                
+                break;
+        }
+    }
+    
     
 }
 
@@ -113,10 +128,11 @@
     
     for (NSDictionary *allMarkers in dict) {
        
-        
+       
         [markers setObject:[allMarkers objectForKey:@"title"] forKey:[allMarkers objectForKey:@"subtitle"]];
         
     }
+    
     [self.tableView reloadData];
     
 }
@@ -155,14 +171,23 @@
  }
  */
 
-/*
+
  #pragma mark - Navigation
  
  // In a storyboard-based application, you will often want to do a little preparation before navigation
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+      UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+     if ([segue.identifier isEqualToString:@"settings_Segue"]) {
+        
+         
+         UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"SettingsTableViewController"];
+         
+         
+         [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+     }
  // Get the new view controller using [segue destinationViewController].
  // Pass the selected object to the new view controller.
  }
- */
+
 
 @end
