@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsTableViewController : UITableViewController
+#define VIBRATE_SECTION 0
+#define VIBRATE_ROW 0
 
+@interface SettingsTableViewController : UITableViewController
+{
+    UISwitch * vibrateOption;
+}
 @end

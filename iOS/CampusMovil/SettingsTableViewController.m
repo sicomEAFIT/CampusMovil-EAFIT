@@ -32,7 +32,6 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
@@ -49,9 +48,38 @@
     
     // Configure the cell...
     
+    // Se crea el objeto si no existe
+    if (!vibrateOption) {
+        vibrateOption = [[UISwitch alloc] init];
+        
+        [vibrateOption setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"CMVibrateOption"]];
+        [vibrateOption addTarget:self action:@selector(updateVibrateOption) forControlEvents:UIControlEventValueChanged];
+    }
+    
+    if (indexPath.section == VIBRATE_SECTION && indexPath.row == VIBRATE_SECTION) {
+        cell.textLabel.text = @"Vibrar";
+        
+        // Se asigna el Control (UISwitch) a la vista del accesorio de la celda
+        cell.accessoryView = vibrateOption;
+    }
+    
     return cell;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return nil;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == VIBRATE_SECTION) {
+        return @"El uso de la vibración puede reducir la duración de su bateria.";
+    }
+    return nil;
+}
+
+- (void)updateVibrateOption {
+    [[NSUserDefaults standardUserDefaults] setBool:vibrateOption.on forKey:@"CMVibrateOption"];
+}
 
 /*
 // Override to support conditional editing of the table view.
