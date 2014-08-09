@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <SlideNavigationController.h>
+#import "ViewController.h"
+#import "CMCoreService.h"
 
-@interface MenuTableViewController : UITableViewController{
-    
-    NSMutableArray * markers;
+@interface MenuTableViewController : UITableViewController<CMCoreServicesDelgate>{
+    NSMutableDictionary * markers;
     NSMutableArray * dataSource;
 }
 @property (nonatomic, assign) BOOL slideOutAnimationEnabled;

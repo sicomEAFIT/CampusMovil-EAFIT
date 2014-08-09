@@ -8,16 +8,19 @@
 
 #import "ViewController.h"
 
+
 @interface ViewController ()
 
 @end
 
 @implementation ViewController
 
+
 - (void)viewDidLoad {
     
     
     [self showGoogleMaps];
+    
     
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -74,6 +77,7 @@
         [marker setIcon:[UIImage imageNamed:@"map_marker"]];
         marker.map = mapview;
         
+
     }
 }
 

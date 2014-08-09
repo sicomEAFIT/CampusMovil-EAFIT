@@ -17,8 +17,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    CMCoreService * markerService = [[CMCoreService alloc] init];
+    [markerService setDelegate:self];
+    [markerService bringAllMarkers];
+    
+    
+    markers = [[NSMutableDictionary alloc] init];
+    
     dataSource = [[NSMutableArray alloc] initWithObjects:@"Suggestions",@"About Us",@"LogOut", nil];
-    markers = [[NSMutableArray alloc]initWithObjects:@"marker1", nil];
+   // markers = [[NSMutableArray alloc]initWithObjects:@"marker1", nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -43,7 +51,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     if (section == 0 ) {
-        return [markers count];
+        return [markers.allKeys count];
     }else{
         return [dataSource count];
     }
@@ -68,15 +76,7 @@
 {
     return 30;
 }
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-//    if (section == 0) {
-//        return @"Markers";
-//    }else{
-//
-//        return @"Options";
-//    }
-//
-//}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -86,7 +86,7 @@
     
     if (indexPath.section == 0){
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [cell.textLabel setText:[markers objectAtIndex:indexPath.row]];
+        [cell.textLabel setText:[markers.allKeys objectAtIndex:indexPath.row]];
         
     }else{
         
@@ -104,6 +104,20 @@
 
 
     [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+    
+}
+
+#pragma Service
+
+- (void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict{
+    
+    for (NSDictionary *allMarkers in dict) {
+       
+        
+        [markers setObject:[allMarkers objectForKey:@"title"] forKey:[allMarkers objectForKey:@"subtitle"]];
+        
+    }
+    [self.tableView reloadData];
     
 }
 
