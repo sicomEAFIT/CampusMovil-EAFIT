@@ -17,15 +17,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    markersArray = [[NSMutableArray alloc] init];
+
     CMCoreService * markerService = [[CMCoreService alloc] init];
     [markerService setDelegate:self];
     [markerService bringAllMarkers];
     
-    
     markers = [[NSMutableDictionary alloc] init];
     
-    dataSource = [[NSMutableArray alloc] initWithObjects:@"Suggestions",@"About Us",@"LogOut", nil];
+    dataSource = [[NSMutableArray alloc] initWithObjects:@"Suggestions",@"About Us",@"Settings",@"LogOut", nil];
    // markers = [[NSMutableArray alloc]initWithObjects:@"marker1", nil];
 }
 
@@ -34,12 +34,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-	self.slideOutAnimationEnabled = YES;
-	
-	return [super initWithCoder:aDecoder];
-}
 
 #pragma mark - Table view data source
 
@@ -51,7 +45,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     if (section == 0 ) {
-        return [markers.allKeys count];
+        return [markersArray count];
     }else{
         return [dataSource count];
     }
@@ -80,17 +74,32 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
     // Configure the cell...
     
+    
     if (indexPath.section == 0){
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [cell.textLabel setText:[markers.allKeys objectAtIndex:indexPath.row]];
         
-    }else{
+        [cell.customLabelText setText:[[markersArray objectAtIndex:indexPath.row] objectForKey:@"title"]];
         
-        [cell.textLabel setText:[dataSource objectAtIndex:indexPath.row]];
+        if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"biblioteca"]) {
+            cell.customImageView.image = [UIImage imageNamed:@"library"];
+        }else if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"auditorio"]){
+            cell.customImageView.image = [UIImage imageNamed:@"auditorium"];
+        }else if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"bloque"]){
+            cell.customImageView.image = [UIImage imageNamed:@"block"];
+        }else if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"cec"]){
+            cell.customImageView.image = [UIImage imageNamed:@"cec"];
+        }
+        
+        
+        
+    }else if (indexPath.section ==1){
+        
+        
+        [cell.customLabelText setText:[dataSource objectAtIndex:indexPath.row]];
     }
     
     [cell.textLabel setTextAlignment:NSTextAlignmentRight];
@@ -98,25 +107,57 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     
-    UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"DetailController"];
-
-
-    [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+    if (indexPath.section == 0) {
+        
+        UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        
+        UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"DetailController"];
+        
+        
+        [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+    }else if (indexPath.section == 1){
+        
+        switch (indexPath.row) {
+            case 0:
+                
+                break;
+            case 1:
+                break;
+            case 2:
+                [self performSegueWithIdentifier:@"settings_Segue" sender:nil];
+                break;
+            case 3:
+                break;
+                
+            default:
+                
+                break;
+        }
+    }
+    
     
 }
 
 #pragma Service
 
 - (void)CMCore:(CMCoreService *)cm didReciveResponse:(NSDictionary *)dict{
-    
     for (NSDictionary *allMarkers in dict) {
        
         
-        [markers setObject:[allMarkers objectForKey:@"title"] forKey:[allMarkers objectForKey:@"subtitle"]];
         
+        [markersArray addObject:allMarkers];
+        
+        
+       
+        //[markers setObject:[allMarkers objectForKey:@"title"] forKey:[allMarkers objectForKey:@"subtitle"]];
+    
+        NSLog(@"%@",markersArray);
     }
+    
+  
+    
+   
     [self.tableView reloadData];
     
 }
@@ -155,14 +196,23 @@
  }
  */
 
-/*
+
  #pragma mark - Navigation
  
  // In a storyboard-based application, you will often want to do a little preparation before navigation
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+      UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+     if ([segue.identifier isEqualToString:@"settings_Segue"]) {
+        
+         
+         UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"SettingsTableViewController"];
+         
+         
+         [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+     }
  // Get the new view controller using [segue destinationViewController].
  // Pass the selected object to the new view controller.
  }
- */
+
 
 @end
