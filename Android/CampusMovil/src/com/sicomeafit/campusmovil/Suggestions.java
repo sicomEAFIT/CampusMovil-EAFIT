@@ -37,6 +37,10 @@ public class Suggestions extends Activity {
 	private String wantedService;
 	private HashMap<String, String> paramsForHttpPOST = new HashMap<String, String>();
 	
+	//Códigos HTTP.
+	private static final int SUCCESS = 200;
+	private static final int UNAUTHORIZED = 401;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -114,7 +118,7 @@ public class Suggestions extends Activity {
         	 if(wantedService.equals("Make Suggestion")){
  				try {
  				    Log.i("responseJSON", responseJSON.toString());
- 				    if(responseJSON.size() != 0){
+ 				    if(responseJSON.get(responseJSON.size()-1).getInt("status") == SUCCESS){
  				    	if(responseJSON.get(0).getBoolean("success")){ 
  				    		etSuggestion.setText("");
  							Toast.makeText(getApplicationContext(), getResources()
@@ -150,39 +154,86 @@ public class Suggestions extends Activity {
 								}
 							});
  							
- 							progressDialog.dismiss();
  							AlertDialog suggestionErrorDialog = builder.create();
+ 							progressDialog.dismiss();
  					    	suggestionErrorDialog.show();
  				    	}
 					}else{
-						progressDialog.dismiss();
-						/*
-						Toast.makeText(getApplicationContext(), getResources()
-							       	   .getString(R.string.connection_error),Toast.LENGTH_SHORT)
-							       	   .show();
-						*/
-						AlertDialog.Builder builder = new AlertDialog.Builder(Suggestions.this);
-						builder.setTitle(getResources().getString(R.string.connection_error_title));
-						builder.setMessage(getResources().getString(R.string.connection_error));
-						
-						builder.setPositiveButton(getResources().getString(R.string.retry), 
-												  new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								new POSTConnection().execute(POST_URL);
-							}
-						});
-						
-						builder.setNegativeButton(getResources().getString(R.string.exit), 
-								  new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								System.exit(0);
-							}
-						});
-						
-						AlertDialog connectionErrorDialog = builder.create();
-				    	connectionErrorDialog.show();
+						if(responseJSON.get(responseJSON.size()-1).getInt("status") == UNAUTHORIZED){
+				    		AlertDialog.Builder builder = new AlertDialog.Builder(Suggestions.this);
+							builder.setTitle(getResources().getString(R.string.log_in));
+							builder.setMessage(getResources().getString(R.string.login_needed_2));
+							
+							builder.setPositiveButton(getResources().getString(R.string.log_in), 
+													  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent returnToLogin = new Intent(Suggestions.this, MapAccess.class);
+									Bundle statusInfo = new Bundle();
+									statusInfo.putInt("status", UNAUTHORIZED);
+									returnToLogin.putExtras(statusInfo);
+									returnToLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+														   Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						    		startActivity(returnToLogin);
+						    		finish();
+								}
+							});
+							
+							builder.setNegativeButton(getResources().getString(R.string.exit), 
+									  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent exitApp = new Intent(Suggestions.this, MainActivity.class);
+									Bundle userActionInfo = new Bundle();
+									userActionInfo.putBoolean("exit", true);
+									exitApp.putExtras(userActionInfo);
+									exitApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+											   	 	 Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						    		startActivity(exitApp);
+						    		finish();
+								}
+							});
+							
+							AlertDialog connectionErrorDialog = builder.create();
+							progressDialog.dismiss();
+					    	connectionErrorDialog.show();
+						}else{
+							/*
+							Toast.makeText(getApplicationContext(), getResources()
+								       	   .getString(R.string.connection_error),Toast.LENGTH_SHORT)
+								       	   .show();
+							*/
+							AlertDialog.Builder builder = new AlertDialog.Builder(Suggestions.this);
+							builder.setTitle(getResources().getString(R.string.connection_error_title));
+							builder.setMessage(getResources().getString(R.string.connection_error));
+							
+							builder.setPositiveButton(getResources().getString(R.string.retry), 
+													  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									new POSTConnection().execute(POST_URL);
+								}
+							});
+							
+							builder.setNegativeButton(getResources().getString(R.string.exit), 
+									  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent exitApp = new Intent(Suggestions.this, MainActivity.class);
+									Bundle userActionInfo = new Bundle();
+									userActionInfo.putBoolean("exit", true);
+									exitApp.putExtras(userActionInfo);
+									exitApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+											   	 	 Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						    		startActivity(exitApp);
+						    		finish();
+								}
+							});
+							
+							AlertDialog connectionErrorDialog = builder.create();
+							progressDialog.dismiss();
+					    	connectionErrorDialog.show();
+						}
 			        }
  				} catch(JSONException e) {
 					progressDialog.dismiss();

@@ -39,7 +39,7 @@
     <string name="title_activity_suggestions">Suggestions</string>
     <string name="title_activity_about_us">About Us</string>
     <string name="title_activity_adapters">Adapters</string>
-    <string name="connection_error">Sorry :( . The connection with the server couldn't be set.</string>
+    <string name="connection_error">Sorry :( . The connection with the server couldn\'t be set.</string>
     <string name="title_activity_map_access">Map Access</string>
     <string name="write_comment">Write your comment here, \nplease.</string>
     <string name="make_your_suggestion">We are very interested in knowing your opinion about this app. \nPlease, leave your comment and let us continue improving your experience.</string>
@@ -57,5 +57,7 @@
     <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
     <string name="exit">Exit</string>
+    <string name="login_needed">To see the map, you need to log in.</string>
+    <string name="login_needed_2">To make a suggestion, you need to log in.</string>
 
 </resources>

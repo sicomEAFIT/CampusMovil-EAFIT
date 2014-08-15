@@ -7,26 +7,31 @@ import android.view.Menu;
 
 
 public class MainActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Thread splashTimer = new Thread(){
-	        public void run(){
-	          try{
-	            sleep(2000);
-	          }catch(InterruptedException e){
-	            e.printStackTrace();
-	          }finally{
-	        	Intent openInputFunctions = new Intent(MainActivity.this, MapAccess.class);
-	      		startActivity(openInputFunctions);
-	      		finish();                           
-	          }
-	        }
-	      };
-	      
-	      splashTimer.start();
+		Bundle paramsBag = getIntent().getExtras();  //	Aquí estarían los parámetros recibidos.
+		if(paramsBag != null){  //Se cierra la app completa pues el usuario presionó "Exit".
+			finish();
+		}else{
+			Thread splashTimer = new Thread(){
+		        public void run(){
+		          try{
+		            sleep(2000);
+		          }catch(InterruptedException e){
+		            e.printStackTrace();
+		          }finally{
+		        	Intent openMapAccess = new Intent(MainActivity.this, MapAccess.class);
+		      		startActivity(openMapAccess);
+		      		finish();                           
+		          }
+		        }
+		      };
+		      
+		      splashTimer.start();
+		}	      
 	}
 
 	@Override

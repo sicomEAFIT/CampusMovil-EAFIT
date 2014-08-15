@@ -2,6 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.sicomeafit.campusmovil.Places" >
 
+      <item
+       android:id="@+id/options_menu_main_search"
+       android:actionViewClass="android.widget.SearchView"
+       android:icon="@drawable/ic_action_search"
+       android:showAsAction="always"
+       android:title="@string/search_label" />
+        
      <item
         android:id="@+id/action_guide"
         android:icon="@drawable/ic_action_overflow"
@@ -18,12 +25,5 @@
         </menu>
       
     </item>
-    
-    <item
-       android:id="@+id/options_menu_main_search"
-       android:actionViewClass="android.widget.SearchView"
-       android:icon="@drawable/ic_action_search"
-       android:showAsAction="always"
-       android:title="@string/search_label" />
 
 </menu>
