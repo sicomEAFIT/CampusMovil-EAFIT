@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,12 +46,46 @@ public class MapAccess extends Activity {
 	private String POST_URL = "";
 	private String wantedService;
 	private HashMap<String, String> paramsForHttpPOST = new HashMap<String, String>();
+	
+	//Para usar SharedPreferences.
+	private static final String USER_EMAIL = "USER_EMAIL";
+	private static final String USERNAME = "USERNAME";
+	private static final String USER_TOKEN = "USER_TOKEN";
+	
+	//Códigos HTTP.
+	private static final int SUCCESS = 200;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map_access);
+		Bundle paramsBag = getIntent().getExtras();  //	Aquí estarían los parámetros recibidos.
+		if(paramsBag != null){  //Llegó un aviso de acceso no autorizado.
+			//Se eliminan los datos almacenados pues se requiere un nuevo token.
+			SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.clear().commit();
+		}
+		checkUserData();
 		initViewElements();
+	}
+	
+	public void checkUserData(){
+		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		String userEmail = prefs.getString(USER_EMAIL, null);
+    	String username = prefs.getString(USERNAME, null);
+    	String userToken = prefs.getString(USER_TOKEN, null); //Retorna null si el token no existe.
+    	
+    	//El usuario ingreso hace poco o no ha cerrado sesión.
+        if(userEmail != null && username != null && userToken != null){ 
+        	new UserData(userEmail, username, userToken);
+        	Intent openCampusMap = new Intent(MapAccess.this, MapHandler.class);
+			Bundle userInfo = new Bundle();
+			userInfo.putString("username", username);
+			openCampusMap.putExtras(userInfo);
+			startActivity(openCampusMap);
+			finish(); 
+        }
 	}
 
 	public void initViewElements() {
@@ -232,7 +267,7 @@ public class MapAccess extends Activity {
         	if(wantedService.equals("Login")){
 				try{
 					Log.i("responseJSON", responseJSON.toString());
-					if(responseJSON.size() != 0){
+					if(responseJSON.get(responseJSON.size()-1).getInt("status") == SUCCESS){
 						if(responseJSON.get(0).getBoolean("success") &&
 						   responseJSON.get(0).getJSONObject("auth") != null){ 
 							 //Se comprueba que haya sido exitosa la conexión con el Servidor. 
@@ -245,6 +280,16 @@ public class MapAccess extends Activity {
 							String authoToken = responseJSON.get(0).getJSONObject("auth")
 											   .getString("token");
 							new UserData(serviceEmail, serviceUsername, authoToken);
+							
+							//Se almacena el token del usuario para ver si es necesario
+						    //solicitarle que se haga nuevamente log in o no.
+							SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+							SharedPreferences.Editor editor = prefs.edit();
+							editor.putString(USER_EMAIL, serviceEmail);
+							editor.putString(USERNAME, serviceUsername);
+							editor.putString(USER_TOKEN, authoToken);
+							editor.commit();
+							
 							Intent openCampusMap = new Intent(MapAccess.this, MapHandler.class);
 							Bundle userInfo = new Bundle();
 							userInfo.putString("username", serviceUsername);
@@ -259,7 +304,6 @@ public class MapAccess extends Activity {
 									       .show();
 						}
 					}else{
-						progressDialog.dismiss();
 						/*
 						Toast.makeText(getApplicationContext(), getResources()
 							       	   .getString(R.string.connection_error),Toast.LENGTH_SHORT)
@@ -281,11 +325,19 @@ public class MapAccess extends Activity {
 								  new OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								System.exit(0);
+								Intent exitApp = new Intent(MapAccess.this, MainActivity.class);
+								Bundle userActionInfo = new Bundle();
+								userActionInfo.putBoolean("exit", true);
+								exitApp.putExtras(userActionInfo);
+								exitApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+										   	 	 Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					    		startActivity(exitApp);
+					    		finish();
 							}
 						});
 						
 						AlertDialog connectionErrorDialog = builder.create();
+						progressDialog.dismiss();
 				    	connectionErrorDialog.show();
 					}
 				}catch(JSONException e) {
@@ -295,7 +347,7 @@ public class MapAccess extends Activity {
         	}else if(wantedService.equals("Register")){
 				try{
 					Log.i("responseJSON", responseJSON.toString());
-					if(responseJSON.size() != 0){
+					if(responseJSON.get(responseJSON.size()-1).getInt("status") == SUCCESS){
 						if(responseJSON.get(0).getBoolean("success")){ 
 							//Se comprueba que haya sido exitosa la conexión con el Servidor.
 
@@ -313,10 +365,41 @@ public class MapAccess extends Activity {
 											Toast.LENGTH_LONG).show();
 							}
 					}else{
-						progressDialog.dismiss();
+						/*
 						Toast.makeText(getApplicationContext(), getResources()
-						       	   			.getString(R.string.connection_error),
-						       	   			Toast.LENGTH_SHORT).show();
+							       	   .getString(R.string.connection_error),Toast.LENGTH_SHORT)
+							       	   .show();
+						*/
+						AlertDialog.Builder builder = new AlertDialog.Builder(MapAccess.this);
+						builder.setTitle(getResources().getString(R.string.connection_error_title));
+						builder.setMessage(getResources().getString(R.string.connection_error));
+						
+						builder.setPositiveButton(getResources().getString(R.string.retry), 
+												  new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								new POSTConnection().execute(POST_URL);
+							}
+						});
+						
+						builder.setNegativeButton(getResources().getString(R.string.exit), 
+								  new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Intent exitApp = new Intent(MapAccess.this, MainActivity.class);
+								Bundle userActionInfo = new Bundle();
+								userActionInfo.putBoolean("exit", true);
+								exitApp.putExtras(userActionInfo);
+								exitApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+										   	 	 Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					    		startActivity(exitApp);
+					    		finish();
+							}
+						});
+						
+						AlertDialog connectionErrorDialog = builder.create();
+						progressDialog.dismiss();
+				    	connectionErrorDialog.show();
 					}
 				}catch(JSONException e) {
 					progressDialog.dismiss();

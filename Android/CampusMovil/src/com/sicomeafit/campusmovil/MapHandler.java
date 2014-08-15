@@ -64,7 +64,11 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 	private String POST_URL = "";
 	private String wantedService;
 	private HashMap<String, String> paramsForHttpPOST = new HashMap<String, String>();
-
+	
+	//Códigos HTTP.
+	private static final int SUCCESS = 200;
+	private static final int UNAUTHORIZED = 401;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,7 +103,7 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 		}
 		if(isInternetConnectionAvailable()){
 			wantedService = "Add main markers";
-			POST_URL = "http://campusmovilapp.herokuapp.com/api/v1/markers?auth=" + UserData.getToken();  
+			POST_URL = "http://campusmovilapp.herokuapp.com/api/v1/markers?auth=" + UserData.getToken(); 
 												   //Para dar autorización al acceso de los marcadores.;
 			new POSTConnection().execute(POST_URL);
 		}else{
@@ -232,11 +236,11 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
         	if(wantedService.equals("Add main markers")){
 				try {
 				    Log.i("responseJSON", responseJSON.toString());
-				    if(responseJSON.size() != 0){
+				    if(responseJSON.get(responseJSON.size()-1).getInt("status") == SUCCESS){
 				    	ArrayList<String> markersTitles = new ArrayList<String>();
 					    ArrayList<String> markersSubtitles = new ArrayList<String>();
 					    ArrayList<String> markersCategories = new ArrayList<String>();
-						for(int i = 0; i < responseJSON.size(); i++){
+						for(int i = 0; i < responseJSON.size()-1; i++){
 							double latitude = responseJSON.get(i).getDouble("latitude");
 							double longitude = responseJSON.get(i).getDouble("longitude");
 							String title = responseJSON.get(i).getString("title");
@@ -265,34 +269,81 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 									   .getString(R.string.welcome_msg) + " " + username + "!", 
 									   Toast.LENGTH_LONG).show();
 				    }else{
-				    	progressDialog.dismiss();
-						/*
-						Toast.makeText(getApplicationContext(), getResources()
-							       	   .getString(R.string.connection_error),Toast.LENGTH_SHORT)
-							       	   .show();
-						*/
-						AlertDialog.Builder builder = new AlertDialog.Builder(MapHandler.this);
-						builder.setTitle(getResources().getString(R.string.connection_error_title));
-						builder.setMessage(getResources().getString(R.string.connection_error));
-						
-						builder.setPositiveButton(getResources().getString(R.string.retry), 
-												  new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								new POSTConnection().execute(POST_URL);
-							}
-						});
-						
-						builder.setNegativeButton(getResources().getString(R.string.exit), 
-								  new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								System.exit(0);
-							}
-						});
-						
-						AlertDialog connectionErrorDialog = builder.create();
-				    	connectionErrorDialog.show();
+				    	if(responseJSON.get(responseJSON.size()-1).getInt("status") == UNAUTHORIZED){
+				    		AlertDialog.Builder builder = new AlertDialog.Builder(MapHandler.this);
+							builder.setTitle(getResources().getString(R.string.log_in));
+							builder.setMessage(getResources().getString(R.string.login_needed));
+							
+							builder.setPositiveButton(getResources().getString(R.string.log_in), 
+													  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent returnToLogin = new Intent(MapHandler.this, MapAccess.class);
+									Bundle statusInfo = new Bundle();
+									statusInfo.putInt("status", UNAUTHORIZED);
+									returnToLogin.putExtras(statusInfo);
+									returnToLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+											   			   Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						    		startActivity(returnToLogin);
+						    		finish();
+								}
+							});
+							
+							builder.setNegativeButton(getResources().getString(R.string.exit), 
+									  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent exitApp = new Intent(MapHandler.this, MainActivity.class);
+									Bundle userActionInfo = new Bundle();
+									userActionInfo.putBoolean("exit", true);
+									exitApp.putExtras(userActionInfo);
+									exitApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+											   	 	 Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						    		startActivity(exitApp);
+						    		finish();
+								}
+							});
+							
+							AlertDialog connectionErrorDialog = builder.create();
+							progressDialog.dismiss();
+					    	connectionErrorDialog.show();
+				    	}else{
+							/*
+							Toast.makeText(getApplicationContext(), getResources()
+								       	   .getString(R.string.connection_error),Toast.LENGTH_SHORT)
+								       	   .show();
+							*/
+							AlertDialog.Builder builder = new AlertDialog.Builder(MapHandler.this);
+							builder.setTitle(getResources().getString(R.string.connection_error_title));
+							builder.setMessage(getResources().getString(R.string.connection_error));
+							
+							builder.setPositiveButton(getResources().getString(R.string.retry), 
+													  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									new POSTConnection().execute(POST_URL);
+								}
+							});
+							
+							builder.setNegativeButton(getResources().getString(R.string.exit), 
+									  new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Intent exitApp = new Intent(MapHandler.this, MainActivity.class);
+									Bundle userActionInfo = new Bundle();
+									userActionInfo.putBoolean("exit", true);
+									exitApp.putExtras(userActionInfo);
+									exitApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+											   	 	 Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						    		startActivity(exitApp);
+						    		finish();
+								}
+							});
+							
+							AlertDialog connectionErrorDialog = builder.create();
+							progressDialog.dismiss();
+					    	connectionErrorDialog.show();
+				    	}
 				    }
 				}catch (JSONException e) {
 					progressDialog.dismiss();

@@ -27,6 +27,11 @@ public class HttpHandler {
 	 * Código de Apoyo: http://hmkcode.com/android-parsing-json-data/
 	 * 					http://hmkcode.com/android-send-json-data-to-server/
 	 */
+	
+	//Códigos HTTP.
+	private static final int SUCCESS = 200;
+	private static final int UNAUTHORIZED = 401;
+	
 	public ArrayList<JSONObject> getInformation(String postUrl, String wantedService, 
 												HashMap<String, String> paramsForHttpPOST,
 												Object httpRequest){
@@ -35,6 +40,7 @@ public class HttpHandler {
 		HttpClient httpClient = new DefaultHttpClient();
 		JSONObject json = createJSONObject(wantedService, paramsForHttpPOST);
 		HttpResponse httpResponse = null;
+		int responseStatusCode = 500;    //Por defecto será el código de error del Server.
 		InputStream inputStream = null;
 		JSONArray responseJSONArray = null;
 		ArrayList<JSONObject> responseJSON = new ArrayList<JSONObject>();
@@ -65,6 +71,7 @@ public class HttpHandler {
 			}else if(httpRequest instanceof HttpPost){
 				httpResponse = httpClient.execute((HttpPost) httpRequest);
 			}
+			responseStatusCode = httpResponse.getStatusLine().getStatusCode();
 			
 		}catch(ClientProtocolException e){
 			e.printStackTrace();
@@ -83,12 +90,13 @@ public class HttpHandler {
         //Se convierte inputStream a String.
         if(inputStream != null){
             try{
-				responseText = convertInputStreamToString(inputStream);
+            	responseText = convertInputStreamToString(inputStream);
 			}catch(IOException e){
 				e.printStackTrace();
 			}
         }else{
-        	responseText = "Connection did not work!";
+        	responseText = "Connection did not work!";  //Esto no será parseado. Sólo indica que no hubo
+        											    //respuesta exitosa del Server por algún motivo.
         }
         
 		try{
@@ -102,6 +110,20 @@ public class HttpHandler {
 			e.printStackTrace();
 		}
         
+		JSONObject statusJSON = null;
+		try {
+			if(responseStatusCode == SUCCESS){
+				statusJSON = new JSONObject("{'status':" + SUCCESS + "}");
+			}else if(responseStatusCode == UNAUTHORIZED){
+				statusJSON = new JSONObject("{'status':" + UNAUTHORIZED + "}");
+			}else{ //Se generaliza como error del Servidor.
+				statusJSON = new JSONObject("{'status':500}");
+			}
+			responseJSON.add(statusJSON);
+		}catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 		return responseJSON;
 	}
 	
