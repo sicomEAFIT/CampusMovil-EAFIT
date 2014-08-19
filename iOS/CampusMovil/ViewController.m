@@ -32,7 +32,7 @@
     [nav popToRootViewControllerAnimated:true];
     
     if (![CMCoreService isUserLogged]) {
-        [self performSegueWithIdentifier:@"login_segue" sender:nil];
+        //[self performSegueWithIdentifier:@"login_segue" sender:nil];
     }
     
     CMCoreService * markers = [CMCoreService sharedInstance];

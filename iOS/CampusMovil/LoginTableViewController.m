@@ -84,7 +84,8 @@
     } else {
         cell.textLabel.text = @"Registro";
     }
-    
+    [username setTextAlignment:NSTextAlignmentCenter];
+    [password setTextAlignment:NSTextAlignmentCenter];
     return cell;
 }
 

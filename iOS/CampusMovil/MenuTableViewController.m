@@ -25,7 +25,7 @@
     
     markers = [[NSMutableDictionary alloc] init];
     
-    dataSource = [[NSMutableArray alloc] initWithObjects:@"Suggestions",@"About Us",@"Settings",@"LogOut", nil];
+    dataSource = [[NSMutableArray alloc] initWithObjects:@"LogIn",@"Suggestions",@"About Us",@"Settings",@"LogOut", nil];
    // markers = [[NSMutableArray alloc]initWithObjects:@"marker1", nil];
 }
 
@@ -73,8 +73,12 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    CustomTableViewCell *cell;
+    if (indexPath.section > 0) {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"CellA" forIndexPath:indexPath];
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    }
     
     // Configure the cell...
     
@@ -83,6 +87,7 @@
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         
         [cell.customLabelText setText:[[markersArray objectAtIndex:indexPath.row] objectForKey:@"title"]];
+        [cell.customLabelSubtitle setText:[[markersArray objectAtIndex:indexPath.row] objectForKey:@"subtitle"]];
         
         if ([[[markersArray objectAtIndex:indexPath.row] objectForKey:@"category"] isEqualToString:@"biblioteca"]) {
             cell.customImageView.image = [UIImage imageNamed:@"library"];
@@ -99,7 +104,7 @@
     }else if (indexPath.section ==1){
         
         
-        [cell.customLabelText setText:[dataSource objectAtIndex:indexPath.row]];
+        [cell.textLabel setText:[dataSource objectAtIndex:indexPath.row]];
     }
     
     [cell.textLabel setTextAlignment:NSTextAlignmentRight];
@@ -120,7 +125,7 @@
         
         switch (indexPath.row) {
             case 0:
-                
+                [self performSegueWithIdentifier:@"login_segue" sender:nil];
                 break;
             case 1:
                 break;
@@ -148,10 +153,6 @@
         
         [markersArray addObject:allMarkers];
         
-        
-       
-        //[markers setObject:[allMarkers objectForKey:@"title"] forKey:[allMarkers objectForKey:@"subtitle"]];
-    
         NSLog(@"%@",markersArray);
     }
     
@@ -201,15 +202,35 @@
  
  // In a storyboard-based application, you will often want to do a little preparation before navigation
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+     
       UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+     
      if ([segue.identifier isEqualToString:@"settings_Segue"]) {
         
          
          UIViewController *vc = [main instantiateViewControllerWithIdentifier:@"SettingsTableViewController"];
          
+         [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
+         
+     }else if ([segue.identifier isEqualToString:@"login_segue"]) {
+         // UITableViewController * tbVc= [main instantiateViewControllerWithIdentifier:@"LoginTableViewController"];
+         
+         UINavigationController *vc = [main instantiateViewControllerWithIdentifier:@"Login"] ;
+         
+         UITableViewController *tb = (UITableViewController *)vc.topViewController;
+         
+         
+         
+         
+         
+         
+         
+         
+        
          
          [[SlideNavigationController sharedInstance] pushViewController:vc animated:true];
      }
+     
  // Get the new view controller using [segue destinationViewController].
  // Pass the selected object to the new view controller.
  }

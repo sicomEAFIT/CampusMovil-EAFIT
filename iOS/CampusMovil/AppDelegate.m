@@ -40,6 +40,7 @@
     }
     
     UIStoryboard *main= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
     UINavigationController *nav = (UINavigationController *)[main instantiateViewControllerWithIdentifier:@"LeftMenu"];
     
     [[SlideNavigationController sharedInstance]setRightMenu:nav];
