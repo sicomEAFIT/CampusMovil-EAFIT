@@ -8,6 +8,10 @@
         android:showAsAction="always" >
         
         <menu>
+            <item android:id="@+id/map"
+                  android:title="@string/map" />
+            <item android:id="@+id/places"
+                  android:title="@string/places" />
             <item android:id="@+id/aboutUs"
                   android:title="@string/about_us" />
         </menu>

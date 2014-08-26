@@ -41,6 +41,8 @@ public class Suggestions extends Activity {
 	private static final int SUCCESS = 200;
 	private static final int UNAUTHORIZED = 401;
 	
+	private static final int CLEAR_USER_DATA = -1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,6 +86,25 @@ public class Suggestions extends Activity {
 	    }
 	    return connectionFound;
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if (requestCode == 1) {
+			if(resultCode == RESULT_OK){    //Ya se borró la info. del usuario y se puede proceder
+	    	 							    //a una nueva autenticación.
+		    	Intent returnToLogin = new Intent(Suggestions.this, MapAccess.class);
+		    	Bundle statusInfo = new Bundle();
+				statusInfo.putInt("status", UNAUTHORIZED);
+				returnToLogin.putExtras(statusInfo);
+				returnToLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+									   Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(returnToLogin);
+				finish();         
+			}
+     
+		 }
+		
+	} 
 	
 	
 	/*
@@ -168,14 +189,15 @@ public class Suggestions extends Activity {
 													  new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									Intent returnToLogin = new Intent(Suggestions.this, MapAccess.class);
-									Bundle statusInfo = new Bundle();
-									statusInfo.putInt("status", UNAUTHORIZED);
-									returnToLogin.putExtras(statusInfo);
-									returnToLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
-														   Intent.FLAG_ACTIVITY_CLEAR_TASK);
-						    		startActivity(returnToLogin);
-						    		finish();
+									//Se hace un startActivityForResult para que se borren
+									//los datos del usuario. Luego se pasa al Log in.
+									Intent clearUserData = new Intent(Suggestions.this, MapHandler.class);
+									Bundle actionCode = new Bundle();
+									actionCode.putInt("actionCode", CLEAR_USER_DATA);
+									clearUserData.putExtras(actionCode);
+									startActivityForResult(clearUserData, 1);
+									//El 1 indica que cuando la actividad finalice, retornara a
+									//onActivityResult de esta actividad.
 								}
 							});
 							
@@ -242,6 +264,7 @@ public class Suggestions extends Activity {
         	 }	
         	 
         	 paramsForHttpPOST.clear();
+        	 
          }
 	 }
 
@@ -252,10 +275,10 @@ public class Suggestions extends Activity {
 		    case R.id.map:
 	    		openSelectedItem = new Intent(Suggestions.this, MapHandler.class); 
 	    		openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-	    	break;
+	    		break;
 	    	case R.id.places:
 	    		openSelectedItem = new Intent(Suggestions.this, Places.class); 
-	    	break;
+	    		break;
 	        case R.id.aboutUs:
 	        	openSelectedItem = new Intent(Suggestions.this, AboutUs.class); 
 	        	break;
@@ -278,6 +301,7 @@ public class Suggestions extends Activity {
 			menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
 		}
 		getMenuInflater().inflate(R.menu.suggestions, menu);
+        
 		return true;
 	}
 

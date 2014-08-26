@@ -2,6 +2,8 @@ package com.sicomeafit.campusmovil;
 
 import java.util.ArrayList;
 import android.app.ListActivity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 
 public class Places extends ListActivity {
@@ -79,6 +82,9 @@ public class Places extends ListActivity {
 	        	openSelectedItem = new Intent(Places.this, MapHandler.class); 
 	        	openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 	        	break;
+		    case R.id.login:
+	        	openSelectedItem = new Intent(Places.this, MapAccess.class); 
+	        	break;
 		    case R.id.suggestions:
 	        	openSelectedItem = new Intent(Places.this, Suggestions.class); 
 	        	break;
@@ -99,12 +105,39 @@ public class Places extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		if(ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey()){
-			menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
-			menu.add(0, R.id.suggestions, Menu.FIRST+2, getResources()
-					 .getString(R.string.suggestions));
-	    	menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
+			if (UserData.getToken() == null){  //El usuario no está loggeado.
+				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
+				menu.add(0, R.id.login, Menu.FIRST+2, getResources()
+						 .getString(R.string.log_in));
+		    	menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
+			}else{
+				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
+				menu.add(0, R.id.suggestions, Menu.FIRST+2, getResources()
+						 .getString(R.string.suggestions));
+		    	menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
+			}
 		}
 		getMenuInflater().inflate(R.menu.places, menu);
+		
+		if (UserData.getToken() == null){  //El usuario no está loggeado.
+			menu.findItem(R.id.map).setVisible(true);
+			menu.findItem(R.id.login).setVisible(true);
+			menu.findItem(R.id.suggestions).setVisible(false);
+			menu.findItem(R.id.aboutUs).setVisible(true);
+		}else{
+			menu.findItem(R.id.map).setVisible(true);
+			menu.findItem(R.id.login).setVisible(false);
+			menu.findItem(R.id.suggestions).setVisible(true);
+			menu.findItem(R.id.aboutUs).setVisible(true);
+		}
+		
+		// Se agrega el SearchWidget.
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.options_menu_main_search)
+        		                                           .getActionView();
+
+        searchView.setSearchableInfo( searchManager.getSearchableInfo(getComponentName()));
+        
 		return true;
 	}
 	

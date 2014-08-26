@@ -19,6 +19,8 @@
                   android:title="@string/map" />
             <item android:id="@+id/places"
                   android:title="@string/places" />
+              <item android:id="@+id/login"
+                  android:title="@string/log_in" />
             <item android:id="@+id/suggestions"
                   android:title="@string/suggestions" />
             <item android:id="@+id/aboutUs"
