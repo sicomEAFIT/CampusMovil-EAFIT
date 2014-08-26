@@ -16,12 +16,25 @@ public class UserData {
 		return email;
 	}
 
+	public static void setEmail(String email) {
+		UserData.email = email;
+	}
+
 	public static String getUsername() {
 		return username;
 	}
 
+	public static void setUsername(String username) {
+		UserData.username = username;
+	}
+
 	public static String getToken() {
 		return token;
+		//return "hola";
 	}	
-	
+
+	public static void setToken(String token) {
+		UserData.token = token;
+	}
+
 }

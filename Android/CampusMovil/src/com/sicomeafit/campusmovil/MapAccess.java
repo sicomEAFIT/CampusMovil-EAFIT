@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,11 +46,6 @@ public class MapAccess extends Activity {
 	private String wantedService;
 	private HashMap<String, String> paramsForHttpPOST = new HashMap<String, String>();
 	
-	//Para usar SharedPreferences.
-	private static final String USER_EMAIL = "USER_EMAIL";
-	private static final String USERNAME = "USERNAME";
-	private static final String USER_TOKEN = "USER_TOKEN";
-	
 	//Códigos HTTP.
 	private static final int SUCCESS = 200;
 
@@ -59,33 +53,7 @@ public class MapAccess extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map_access);
-		Bundle paramsBag = getIntent().getExtras();  //	Aquí estarían los parámetros recibidos.
-		if(paramsBag != null){  //Llegó un aviso de acceso no autorizado.
-			//Se eliminan los datos almacenados pues se requiere un nuevo token.
-			SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-			SharedPreferences.Editor editor = prefs.edit();
-			editor.clear().commit();
-		}
-		checkUserData();
 		initViewElements();
-	}
-	
-	public void checkUserData(){
-		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-		String userEmail = prefs.getString(USER_EMAIL, null);
-    	String username = prefs.getString(USERNAME, null);
-    	String userToken = prefs.getString(USER_TOKEN, null); //Retorna null si el token no existe.
-    	
-    	//El usuario ingreso hace poco o no ha cerrado sesión.
-        if(userEmail != null && username != null && userToken != null){ 
-        	new UserData(userEmail, username, userToken);
-        	Intent openCampusMap = new Intent(MapAccess.this, MapHandler.class);
-			Bundle userInfo = new Bundle();
-			userInfo.putString("username", username);
-			openCampusMap.putExtras(userInfo);
-			startActivity(openCampusMap);
-			finish(); 
-        }
 	}
 
 	public void initViewElements() {
@@ -281,19 +249,12 @@ public class MapAccess extends Activity {
 											   .getString("token");
 							new UserData(serviceEmail, serviceUsername, authoToken);
 							
-							//Se almacena el token del usuario para ver si es necesario
-						    //solicitarle que se haga nuevamente log in o no.
-							SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-							SharedPreferences.Editor editor = prefs.edit();
-							editor.putString(USER_EMAIL, serviceEmail);
-							editor.putString(USERNAME, serviceUsername);
-							editor.putString(USER_TOKEN, authoToken);
-							editor.commit();
-							
 							Intent openCampusMap = new Intent(MapAccess.this, MapHandler.class);
 							Bundle userInfo = new Bundle();
-							userInfo.putString("username", serviceUsername);
+							userInfo.putBoolean("storeInfo", true);
 							openCampusMap.putExtras(userInfo);
+							openCampusMap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+												   Intent.FLAG_ACTIVITY_CLEAR_TASK);
 							progressDialog.dismiss();
 							startActivity(openCampusMap);
 							finish();
@@ -414,20 +375,16 @@ public class MapAccess extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent openSelectedItem;
 		switch (item.getItemId()) {
-		case R.id.aboutUs:
-			openSelectedItem = new Intent(MapAccess.this, AboutUs.class);
-			Bundle originInfo = new Bundle();
-			originInfo.putString("originActivity", "Access"); // Se hace para
-																// indicar que
-																// procedemos de
-																// la actividad
-																// inicial con
-																// el fin de
-																// saber
-																// qué mostrar
-																// en el menú.
-			openSelectedItem.putExtras(originInfo);
-			break;
+		case R.id.map:
+    		openSelectedItem = new Intent(MapAccess.this, MapHandler.class); 
+    		openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+    		break;
+    	case R.id.places:
+    		openSelectedItem = new Intent(MapAccess.this, Places.class); 
+    		break;
+    	case R.id.aboutUs:
+    		openSelectedItem = new Intent(MapAccess.this, AboutUs.class); 
+    		break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -438,10 +395,10 @@ public class MapAccess extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		if (ViewConfiguration.get(getApplicationContext())
-				.hasPermanentMenuKey()) {
-			menu.add(0, R.id.aboutUs, Menu.FIRST + 1,
-					getResources().getString(R.string.about_us));
+		if (ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey()) {
+			menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
+			menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
+			menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
 		}
 		getMenuInflater().inflate(R.menu.map_access, menu);
 		return true;

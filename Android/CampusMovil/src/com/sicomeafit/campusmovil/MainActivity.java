@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
 		          }catch(InterruptedException e){
 		            e.printStackTrace();
 		          }finally{
-		        	Intent openMapAccess = new Intent(MainActivity.this, MapAccess.class);
+		        	Intent openMapAccess = new Intent(MainActivity.this, MapHandler.class);
 		      		startActivity(openMapAccess);
 		      		finish();                           
 		          }
