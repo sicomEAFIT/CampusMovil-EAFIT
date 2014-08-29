@@ -48,6 +48,7 @@ public class MapAccess extends Activity {
 	
 	//Códigos HTTP.
 	private static final int SUCCESS = 200;
+	private static final int UNAUTHORIZED = 401;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -236,35 +237,29 @@ public class MapAccess extends Activity {
 				try{
 					Log.i("responseJSON", responseJSON.toString());
 					if(responseJSON.get(responseJSON.size()-1).getInt("status") == SUCCESS){
-						if(responseJSON.get(0).getBoolean("success") &&
-						   responseJSON.get(0).getJSONObject("auth") != null){ 
-							 //Se comprueba que haya sido exitosa la conexión con el Servidor. 
-							
-							//Se almacenan los datos del usuario para reconocerlo después.
-							String serviceEmail = responseJSON.get(0).getJSONObject("auth")
-												  .getJSONObject("user").getString("email");
-							String serviceUsername = responseJSON.get(0).getJSONObject("auth")
-									  				 .getJSONObject("user").getString("username");
-							String authoToken = responseJSON.get(0).getJSONObject("auth")
-											   .getString("token");
-							new UserData(serviceEmail, serviceUsername, authoToken);
-							
-							Intent openCampusMap = new Intent(MapAccess.this, MapHandler.class);
-							Bundle userInfo = new Bundle();
-							userInfo.putBoolean("storeInfo", true);
-							openCampusMap.putExtras(userInfo);
-							openCampusMap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
-												   Intent.FLAG_ACTIVITY_CLEAR_TASK);
-							progressDialog.dismiss();
-							startActivity(openCampusMap);
-							finish();
-						}else{
-							progressDialog.dismiss();
-							Toast.makeText(getApplicationContext(), getResources()
-									       .getString(R.string.login_failure),Toast.LENGTH_SHORT)
-									       .show();
-						}
-					}else{
+						//Se almacenan los datos del usuario para reconocerlo después.
+						String serviceEmail = responseJSON.get(0).getJSONObject("auth")
+											  					 .getJSONObject("user").getString("email");
+						String serviceUsername = responseJSON.get(0).getJSONObject("auth")
+								  				 			  .getJSONObject("user").getString("username");
+						String authoToken = responseJSON.get(0).getJSONObject("auth").getString("token");
+						new UserData(serviceEmail, serviceUsername, authoToken);
+						
+						Intent openCampusMap = new Intent(MapAccess.this, MapHandler.class);
+						Bundle userInfo = new Bundle();
+						userInfo.putBoolean("storeInfo", true);
+						openCampusMap.putExtras(userInfo);
+						openCampusMap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
+											   Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						progressDialog.dismiss();
+						startActivity(openCampusMap);
+						finish();
+					}else if(responseJSON.get(responseJSON.size()-1).getInt("status") == UNAUTHORIZED){
+						progressDialog.dismiss();
+						Toast.makeText(getApplicationContext(), getResources()
+								       .getString(R.string.login_failure),Toast.LENGTH_SHORT)
+								       .show();
+					}else{  //Hubo un error de conexión con el servidor.
 						/*
 						Toast.makeText(getApplicationContext(), getResources()
 							       	   .getString(R.string.connection_error),Toast.LENGTH_SHORT)
@@ -322,8 +317,8 @@ public class MapAccess extends Activity {
 							}else{
 								progressDialog.dismiss();
 								Toast.makeText(getApplicationContext(), getResources()
-									  .getString(R.string.register_user_already_exists_failure),
-											Toast.LENGTH_LONG).show();
+											   .getString(R.string.register_user_already_exists_failure),
+											   Toast.LENGTH_LONG).show();
 							}
 					}else{
 						/*

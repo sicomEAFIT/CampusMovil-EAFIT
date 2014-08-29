@@ -239,7 +239,7 @@ containing a value of this type.
         public static final int user_marker=0x7f020029;
     }
     public static final class id {
-        public static final int aboutUs=0x7f05001e;
+        public static final int aboutUs=0x7f050021;
         public static final int action_guide=0x7f05001b;
         public static final int campus_movil_icon=0x7f05000a;
         public static final int category=0x7f050018;
@@ -249,11 +249,13 @@ containing a value of this type.
         public static final int everyOneLabel=0x7f05000c;
         public static final int hybrid=0x7f050004;
         public static final int log_in=0x7f050007;
+        public static final int login=0x7f05001d;
         public static final int login_view=0x7f05000b;
+        public static final int logout=0x7f05001f;
         public static final int map=0x7f050014;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int options_menu_main_search=0x7f05001f;
+        public static final int options_menu_main_search=0x7f050020;
         public static final int password=0x7f050008;
         public static final int places=0x7f05001c;
         public static final int regLogin=0x7f050012;
@@ -266,7 +268,7 @@ containing a value of this type.
         public static final int send_comment=0x7f050017;
         public static final int subtitle=0x7f05001a;
         public static final int suggestion=0x7f050016;
-        public static final int suggestions=0x7f05001d;
+        public static final int suggestions=0x7f05001e;
         public static final int terrain=0x7f050003;
         public static final int title=0x7f050019;
         public static final int username=0x7f050006;
@@ -417,8 +419,11 @@ containing a value of this type.
          */
         public static final int location_client_powered_by_google=0x7f06001a;
         public static final int log_in=0x7f060020;
+        public static final int log_out=0x7f060055;
         public static final int logging_in=0x7f060022;
         public static final int login_failure=0x7f060029;
+        public static final int login_needed=0x7f060053;
+        public static final int login_needed_2=0x7f060054;
         public static final int make_your_suggestion=0x7f060044;
         public static final int map=0x7f060039;
         public static final int oops=0x7f06004e;

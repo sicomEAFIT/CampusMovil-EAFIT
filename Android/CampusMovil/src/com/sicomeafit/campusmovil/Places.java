@@ -15,7 +15,9 @@ import android.widget.SearchView;
 
 
 public class Places extends ListActivity {
-    
+
+	private static final int CLEAR_USER_DATA = -1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,6 +93,15 @@ public class Places extends ListActivity {
 	        case R.id.aboutUs:
 	        	openSelectedItem = new Intent(Places.this, AboutUs.class); 
 	        	break;
+	        case R.id.logout:
+	        	Intent logOut = new Intent(Places.this, MapHandler.class);
+				Bundle actionCode = new Bundle();
+				actionCode.putInt("actionCode", CLEAR_USER_DATA);
+				logOut.putExtras(actionCode);
+				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(logOut);
+				finish();
+	        	return true;
 	        case android.R.id.home:
 	        	finish();
 	        	return true;
@@ -115,6 +126,7 @@ public class Places extends ListActivity {
 				menu.add(0, R.id.suggestions, Menu.FIRST+2, getResources()
 						 .getString(R.string.suggestions));
 		    	menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
+		    	menu.add(0, R.id.logout, Menu.FIRST+4, getResources().getString(R.string.log_out));
 			}
 		}
 		getMenuInflater().inflate(R.menu.places, menu);
@@ -124,11 +136,13 @@ public class Places extends ListActivity {
 			menu.findItem(R.id.login).setVisible(true);
 			menu.findItem(R.id.suggestions).setVisible(false);
 			menu.findItem(R.id.aboutUs).setVisible(true);
+			menu.findItem(R.id.logout).setVisible(false);
 		}else{
 			menu.findItem(R.id.map).setVisible(true);
 			menu.findItem(R.id.login).setVisible(false);
 			menu.findItem(R.id.suggestions).setVisible(true);
 			menu.findItem(R.id.aboutUs).setVisible(true);
+			menu.findItem(R.id.logout).setVisible(true);
 		}
 		
 		// Se agrega el SearchWidget.
