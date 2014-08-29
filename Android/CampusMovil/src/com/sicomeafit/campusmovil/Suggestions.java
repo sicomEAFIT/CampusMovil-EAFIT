@@ -194,6 +194,7 @@ public class Suggestions extends Activity {
 									Intent clearUserData = new Intent(Suggestions.this, MapHandler.class);
 									Bundle actionCode = new Bundle();
 									actionCode.putInt("actionCode", CLEAR_USER_DATA);
+									actionCode.putBoolean("isActivityForResult", true);
 									clearUserData.putExtras(actionCode);
 									startActivityForResult(clearUserData, 1);
 									//El 1 indica que cuando la actividad finalice, retornara a
@@ -282,6 +283,15 @@ public class Suggestions extends Activity {
 	        case R.id.aboutUs:
 	        	openSelectedItem = new Intent(Suggestions.this, AboutUs.class); 
 	        	break;
+	        case R.id.logout:
+	        	Intent logOut = new Intent(Suggestions.this, MapHandler.class);
+				Bundle actionCode = new Bundle();
+				actionCode.putInt("actionCode", CLEAR_USER_DATA);
+				logOut.putExtras(actionCode);
+				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(logOut);
+				finish();
+	        	return true;
 	        case android.R.id.home:
 	        	finish();
 	        	return true;
@@ -299,6 +309,7 @@ public class Suggestions extends Activity {
 			menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
 			menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
 			menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
+			menu.add(0, R.id.logout, Menu.FIRST+4, getResources().getString(R.string.log_out));
 		}
 		getMenuInflater().inflate(R.menu.suggestions, menu);
         

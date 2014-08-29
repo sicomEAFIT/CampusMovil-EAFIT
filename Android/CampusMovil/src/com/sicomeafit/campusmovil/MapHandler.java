@@ -83,11 +83,17 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 		setContentView(R.layout.activity_map_handler);
 		Bundle paramsBag = getIntent().getExtras();
 		if(paramsBag != null && paramsBag.getInt("actionCode") == CLEAR_USER_DATA){  
-			//Llegó un aviso de acceso no autorizado para que se borren los datos del usuario.
+			//Llegó un aviso de acceso no autorizado para que se borren los datos del usuario 
+			//o uno de log out.
 			clearSharedPreferences();	
-     	    Intent returnIntent = new Intent();
-		    setResult(RESULT_OK, returnIntent);     
-			finish();
+		    if(paramsBag.getBoolean("isActivityForResult")){
+		    	Intent returnIntent = new Intent();
+			    setResult(RESULT_OK, returnIntent); 
+		    	finish();
+		    }else{ //Simplemente se hizo log out y se quiere mostrar el mapa.
+		    	setMapView();
+				setGeneralListeners();
+		    }
 		}else{
 			setMapView();
 			setGeneralListeners();
@@ -135,7 +141,7 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 		if(isInternetConnectionAvailable()){
 			wantedService = "Add main markers";
 			POST_URL = "http://campusmovilapp.herokuapp.com/api/v1/markers";
-												   //Para dar autorización al acceso de los marcadores.;
+												   //Para dar autorización al acceso de los marcadores.
 			new POSTConnection().execute(POST_URL);
 		}else{
 			Toast.makeText(getApplicationContext(), getResources()
@@ -432,6 +438,15 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 	        case R.id.aboutUs:
 	        	openSelectedItem = new Intent(MapHandler.this, AboutUs.class); 
 	        	break;
+	        case R.id.logout:
+	        	Intent logOut = new Intent(MapHandler.this, MapHandler.class);
+				Bundle actionCode = new Bundle();
+				actionCode.putInt("actionCode", CLEAR_USER_DATA);
+				logOut.putExtras(actionCode);
+				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(logOut);
+				finish();
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -453,6 +468,7 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 				menu.add(0, R.id.suggestions, Menu.FIRST+2, getResources()
 						 .getString(R.string.suggestions));
 		    	menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
+		    	menu.add(0, R.id.logout, Menu.FIRST+4, getResources().getString(R.string.log_out));
 			}
 		}
 		getMenuInflater().inflate(R.menu.map_handler, menu);
@@ -462,11 +478,13 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 			menu.findItem(R.id.login).setVisible(true);
 			menu.findItem(R.id.suggestions).setVisible(false);
 			menu.findItem(R.id.aboutUs).setVisible(true);
+			menu.findItem(R.id.logout).setVisible(false);
 		}else{
 			menu.findItem(R.id.places).setVisible(true);
 			menu.findItem(R.id.login).setVisible(false);
 			menu.findItem(R.id.suggestions).setVisible(true);
 			menu.findItem(R.id.aboutUs).setVisible(true);
+			menu.findItem(R.id.logout).setVisible(true);
 		}
 		
 		// Se agrega el SearchWidget.

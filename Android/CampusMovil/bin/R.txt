@@ -71,7 +71,7 @@ int drawable language_center 0x7f020026
 int drawable library 0x7f020027
 int drawable map_marker 0x7f020028
 int drawable user_marker 0x7f020029
-int id aboutUs 0x7f05001e
+int id aboutUs 0x7f050021
 int id action_guide 0x7f05001b
 int id campus_movil_icon 0x7f05000a
 int id category 0x7f050018
@@ -81,11 +81,13 @@ int id email 0x7f050013
 int id everyOneLabel 0x7f05000c
 int id hybrid 0x7f050004
 int id log_in 0x7f050007
+int id login 0x7f05001d
 int id login_view 0x7f05000b
+int id logout 0x7f05001f
 int id map 0x7f050014
 int id none 0x7f050000
 int id normal 0x7f050001
-int id options_menu_main_search 0x7f05001f
+int id options_menu_main_search 0x7f050020
 int id password 0x7f050008
 int id places 0x7f05001c
 int id regLogin 0x7f050012
@@ -98,7 +100,7 @@ int id satellite 0x7f050002
 int id send_comment 0x7f050017
 int id subtitle 0x7f05001a
 int id suggestion 0x7f050016
-int id suggestions 0x7f05001d
+int id suggestions 0x7f05001e
 int id terrain 0x7f050003
 int id title 0x7f050019
 int id username 0x7f050006
@@ -171,8 +173,11 @@ int string item_icon 0x7f060049
 int string loading_map_data 0x7f06004a
 int string location_client_powered_by_google 0x7f06001a
 int string log_in 0x7f060020
+int string log_out 0x7f060055
 int string logging_in 0x7f060022
 int string login_failure 0x7f060029
+int string login_needed 0x7f060053
+int string login_needed_2 0x7f060054
 int string make_your_suggestion 0x7f060044
 int string map 0x7f060039
 int string oops 0x7f06004e

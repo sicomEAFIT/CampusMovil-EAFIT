@@ -17,6 +17,8 @@
                   android:title="@string/log_in" />
             <item android:id="@+id/suggestions"
                   android:title="@string/suggestions" />
+			<item android:id="@+id/logout"
+                  android:title="@string/log_out" />
         </menu>
       
     </item>
