@@ -65,6 +65,7 @@ public class Suggestions extends Activity {
 			paramsForHttpPOST.put("email", UserData.getEmail());
 			paramsForHttpPOST.put("username", UserData.getUsername());
 			paramsForHttpPOST.put("suggestion", suggestion);
+			paramsForHttpPOST.put("suggestionUTF", convertToUTF8(suggestion));
 			if(isInternetConnectionAvailable()){
 				new POSTConnection().execute(POST_URL);
 			}else{
@@ -76,6 +77,17 @@ public class Suggestions extends Activity {
 		}
 	}
 	
+	//Convierte String a codificación UTF-8.
+	public static String convertToUTF8(String s) {
+        String out = null;
+        try {
+            out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return null;
+        }
+        return out;
+    }
+    
 	public boolean isInternetConnectionAvailable() {
 		boolean connectionFound = false;
 	    ConnectivityManager conMgr = (ConnectivityManager) 
