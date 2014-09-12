@@ -16,6 +16,7 @@ import android.widget.SearchView;
 
 public class Places extends ListActivity {
 
+	private Adapters adapter;
 	private static final int CLEAR_USER_DATA = -1;
 	
 	@Override
@@ -24,12 +25,12 @@ public class Places extends ListActivity {
 		setContentView(R.layout.activity_places);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		//Se pasa el contexto y los datos a la clase Adapters para que los organice para la lista.
-        Adapters adapter = new Adapters(this, generateData());
+        adapter = new Adapters(this, generateData());
        
         setListAdapter(adapter);
 	}
 
-	private ArrayList<ListItem> generateData(){
+	public static ArrayList<ListItem> generateData(){
 		ArrayList<ListItem> listItems = new ArrayList<ListItem>();
 		for (int i = 0; i < MapData.getMarkersTitles().size(); i++){
 		    listItems.add(new ListItem(MapData.getMarkersTitles().get(i), 
@@ -66,8 +67,9 @@ public class Places extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         
-        String windowTitle = MapData.getMarkersTitles().get(position);
-		String windowSubtitle = MapData.getMarkersSubtitles().get(position);
+        ListItem itemSelected = (ListItem) l.getItemAtPosition(position);
+        String windowTitle = itemSelected.getTitle();
+		String windowSubtitle = itemSelected.getSubtitle();
     	Intent openBuildingInfo = new Intent(Places.this, InformationManager.class); 					
     	Bundle windowInformation = new Bundle();                                                          
 		windowInformation.putString("windowTitle", windowTitle);
@@ -150,7 +152,21 @@ public class Places extends ListActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.options_menu_main_search)
         		                                           .getActionView();
 
-        searchView.setSearchableInfo( searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+			
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				adapter.getFilter().filter(newText);
+				return false;
+			}
+		});
         
 		return true;
 	}

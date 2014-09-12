@@ -156,7 +156,7 @@ public class HttpHandler {
 				json.put("suggestion", paramsForHttpPOST.get("suggestion"));
 				*/
 				JSONObject internJSON = new JSONObject();
-				internJSON.put("message", paramsForHttpPOST.get("suggestion"));
+				internJSON.put("message", paramsForHttpPOST.get("suggestionUTF"));
 				json.put("comment", internJSON);
 			}
 		}catch(JSONException e) {

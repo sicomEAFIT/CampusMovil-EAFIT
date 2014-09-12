@@ -52,9 +52,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="android.app.default_searchable"
-            android:value=".app.Search" />
 
         <activity
             android:name="com.sicomeafit.campusmovil.InformationManager"
@@ -63,18 +60,25 @@
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.SearchHandler"
-            android:label="@string/title_activity_search_handler" >
+            android:label="@string/title_activity_search_handler"  >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@layout/searchable" />
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.Places"
             android:label="@string/title_activity_places" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.Suggestions"
