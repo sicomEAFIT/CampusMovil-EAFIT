@@ -3,11 +3,11 @@ package com.sicomeafit.campusmovil;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -16,19 +16,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -77,10 +83,23 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 	
 	private static final int CLEAR_USER_DATA = -1;
 	
+	//Se declara el SearchView para utilizarlo luego y poder setear un String cuando se hace búsqueda
+	//por voz.
+	SearchView searchView = null;
+	
+	//Navigation Drawer (menú lateral).
+	ListView drawer = null;
+	DrawerLayout drawerLayout = null;
+	ActionBarDrawerToggle toggle = null;
+	ArrayList<String> menuToShow = new ArrayList<String>(); 
+	ArrayList<Integer> menuToShowIds = new ArrayList<Integer>(); 
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map_handler);
+		//setNavigationDrawer();
 		Bundle paramsBag = getIntent().getExtras();
 		if(paramsBag != null && paramsBag.getInt("actionCode") == CLEAR_USER_DATA){  
 			//Llegó un aviso de acceso no autorizado para que se borren los datos del usuario 
@@ -98,6 +117,36 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 			setMapView();
 			setGeneralListeners();
 		}
+	}
+	
+	/*
+	 * Código de apoyo: http://creandoandroid.es/implementar-navigation-drawer-menu-lateral/
+	 */
+	public void setNavigationDrawer(){
+		drawer = (ListView) findViewById(R.id.drawer);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			 
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				drawerLayout.closeDrawers();
+				handleMenuEvents(menuToShowIds.get(arg2));
+			}
+		});
+		
+		toggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.string.app_name, 
+																					 R.string.app_name ){
+			 
+			public void onDrawerOpened(View drawerView) {
+				 invalidateOptionsMenu();
+			 }
+			
+			 public void onDrawerClosed(View view) {
+				 invalidateOptionsMenu();
+			 }
+		};
+		
+		drawerLayout.setDrawerListener(toggle);
 	}
 	
 	public void setMapView(){
@@ -217,12 +266,7 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 	public void onInfoWindowClick(Marker marker) {
 		String windowTitle = marker.getTitle();
 		String windowSubtitle = marker.getSnippet();
-    	Intent openBuildingInfo = new Intent(MapHandler.this, InformationManager.class); 					
-    	Bundle windowInformation = new Bundle();                                                          
-		windowInformation.putString("windowTitle", windowTitle);
-		windowInformation.putString("windowSubtitle", windowSubtitle);
-		openBuildingInfo.putExtras(windowInformation);
-        startActivity(openBuildingInfo); 
+		goToSelectedPlace(windowTitle, windowSubtitle);
 	}
 	
 	@Override
@@ -286,6 +330,15 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
         if(userEmail != null && username != null && userToken != null){ 
         	new UserData(userEmail, username, userToken); 
         }
+	}
+	
+	public void goToSelectedPlace(String windowTitle, String windowSubtitle){
+		Intent openBuildingInfo = new Intent(MapHandler.this, InformationManager.class); 					
+    	Bundle windowInformation = new Bundle();                                                          
+		windowInformation.putString("windowTitle", windowTitle);
+		windowInformation.putString("windowSubtitle", windowSubtitle);
+		openBuildingInfo.putExtras(windowInformation);
+        startActivity(openBuildingInfo); 
 	}
 	
 	 private class POSTConnection extends AsyncTask<String, Void, ArrayList<JSONObject>>{
@@ -421,7 +474,114 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
         	paramsForHttpPOST.clear();
          }
 	 }
+	 
+	 /*
+	 @Override  //Se utiliza para sincronizar el estado del Navigation Drawer (menú lateral).
+	 protected void onPostCreate(Bundle savedInstanceState) {
+		 super.onPostCreate(savedInstanceState);
+		 toggle.syncState();
+	 }
+	 */
 	
+	 @SuppressLint("DefaultLocale")
+	 @Override
+	 protected void onNewIntent(Intent intent) {
+		 ArrayList<Marker> queryMarkers = new ArrayList<Marker>();
+		 boolean noResFoundAlreadyShown = false;
+	     if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+	         String query = intent.getStringExtra(SearchManager.QUERY);
+	         String queryFirstUpper = query.substring(0, 1).toUpperCase() + query.substring(1);
+	         searchView.setQuery(queryFirstUpper, false);
+	         String newText = query.trim();
+				for(int i = 0; i < fixedMarkersList.size(); i++){
+					Marker marker = fixedMarkersList.get(i);
+					marker.setVisible(false);
+				}
+				if (newText != null && newText.length() != 0) {
+					queryMarkers = new ArrayList<Marker>();
+					for (Marker m : fixedMarkersList) {
+	                	String titleWithoutSpCh = m.getTitle().replaceAll("á", "a").replaceAll("é", "e")
+	                     	   					  			  .replaceAll("í", "i").replaceAll("ó", "o")
+	                     	   					  			  .replaceAll("ú", "u");
+	                	String subtitleWithoutSpCh = m.getTitle().replaceAll("á", "a").replaceAll("é", "e")
+					  			  								 .replaceAll("í", "i").replaceAll("ó", "o")
+					  			  								 .replaceAll("ú", "u");
+	
+	                    if (m.getTitle().toLowerCase().contains(newText.toLowerCase())
+	                    	|| m.getSnippet().toLowerCase().contains(newText.toLowerCase())
+	                    	|| titleWithoutSpCh.toLowerCase().contains(newText.toLowerCase()) 
+	                    	|| subtitleWithoutSpCh.toLowerCase().contains(newText.toLowerCase())){
+	                    	queryMarkers.add(m);
+	                    }
+					}
+					
+					if(queryMarkers.size() != 0){
+						for(int j = 0; j < queryMarkers.size(); j++){
+							Marker queryMarker = queryMarkers.get(j);
+							queryMarker.setVisible(true);
+						}
+						noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
+														//resultados, sien algún momento no se encuentran 
+														//resultados se vuelve a mostrar el Toast.
+					}else{
+						if(!noResFoundAlreadyShown){
+							Toast.makeText(getApplicationContext(), 
+									   	   getResources().getString(R.string.no_results_found),
+									   	   Toast.LENGTH_SHORT).show();
+							noResFoundAlreadyShown = true;
+							//No se vuelve a mostrar el Toast si sigue consultando sin resultados.
+						}
+						
+					}
+				}else{
+					//Si no hay texto a buscar, todos los markers son visibles.
+					for(int k = 0; k < fixedMarkersList.size(); k++){
+						Marker marker = fixedMarkersList.get(k);
+						marker.setVisible(true);
+					}
+					noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
+													//resultados, sien algún momento no se encuentran 
+													//resultados se vuelve a mostrar el Toast.
+				}
+				
+				if(queryMarkers.size() == 1){  //Quiere decir que hay un único marker visible.
+					campusMap.animateCamera(CameraUpdateFactory
+											.newLatLngZoom(queryMarkers.get(0).getPosition(), minZoom));
+				}else{
+					//Si no se encontraron marcadores asociados o no es único el resultado, se muestra
+					//toda la Universidad.
+					campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
+				}
+	     }
+	 }
+	 
+	 public void handleMenuEvents(int itemSelected){
+		Intent openSelectedItem = null;
+	    switch (itemSelected){
+	    	case R.string.places:
+	    		openSelectedItem = new Intent(MapHandler.this, Places.class); 
+	    		break;
+	    	case R.string.log_in:
+		    	openSelectedItem = new Intent(MapHandler.this, MapAccess.class); 
+		    	break;
+		    case R.string.suggestions:
+		    	openSelectedItem = new Intent(MapHandler.this, Suggestions.class); 
+		    	break;
+	        case R.string.about_us:
+	        	openSelectedItem = new Intent(MapHandler.this, AboutUs.class); 
+	        	break;
+	        case R.string.log_out:
+	        	Intent logOut = new Intent(MapHandler.this, MapHandler.class);
+				Bundle actionCode = new Bundle();
+				actionCode.putInt("actionCode", CLEAR_USER_DATA);
+				logOut.putExtras(actionCode);
+				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(logOut);
+				finish();
+	    }
+	    startActivity(openSelectedItem);
+	 }	
+	 
 	 @Override
 	 public boolean onOptionsItemSelected(MenuItem item){
 		Intent openSelectedItem; 
@@ -473,26 +633,157 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 		}
 		getMenuInflater().inflate(R.menu.map_handler, menu);
 		
+		menuToShow.clear();   //Se borra el contenido del menú para setearlo correctamente.
+		menuToShowIds.clear();	  //También sus ids.
+		
 		if (UserData.getToken() == null){  //El usuario no está loggeado.
+			menuToShow.add(getResources().getString(R.string.places));
+			menuToShow.add(getResources().getString(R.string.log_in));
+			menuToShow.add(getResources().getString(R.string.about_us));
+			menuToShowIds.add(R.string.places);
+			menuToShowIds.add(R.string.log_in);
+			menuToShowIds.add(R.string.about_us);
+			/*
 			menu.findItem(R.id.places).setVisible(true);
 			menu.findItem(R.id.login).setVisible(true);
 			menu.findItem(R.id.suggestions).setVisible(false);
 			menu.findItem(R.id.aboutUs).setVisible(true);
 			menu.findItem(R.id.logout).setVisible(false);
+			*/
 		}else{
+			menuToShow.add(getResources().getString(R.string.places));
+			menuToShow.add(getResources().getString(R.string.suggestions));
+			menuToShow.add(getResources().getString(R.string.about_us));
+			menuToShow.add(getResources().getString(R.string.log_out));
+			menuToShowIds.add(R.string.places);
+			menuToShowIds.add(R.id.suggestions);
+			menuToShowIds.add(R.string.about_us);
+			menuToShowIds.add(R.string.log_out);
+			/*
 			menu.findItem(R.id.places).setVisible(true);
 			menu.findItem(R.id.login).setVisible(false);
 			menu.findItem(R.id.suggestions).setVisible(true);
 			menu.findItem(R.id.aboutUs).setVisible(true);
 			menu.findItem(R.id.logout).setVisible(true);
+			*/
 		}
+		//Se setea el menú de acuerdo al estado del usuario.
+		/*drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, 
+												   android.R.id.text1, menuToShow));*/
+
 		
 		// Se agrega el SearchWidget.
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.options_menu_main_search)
-        		                                           .getActionView();
+        searchView = (SearchView) menu.findItem(R.id.options_menu_main_search).getActionView();
 
-        searchView.setSearchableInfo( searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+			
+			@Override
+			public boolean onClose() {
+				for(int k = 0; k < fixedMarkersList.size(); k++){
+					Marker marker = fixedMarkersList.get(k);
+					marker.setVisible(true);
+				}
+				campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
+				return false;
+			}
+		});
+        
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			
+        	ArrayList<Marker> queryMarkers = new ArrayList<Marker>();
+        	boolean noResFoundAlreadyShown = false;
+        	Drawable resultsBg = getResources().getDrawable(R.drawable.results_bg);
+            Drawable noResultsBg = getResources().getDrawable(R.drawable.no_results_bg);
+        			
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				
+				if(queryMarkers.size() == 1){  //Quiere decir que hay un único marker visible.
+					campusMap.animateCamera(CameraUpdateFactory
+											.newLatLngZoom(queryMarkers.get(0).getPosition(), minZoom));
+				}else{
+					campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
+				}
+
+				return true;
+			}
+			
+			@SuppressLint("DefaultLocale")
+			@Override
+			public boolean onQueryTextChange(String newTextNoTrim) {
+				String newText = newTextNoTrim.trim();
+				for(int i = 0; i < fixedMarkersList.size(); i++){
+					Marker marker = fixedMarkersList.get(i);
+					marker.setVisible(false);
+				}
+				if (newText != null && newText.length() != 0) {
+					queryMarkers = new ArrayList<Marker>();
+					for (Marker m : fixedMarkersList) {
+	                	String titleWithoutSpCh = m.getTitle().replaceAll("á", "a").replaceAll("é", "e")
+	                     	   					  			  .replaceAll("í", "i").replaceAll("ó", "o")
+	                     	   					  			  .replaceAll("ú", "u");
+	                	String subtitleWithoutSpCh = m.getTitle().replaceAll("á", "a").replaceAll("é", "e")
+  					  			  								 .replaceAll("í", "i").replaceAll("ó", "o")
+  					  			  								 .replaceAll("ú", "u");
+	
+	                    if (m.getTitle().toLowerCase().contains(newText.toLowerCase())
+	                    	|| m.getSnippet().toLowerCase().contains(newText.toLowerCase())
+	                    	|| titleWithoutSpCh.toLowerCase().contains(newText.toLowerCase()) 
+	                    	|| subtitleWithoutSpCh.toLowerCase().contains(newText.toLowerCase())){
+	                    	queryMarkers.add(m);
+	                    }
+					}
+					
+					if(queryMarkers.size() != 0){
+						searchView.setBackground(resultsBg);
+						for(int j = 0; j < queryMarkers.size(); j++){
+							Marker queryMarker = queryMarkers.get(j);
+							queryMarker.setVisible(true);
+						}
+						noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
+														//resultados, sien algún momento no se encuentran 
+														//resultados se vuelve a mostrar el Toast.
+						
+						//En caso de único resultado, se lleva al usuario hacia el marcador.
+						if(queryMarkers.size() == 1){
+							campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(queryMarkers.get(0)
+																					  .getPosition(),
+																					  minZoom));
+						}else{
+							campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
+						}
+						
+					}else{
+						searchView.setBackground(noResultsBg);
+						if(!noResFoundAlreadyShown){
+							Toast.makeText(getApplicationContext(), 
+									   	   getResources().getString(R.string.no_results_found),
+									   	   Toast.LENGTH_SHORT).show();
+							noResFoundAlreadyShown = true;
+							//No se vuelve a mostrar el Toast si sigue consultando sin resultados.
+						}
+						campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
+						
+					}
+				}else{
+					searchView.setBackground(resultsBg);
+					//Si no hay texto a buscar, todos los markers son visibles.
+					for(int k = 0; k < fixedMarkersList.size(); k++){
+						Marker marker = fixedMarkersList.get(k);
+						marker.setVisible(true);
+					}
+					noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
+													//resultados, sien algún momento no se encuentran 
+													//resultados se vuelve a mostrar el Toast.
+					campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
+				}
+				
+				return false;
+	        }
+		});
         
 		return true;
 	}

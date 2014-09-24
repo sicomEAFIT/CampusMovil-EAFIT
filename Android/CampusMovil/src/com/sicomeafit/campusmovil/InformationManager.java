@@ -1,14 +1,11 @@
 package com.sicomeafit.campusmovil;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
-import android.widget.SearchView;
 
 
 
@@ -105,13 +102,6 @@ public class InformationManager extends Activity {
 			menu.findItem(R.id.aboutUs).setVisible(true);
 			menu.findItem(R.id.logout).setVisible(true);
 		}
-		
-		// Se agrega el SearchWidget.
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.options_menu_main_search)
-        		                                           .getActionView();
-
-        searchView.setSearchableInfo( searchManager.getSearchableInfo(getComponentName()));
         
 		return true;
 	}

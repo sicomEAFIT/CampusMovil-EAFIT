@@ -1,8 +1,6 @@
 package com.sicomeafit.campusmovil;
 
 
-import android.R.layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +64,9 @@ public class Adapters extends ArrayAdapter<ListItem> implements Filterable {
 				break;
 			case "portería":
 				categoryIcon = context.getResources().getDrawable(R.drawable.entrance); 
+				break;
+			case "no resultados":
+				categoryIcon = context.getResources().getDrawable(R.drawable.no_results); 
 				break;
 
 			default:
@@ -140,8 +141,13 @@ public class Adapters extends ArrayAdapter<ListItem> implements Filterable {
         protected void publishResults(CharSequence constraint, FilterResults results) {
 	    	// Now we have to inform the adapter about the new list filtered
 	    	if (results.count == 0){
+	    		ListItem noResultsFound = new ListItem(context.getResources()
+	    											   .getString(R.string.no_results_found), "", 
+	    											   "no resultados");
 	    		itemsArrayList.clear();
-	    		notifyDataSetInvalidated();
+	    		itemsArrayList.add(noResultsFound);
+	    		notifyDataSetChanged();
+	    		//notifyDataSetInvalidated();
 	    	}else {
 	    		itemsArrayList.clear();
                 itemsArrayList.addAll((ArrayList<ListItem>) results.values);
