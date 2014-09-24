@@ -43,7 +43,15 @@
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.MapHandler"
-            android:label="@string/title_activity_interactive_map" >
+            android:label="@string/title_activity_interactive_map"
+            android:launchMode="singleTop" >
+             <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
 
         <meta-data
@@ -71,7 +79,8 @@
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.Places"
-            android:label="@string/title_activity_places" >
+            android:label="@string/title_activity_places"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

@@ -1,6 +1,7 @@
 package com.sicomeafit.campusmovil;
 
 import java.util.ArrayList;
+import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -18,6 +20,10 @@ public class Places extends ListActivity {
 
 	private Adapters adapter;
 	private static final int CLEAR_USER_DATA = -1;
+	
+	//Se declara el SearchView para utilizarlo luego y poder setear un String cuando se hace búsqueda
+	//por voz.
+	SearchView searchView = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,18 +70,38 @@ public class Places extends ListActivity {
 	}
 	*/
 	
+	public void goToSelectedPlace(String windowTitle, String windowSubtitle){
+		Intent openBuildingInfo = new Intent(Places.this, InformationManager.class); 					
+     	Bundle windowInformation = new Bundle();                                                          
+ 		windowInformation.putString("windowTitle", windowTitle);
+ 		windowInformation.putString("windowSubtitle", windowSubtitle);
+ 		openBuildingInfo.putExtras(windowInformation);
+        startActivity(openBuildingInfo);
+	}
+	
+	@SuppressLint("DefaultLocale")
+	@Override
+	 protected void onNewIntent(Intent intent) {
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+	         String query = intent.getStringExtra(SearchManager.QUERY);
+	         String queryFirstUpper = query.substring(0, 1).toUpperCase() + query.substring(1);
+	         searchView.setQuery(queryFirstUpper, false);
+	         String newText = query.trim();
+	         adapter.getFilter().filter(newText);
+	         InputMethodManager inputMethodManager = (InputMethodManager) 
+	        		 								  getSystemService(INPUT_METHOD_SERVICE);
+	         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+		}
+	}
 	protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        
-        ListItem itemSelected = (ListItem) l.getItemAtPosition(position);
+    	ListItem itemSelected = (ListItem) l.getItemAtPosition(position);
         String windowTitle = itemSelected.getTitle();
-		String windowSubtitle = itemSelected.getSubtitle();
-    	Intent openBuildingInfo = new Intent(Places.this, InformationManager.class); 					
-    	Bundle windowInformation = new Bundle();                                                          
-		windowInformation.putString("windowTitle", windowTitle);
-		windowInformation.putString("windowSubtitle", windowSubtitle);
-		openBuildingInfo.putExtras(windowInformation);
-        startActivity(openBuildingInfo);   
+ 		String windowSubtitle = itemSelected.getSubtitle();
+ 		if(windowTitle != getResources().getString(R.string.no_results_found)){
+	     	goToSelectedPlace(windowTitle, windowSubtitle);  
+        }
+        
     }
 	
 	@Override
@@ -149,20 +175,38 @@ public class Places extends ListActivity {
 		
 		// Se agrega el SearchWidget.
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.options_menu_main_search)
+        searchView = (SearchView) menu.findItem(R.id.options_menu_main_search)
         		                                           .getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+			
+			@Override
+			public boolean onClose() {
+				adapter.getFilter().filter(null); //Se envía null para que se muestren nuevamente
+												  //todos los lugares.
+				return false;
+			}
+		});
         
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				return false;
+				ListItem itemSelected = (ListItem) adapter.getItem(0);
+		        String windowTitle = itemSelected.getTitle();
+				String windowSubtitle = itemSelected.getSubtitle();
+				if(windowTitle != getResources().getString(R.string.no_results_found)){
+					//Esto llevaría la app al primer lugar en la lista.
+					goToSelectedPlace(windowTitle, windowSubtitle);
+				}
+				return true;
 			}
 			
 			@Override
-			public boolean onQueryTextChange(String newText) {
+			public boolean onQueryTextChange(String newTextNoTrim) {
+				String newText = newTextNoTrim.trim();
 				adapter.getFilter().filter(newText);
 				return false;
 			}

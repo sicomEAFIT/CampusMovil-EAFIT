@@ -60,5 +60,6 @@
     <string name="login_needed">To see the map, you need to log in.</string>
     <string name="login_needed_2">To make a suggestion, you need to log in.</string>
     <string name="log_out">Log out</string>
+    <string name="no_results_found">No results found.</string>
 
 </resources>

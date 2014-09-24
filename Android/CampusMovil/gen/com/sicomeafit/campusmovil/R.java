@@ -228,36 +228,42 @@ containing a value of this type.
         public static final int entrance=0x7f02001e;
         public static final int ic_action_overflow=0x7f02001f;
         public static final int ic_action_search=0x7f020020;
-        public static final int ic_launcher=0x7f020021;
-        public static final int ic_plusone_medium_off_client=0x7f020022;
-        public static final int ic_plusone_small_off_client=0x7f020023;
-        public static final int ic_plusone_standard_off_client=0x7f020024;
-        public static final int ic_plusone_tall_off_client=0x7f020025;
-        public static final int language_center=0x7f020026;
-        public static final int library=0x7f020027;
-        public static final int map_marker=0x7f020028;
-        public static final int user_marker=0x7f020029;
+        public static final int ic_drawer=0x7f020021;
+        public static final int ic_launcher=0x7f020022;
+        public static final int ic_plusone_medium_off_client=0x7f020023;
+        public static final int ic_plusone_small_off_client=0x7f020024;
+        public static final int ic_plusone_standard_off_client=0x7f020025;
+        public static final int ic_plusone_tall_off_client=0x7f020026;
+        public static final int language_center=0x7f020027;
+        public static final int library=0x7f020028;
+        public static final int map_marker=0x7f020029;
+        public static final int no_results=0x7f02002a;
+        public static final int no_results_bg=0x7f02002b;
+        public static final int results_bg=0x7f02002c;
+        public static final int user_marker=0x7f02002d;
     }
     public static final class id {
-        public static final int aboutUs=0x7f060021;
-        public static final int action_guide=0x7f06001b;
+        public static final int aboutUs=0x7f060023;
+        public static final int action_guide=0x7f06001e;
         public static final int campus_movil_icon=0x7f06000a;
         public static final int category=0x7f060018;
         public static final int confPassword=0x7f06000e;
         public static final int container=0x7f060005;
+        public static final int drawer=0x7f06001d;
+        public static final int drawer_layout=0x7f06001b;
         public static final int email=0x7f060013;
         public static final int everyOneLabel=0x7f06000c;
         public static final int hybrid=0x7f060004;
         public static final int log_in=0x7f060007;
-        public static final int login=0x7f06001d;
+        public static final int login=0x7f060020;
         public static final int login_view=0x7f06000b;
-        public static final int logout=0x7f06001f;
+        public static final int logout=0x7f060022;
         public static final int map=0x7f060014;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int options_menu_main_search=0x7f060020;
+        public static final int options_menu_main_search=0x7f060024;
         public static final int password=0x7f060008;
-        public static final int places=0x7f06001c;
+        public static final int places=0x7f06001f;
         public static final int regLogin=0x7f060012;
         public static final int regPassword=0x7f060010;
         public static final int regRegister=0x7f060011;
@@ -268,8 +274,9 @@ containing a value of this type.
         public static final int send_comment=0x7f060017;
         public static final int subtitle=0x7f06001a;
         public static final int suggestion=0x7f060016;
-        public static final int suggestions=0x7f06001e;
+        public static final int suggestions=0x7f060021;
         public static final int terrain=0x7f060003;
+        public static final int text=0x7f06001c;
         public static final int title=0x7f060019;
         public static final int username=0x7f060006;
         public static final int weAreInterested=0x7f060015;
@@ -289,6 +296,7 @@ containing a value of this type.
         public static final int activity_search_handler=0x7f030008;
         public static final int activity_suggestions=0x7f030009;
         public static final int list_item=0x7f03000a;
+        public static final int navigation_drawer_menu=0x7f03000b;
     }
     public static final class menu {
         public static final int about_us=0x7f0b0000;
@@ -425,6 +433,7 @@ containing a value of this type.
         public static final int login_needed_2=0x7f070054;
         public static final int make_your_suggestion=0x7f070044;
         public static final int map=0x7f070039;
+        public static final int no_results_found=0x7f070056;
         public static final int oops=0x7f07004e;
         public static final int pass_and_confpass_not_equal=0x7f07002c;
         public static final int password=0x7f07001f;
