@@ -16,7 +16,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -32,6 +31,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -83,9 +83,10 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 	
 	private static final int CLEAR_USER_DATA = -1;
 	
-	//Se declara el SearchView para utilizarlo luego y poder setear un String cuando se hace búsqueda
-	//por voz.
+	//Se declara el SearchView y su respectivo EditText para utilizarlo luego y poder setear un String 
+	//cuando se hace búsqueda por voz y un indicador si no se encuentran resultados.
 	SearchView searchView = null;
+	EditText searchViewEditText;
 	
 	//Navigation Drawer (menú lateral).
 	ListView drawer = null;
@@ -99,7 +100,9 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map_handler);
-		//setNavigationDrawer();
+		setNavigationDrawer();
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 		Bundle paramsBag = getIntent().getExtras();
 		if(paramsBag != null && paramsBag.getInt("actionCode") == CLEAR_USER_DATA){  
 			//Llegó un aviso de acceso no autorizado para que se borren los datos del usuario 
@@ -138,10 +141,12 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 																					 R.string.app_name ){
 			 
 			public void onDrawerOpened(View drawerView) {
+				 super.onDrawerOpened(drawerView);
 				 invalidateOptionsMenu();
 			 }
 			
 			 public void onDrawerClosed(View view) {
+				 super.onDrawerClosed(view);
 				 invalidateOptionsMenu();
 			 }
 		};
@@ -475,19 +480,16 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
          }
 	 }
 	 
-	 /*
 	 @Override  //Se utiliza para sincronizar el estado del Navigation Drawer (menú lateral).
 	 protected void onPostCreate(Bundle savedInstanceState) {
 		 super.onPostCreate(savedInstanceState);
 		 toggle.syncState();
 	 }
-	 */
 	
 	 @SuppressLint("DefaultLocale")
 	 @Override
 	 protected void onNewIntent(Intent intent) {
 		 ArrayList<Marker> queryMarkers = new ArrayList<Marker>();
-		 boolean noResFoundAlreadyShown = false;
 	     if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	         String query = intent.getStringExtra(SearchManager.QUERY);
 	         String queryFirstUpper = query.substring(0, 1).toUpperCase() + query.substring(1);
@@ -520,28 +522,31 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 							Marker queryMarker = queryMarkers.get(j);
 							queryMarker.setVisible(true);
 						}
-						noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
-														//resultados, sien algún momento no se encuentran 
-														//resultados se vuelve a mostrar el Toast.
+						
+						//Se pone la barra de búsqueda en su estado original.
+						if(searchViewEditText != null){
+							searchViewEditText.setError(null);
+				        }
+						
 					}else{
-						if(!noResFoundAlreadyShown){
-							Toast.makeText(getApplicationContext(), 
-									   	   getResources().getString(R.string.no_results_found),
-									   	   Toast.LENGTH_SHORT).show();
-							noResFoundAlreadyShown = true;
-							//No se vuelve a mostrar el Toast si sigue consultando sin resultados.
-						}
+						//Se cambia el estado de la barra de búsqueda, pues no se encontraron resultados.
+						if(searchViewEditText != null){
+							searchViewEditText.setError(getResources()
+														.getString(R.string.no_results_found));
+				        }
 						
 					}
 				}else{
+					//Se pone la barra de búsqueda en su estado original.
+					if(searchViewEditText != null){
+						searchViewEditText.setError(null);
+			        }
+					
 					//Si no hay texto a buscar, todos los markers son visibles.
 					for(int k = 0; k < fixedMarkersList.size(); k++){
 						Marker marker = fixedMarkersList.get(k);
 						marker.setVisible(true);
 					}
-					noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
-													//resultados, sien algún momento no se encuentran 
-													//resultados se vuelve a mostrar el Toast.
 				}
 				
 				if(queryMarkers.size() == 1){  //Quiere decir que hay un único marker visible.
@@ -578,12 +583,16 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(logOut);
 				finish();
+				return;
 	    }
 	    startActivity(openSelectedItem);
 	 }	
 	 
 	 @Override
 	 public boolean onOptionsItemSelected(MenuItem item){
+		if (toggle.onOptionsItemSelected(item)) {
+			return true; //Hace que se abra el menú lateral al presionar el ícono.
+	    } 
 		Intent openSelectedItem; 
 	    switch (item.getItemId()){
 	    	case R.id.places:
@@ -632,8 +641,10 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 			}
 		}
 		getMenuInflater().inflate(R.menu.map_handler, menu);
-		
-		menuToShow.clear();   //Se borra el contenido del menú para setearlo correctamente.
+		menu.findItem(R.id.action_guide).setVisible(false);  //Se esconde debido a que se va
+															 //a mostrar el menú como un
+															 //Navigation Drawer.
+		menuToShow.clear();       //Se borra el contenido del menú para setearlo correctamente.
 		menuToShowIds.clear();	  //También sus ids.
 		
 		if (UserData.getToken() == null){  //El usuario no está loggeado.
@@ -656,7 +667,7 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 			menuToShow.add(getResources().getString(R.string.about_us));
 			menuToShow.add(getResources().getString(R.string.log_out));
 			menuToShowIds.add(R.string.places);
-			menuToShowIds.add(R.id.suggestions);
+			menuToShowIds.add(R.string.suggestions);
 			menuToShowIds.add(R.string.about_us);
 			menuToShowIds.add(R.string.log_out);
 			/*
@@ -668,8 +679,8 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 			*/
 		}
 		//Se setea el menú de acuerdo al estado del usuario.
-		/*drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, 
-												   android.R.id.text1, menuToShow));*/
+		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, 
+												   android.R.id.text1, menuToShow));
 
 		
 		// Se agrega el SearchWidget.
@@ -677,6 +688,10 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
         searchView = (SearchView) menu.findItem(R.id.options_menu_main_search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        
+        int searchViewEditTextId = searchView.getContext().getResources()
+        						   .getIdentifier("android:id/search_src_text", null, null);
+        searchViewEditText = (EditText) searchView.findViewById(searchViewEditTextId);
         
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
 			
@@ -686,6 +701,12 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 					Marker marker = fixedMarkersList.get(k);
 					marker.setVisible(true);
 				}
+				
+				//Se pone la barra de búsqueda en su estado original.
+				if(searchViewEditText != null){
+					searchViewEditText.setError(null);
+		        }
+				
 				campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
 				return false;
 			}
@@ -694,9 +715,6 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			
         	ArrayList<Marker> queryMarkers = new ArrayList<Marker>();
-        	boolean noResFoundAlreadyShown = false;
-        	Drawable resultsBg = getResources().getDrawable(R.drawable.results_bg);
-            Drawable noResultsBg = getResources().getDrawable(R.drawable.no_results_bg);
         			
 			@Override
 			public boolean onQueryTextSubmit(String query) {
@@ -738,14 +756,16 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 					}
 					
 					if(queryMarkers.size() != 0){
-						searchView.setBackground(resultsBg);
+						
+						//Se pone la barra de búsqueda en su estado original.
+						if(searchViewEditText != null){
+							searchViewEditText.setError(null);
+				        }
+						
 						for(int j = 0; j < queryMarkers.size(); j++){
 							Marker queryMarker = queryMarkers.get(j);
 							queryMarker.setVisible(true);
 						}
-						noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
-														//resultados, sien algún momento no se encuentran 
-														//resultados se vuelve a mostrar el Toast.
 						
 						//En caso de único resultado, se lleva al usuario hacia el marcador.
 						if(queryMarkers.size() == 1){
@@ -757,27 +777,26 @@ public class MapHandler extends FragmentActivity implements OnCameraChangeListen
 						}
 						
 					}else{
-						searchView.setBackground(noResultsBg);
-						if(!noResFoundAlreadyShown){
-							Toast.makeText(getApplicationContext(), 
-									   	   getResources().getString(R.string.no_results_found),
-									   	   Toast.LENGTH_SHORT).show();
-							noResFoundAlreadyShown = true;
-							//No se vuelve a mostrar el Toast si sigue consultando sin resultados.
-						}
+						//Se cambia el estado de la barra de búsqueda, pues no se encontraron resultados.
+						if(searchViewEditText != null){
+							searchViewEditText.setError(getResources()
+														.getString(R.string.no_results_found));
+				        }
+						
 						campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
 						
 					}
 				}else{
-					searchView.setBackground(resultsBg);
+					//Se pone la barra de búsqueda en su estado original.
+					if(searchViewEditText != null){
+						searchViewEditText.setError(null);
+			        }
+					
 					//Si no hay texto a buscar, todos los markers son visibles.
 					for(int k = 0; k < fixedMarkersList.size(); k++){
 						Marker marker = fixedMarkersList.get(k);
 						marker.setVisible(true);
 					}
-					noResFoundAlreadyShown = false; //Después de que haya vuelto a a encontrar 
-													//resultados, sien algún momento no se encuentran 
-													//resultados se vuelve a mostrar el Toast.
 					campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
 				}
 				

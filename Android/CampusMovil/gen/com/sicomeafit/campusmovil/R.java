@@ -238,48 +238,45 @@ containing a value of this type.
         public static final int library=0x7f020028;
         public static final int map_marker=0x7f020029;
         public static final int no_results=0x7f02002a;
-        public static final int no_results_bg=0x7f02002b;
-        public static final int results_bg=0x7f02002c;
-        public static final int user_marker=0x7f02002d;
+        public static final int user_marker=0x7f02002b;
     }
     public static final class id {
-        public static final int aboutUs=0x7f060023;
-        public static final int action_guide=0x7f06001e;
-        public static final int campus_movil_icon=0x7f06000a;
-        public static final int category=0x7f060018;
-        public static final int confPassword=0x7f06000e;
-        public static final int container=0x7f060005;
-        public static final int drawer=0x7f06001d;
-        public static final int drawer_layout=0x7f06001b;
-        public static final int email=0x7f060013;
-        public static final int everyOneLabel=0x7f06000c;
+        public static final int aboutUs=0x7f060022;
+        public static final int action_guide=0x7f06001d;
+        public static final int campus_movil_icon=0x7f06000b;
+        public static final int category=0x7f060019;
+        public static final int confPassword=0x7f06000f;
+        public static final int drawer=0x7f060006;
+        public static final int drawer_layout=0x7f060005;
+        public static final int email=0x7f060014;
+        public static final int everyOneLabel=0x7f06000d;
         public static final int hybrid=0x7f060004;
-        public static final int log_in=0x7f060007;
-        public static final int login=0x7f060020;
-        public static final int login_view=0x7f06000b;
-        public static final int logout=0x7f060022;
-        public static final int map=0x7f060014;
+        public static final int log_in=0x7f060008;
+        public static final int login=0x7f06001f;
+        public static final int login_view=0x7f06000c;
+        public static final int logout=0x7f060021;
+        public static final int map=0x7f060015;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int options_menu_main_search=0x7f060024;
-        public static final int password=0x7f060008;
-        public static final int places=0x7f06001f;
-        public static final int regLogin=0x7f060012;
-        public static final int regPassword=0x7f060010;
-        public static final int regRegister=0x7f060011;
-        public static final int regUsername=0x7f06000f;
-        public static final int register=0x7f060009;
-        public static final int register_view=0x7f06000d;
+        public static final int options_menu_main_search=0x7f060023;
+        public static final int password=0x7f060009;
+        public static final int places=0x7f06001e;
+        public static final int regLogin=0x7f060013;
+        public static final int regPassword=0x7f060011;
+        public static final int regRegister=0x7f060012;
+        public static final int regUsername=0x7f060010;
+        public static final int register=0x7f06000a;
+        public static final int register_view=0x7f06000e;
         public static final int satellite=0x7f060002;
-        public static final int send_comment=0x7f060017;
-        public static final int subtitle=0x7f06001a;
-        public static final int suggestion=0x7f060016;
-        public static final int suggestions=0x7f060021;
+        public static final int send_comment=0x7f060018;
+        public static final int subtitle=0x7f06001b;
+        public static final int suggestion=0x7f060017;
+        public static final int suggestions=0x7f060020;
         public static final int terrain=0x7f060003;
         public static final int text=0x7f06001c;
-        public static final int title=0x7f060019;
-        public static final int username=0x7f060006;
-        public static final int weAreInterested=0x7f060015;
+        public static final int title=0x7f06001a;
+        public static final int username=0x7f060007;
+        public static final int weAreInterested=0x7f060016;
     }
     public static final class integer {
         public static final int google_play_services_version=0x7f080000;
@@ -293,10 +290,9 @@ containing a value of this type.
         public static final int activity_map_handler=0x7f030005;
         public static final int activity_places=0x7f030006;
         public static final int activity_register=0x7f030007;
-        public static final int activity_search_handler=0x7f030008;
-        public static final int activity_suggestions=0x7f030009;
-        public static final int list_item=0x7f03000a;
-        public static final int navigation_drawer_menu=0x7f03000b;
+        public static final int activity_suggestions=0x7f030008;
+        public static final int list_item=0x7f030009;
+        public static final int navigation_drawer_menu=0x7f03000a;
     }
     public static final class menu {
         public static final int about_us=0x7f0b0000;
@@ -306,8 +302,7 @@ containing a value of this type.
         public static final int map_access=0x7f0b0004;
         public static final int map_handler=0x7f0b0005;
         public static final int places=0x7f0b0006;
-        public static final int search_handler=0x7f0b0007;
-        public static final int suggestions=0x7f0b0008;
+        public static final int suggestions=0x7f0b0007;
     }
     public static final class string {
         public static final int OK=0x7f07004b;
