@@ -1,7 +1,8 @@
-package com.sicomeafit.campusmovil;
+package com.sicomeafit.campusmovil.controllers;
 
 import java.util.ArrayList;
-
+import com.sicomeafit.campusmovil.R;
+import com.sicomeafit.campusmovil.models.UserData;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,13 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
-
 public class InformationManager extends Activity {
 
 	private String windowTitle;
 	private String windowSubtitle;
-	
-	private static final int CLEAR_USER_DATA = -1;
 	
 	//Navigation Drawer (menú lateral).
 	ListView drawer = null;
@@ -38,10 +36,7 @@ public class InformationManager extends Activity {
 		setNavigationDrawer();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-		Bundle windowInformation = getIntent().getExtras();
-		windowTitle = windowInformation.getString("windowTitle");
-		windowSubtitle = windowInformation.getString("windowSubtitle");
-		setTitle(windowTitle);
+		setTitleAndSubtitle();
 	}
 	
 	public void setNavigationDrawer(){
@@ -73,6 +68,23 @@ public class InformationManager extends Activity {
 		drawerLayout.setDrawerListener(toggle);
 	}
 	
+	public void setTitleAndSubtitle(){
+		Bundle windowInformation = getIntent().getExtras();
+		windowTitle = windowInformation.getString("windowTitle");
+		windowSubtitle = windowInformation.getString("windowSubtitle");
+		setTitle(windowTitle);
+	}
+	
+	public void logout(){
+		Intent logOut = new Intent(InformationManager.this, MapHandler.class);
+		Bundle actionCode = new Bundle();
+		actionCode.putInt("actionCode", MapHandler.CLEAR_USER_DATA);
+		logOut.putExtras(actionCode);
+		logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		startActivity(logOut);
+		finish();
+	}
+	
 	@Override  //Se utiliza para sincronizar el estado del Navigation Drawer (menú lateral).
 	 protected void onPostCreate(Bundle savedInstanceState) {
 		 super.onPostCreate(savedInstanceState);
@@ -99,13 +111,7 @@ public class InformationManager extends Activity {
 	        	openSelectedItem = new Intent(InformationManager.this, AboutUs.class); 
 	        	break;
 	        case R.string.log_out:
-	        	Intent logOut = new Intent(InformationManager.this, MapHandler.class);
-				Bundle actionCode = new Bundle();
-				actionCode.putInt("actionCode", CLEAR_USER_DATA);
-				logOut.putExtras(actionCode);
-				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(logOut);
-				finish();
+	        	logout();
 				return;
 	    }
 	    startActivity(openSelectedItem);
@@ -135,13 +141,7 @@ public class InformationManager extends Activity {
 	        	openSelectedItem = new Intent(InformationManager.this, AboutUs.class); 
 	        	break;
 	        case R.id.logout:
-	        	Intent logOut = new Intent(InformationManager.this, MapHandler.class);
-				Bundle actionCode = new Bundle();
-				actionCode.putInt("actionCode", CLEAR_USER_DATA);
-				logOut.putExtras(actionCode);
-				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(logOut);
-				finish();
+	        	logout();
 	        	return true;
 	        case android.R.id.home:
 	        	finish();
@@ -188,14 +188,6 @@ public class InformationManager extends Activity {
 			menuToShowIds.add(R.string.places);
 			menuToShowIds.add(R.string.log_in);
 			menuToShowIds.add(R.string.about_us);
-			/*
-			menu.findItem(R.id.map).setVisible(true);
-			menu.findItem(R.id.places).setVisible(true);
-			menu.findItem(R.id.login).setVisible(true);
-			menu.findItem(R.id.suggestions).setVisible(false);
-			menu.findItem(R.id.aboutUs).setVisible(true);
-			menu.findItem(R.id.logout).setVisible(false);
-			*/
 		}else{
 			menuToShow.add(getResources().getString(R.string.map));
 			menuToShow.add(getResources().getString(R.string.places));
@@ -207,14 +199,6 @@ public class InformationManager extends Activity {
 			menuToShowIds.add(R.string.suggestions);
 			menuToShowIds.add(R.string.about_us);
 			menuToShowIds.add(R.string.log_out);
-			/*
-			menu.findItem(R.id.map).setVisible(true);
-			menu.findItem(R.id.places).setVisible(true);
-			menu.findItem(R.id.login).setVisible(false);
-			menu.findItem(R.id.suggestions).setVisible(true);
-			menu.findItem(R.id.aboutUs).setVisible(true);
-			menu.findItem(R.id.logout).setVisible(true);
-			*/
 		}
 		//Se setea el menú de acuerdo al estado del usuario.
 		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, 

@@ -1,8 +1,9 @@
-package com.sicomeafit.campusmovil;
+package com.sicomeafit.campusmovil.controllers;
 
 
 import java.util.ArrayList;
-
+import com.sicomeafit.campusmovil.R;
+import com.sicomeafit.campusmovil.models.UserData;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,16 +19,14 @@ import android.widget.ListView;
 
 
 public class AboutUs extends Activity {
-	
-	private static final int CLEAR_USER_DATA = -1;
-	
+
 	//Navigation Drawer (menú lateral).
 	ListView drawer = null;
 	DrawerLayout drawerLayout = null;
 	ActionBarDrawerToggle toggle = null;
 	ArrayList<String> menuToShow = new ArrayList<String>(); 
 	ArrayList<Integer> menuToShowIds = new ArrayList<Integer>();
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,110 +35,108 @@ public class AboutUs extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 	}
-	
+
 	public void setNavigationDrawer(){
 		drawer = (ListView) findViewById(R.id.drawer);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			 
+
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				drawerLayout.closeDrawers();
 				handleMenuEvents(menuToShowIds.get(arg2));
 			}
 		});
-		
+
 		toggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.string.app_name, 
-																					 R.string.app_name ){
-			 
+				R.string.app_name ){
+
 			public void onDrawerOpened(View drawerView) {
-				 super.onDrawerOpened(drawerView);
-				 invalidateOptionsMenu();
-			 }
-			
-			 public void onDrawerClosed(View view) {
-				 super.onDrawerClosed(view);
-				 invalidateOptionsMenu();
-			 }
+				super.onDrawerOpened(drawerView);
+				invalidateOptionsMenu();
+			}
+
+			public void onDrawerClosed(View view) {
+				super.onDrawerClosed(view);
+				invalidateOptionsMenu();
+			}
 		};
-		
+
 		drawerLayout.setDrawerListener(toggle);
 	}
-	
+
+	public void logout(){
+		Intent logOut = new Intent(AboutUs.this, MapHandler.class);
+		Bundle actionCode = new Bundle();
+		actionCode.putInt("actionCode", MapHandler.CLEAR_USER_DATA);
+		logOut.putExtras(actionCode);
+		logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		startActivity(logOut);
+		finish();
+	}
+
 	@Override  //Se utiliza para sincronizar el estado del Navigation Drawer (menú lateral).
-	 protected void onPostCreate(Bundle savedInstanceState) {
-		 super.onPostCreate(savedInstanceState);
-		 toggle.syncState();
-	 }
-	
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		toggle.syncState();
+	}
+
 	public void handleMenuEvents(int itemSelected){
 		Intent openSelectedItem = null;
 		switch (itemSelected){
-		    case R.string.map:
-	    		openSelectedItem = new Intent(AboutUs.this, MapHandler.class); 
-	    		openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-	    		break;
-	    	case R.string.places:
-	    		openSelectedItem = new Intent(AboutUs.this, Places.class); 
-	    		break;
-	    	case R.string.log_in:
-	    		openSelectedItem = new Intent(AboutUs.this, MapAccess.class); 
-	    		break;
-	        case R.string.suggestions:
-	        	openSelectedItem = new Intent(AboutUs.this, Suggestions.class); 
-	        	break;
-	        case R.string.log_out:
-	        	Intent logOut = new Intent(AboutUs.this, MapHandler.class);
-				Bundle actionCode = new Bundle();
-				actionCode.putInt("actionCode", CLEAR_USER_DATA);
-				logOut.putExtras(actionCode);
-				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(logOut);
-				finish();
-				return;
-	    }
+		case R.string.map:
+			openSelectedItem = new Intent(AboutUs.this, MapHandler.class); 
+			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			break;
+		case R.string.places:
+			openSelectedItem = new Intent(AboutUs.this, Places.class); 
+			break;
+		case R.string.log_in:
+			openSelectedItem = new Intent(AboutUs.this, MapAccess.class); 
+			break;
+		case R.string.suggestions:
+			openSelectedItem = new Intent(AboutUs.this, Suggestions.class); 
+			break;
+		case R.string.log_out:
+			logout();
+			return;
+		}
 		startActivity(openSelectedItem);
-	 }	
+	}	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		if (toggle.onOptionsItemSelected(item)) {
 			return true; //Hace que se abra el menú lateral al presionar el ícono.
-	    }
+		}
 		Intent openSelectedItem; 
-	    switch (item.getItemId()){
-		    case R.id.map:
-	    		openSelectedItem = new Intent(AboutUs.this, MapHandler.class); 
-	    		openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-	    		break;
-	    	case R.id.places:
-	    		openSelectedItem = new Intent(AboutUs.this, Places.class); 
-	    		break;
-	    	case R.id.login:
-	    		openSelectedItem = new Intent(AboutUs.this, MapAccess.class); 
-	    		break;
-	        case R.id.suggestions:
-	        	openSelectedItem = new Intent(AboutUs.this, Suggestions.class); 
-	        	break;
-	        case R.id.logout:
-	        	Intent logOut = new Intent(AboutUs.this, MapHandler.class);
-				Bundle actionCode = new Bundle();
-				actionCode.putInt("actionCode", CLEAR_USER_DATA);
-				logOut.putExtras(actionCode);
-				logOut.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(logOut);
-				finish();
-	        	return true;
-	        case android.R.id.home:
-	        	finish();
-	        	return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
-	    startActivity(openSelectedItem);
-	    return true;
+		switch (item.getItemId()){
+		case R.id.map:
+			openSelectedItem = new Intent(AboutUs.this, MapHandler.class); 
+			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			break;
+		case R.id.places:
+			openSelectedItem = new Intent(AboutUs.this, Places.class); 
+			break;
+		case R.id.login:
+			openSelectedItem = new Intent(AboutUs.this, MapAccess.class); 
+			break;
+		case R.id.suggestions:
+			openSelectedItem = new Intent(AboutUs.this, Suggestions.class); 
+			break;
+		case R.id.logout:
+			logout();
+			return true;
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+		startActivity(openSelectedItem);
+		return true;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -148,7 +145,7 @@ public class AboutUs extends Activity {
 				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
 				menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
 				menu.add(0, R.id.login, Menu.FIRST+3, getResources()
-						 .getString(R.string.log_in));
+						.getString(R.string.log_in));
 			}else{
 				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
 				menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
@@ -159,12 +156,12 @@ public class AboutUs extends Activity {
 		}
 		getMenuInflater().inflate(R.menu.about_us, menu);
 		menu.findItem(R.id.action_guide).setVisible(false);  //Se esconde debido a que se va
-														 	 //a mostrar el menú como un
-														 	 //Navigation Drawer.
-		
+		//a mostrar el menú como un
+		//Navigation Drawer.
+
 		menuToShow.clear();       //Se borra el contenido del menú para setearlo correctamente.
 		menuToShowIds.clear();	  //También sus ids.
-		
+
 		if (UserData.getToken() == null){  //El usuario no está loggeado.
 			menuToShow.add(getResources().getString(R.string.map));
 			menuToShow.add(getResources().getString(R.string.places));
@@ -172,13 +169,6 @@ public class AboutUs extends Activity {
 			menuToShowIds.add(R.string.map);
 			menuToShowIds.add(R.string.places);
 			menuToShowIds.add(R.string.log_in);
-			/*
-			menu.findItem(R.id.map).setVisible(true);
-			menu.findItem(R.id.places).setVisible(true);
-			menu.findItem(R.id.login).setVisible(true);
-			menu.findItem(R.id.suggestions).setVisible(false);
-			menu.findItem(R.id.logout).setVisible(false);
-			*/
 		}else{
 			menuToShow.add(getResources().getString(R.string.map));
 			menuToShow.add(getResources().getString(R.string.places));
@@ -188,18 +178,11 @@ public class AboutUs extends Activity {
 			menuToShowIds.add(R.string.places);
 			menuToShowIds.add(R.string.suggestions);
 			menuToShowIds.add(R.string.log_out);
-			/*
-			menu.findItem(R.id.map).setVisible(true);
-			menu.findItem(R.id.places).setVisible(true);
-			menu.findItem(R.id.login).setVisible(false);
-			menu.findItem(R.id.suggestions).setVisible(true);
-			menu.findItem(R.id.logout).setVisible(true);
-			*/
 		}
 		//Se setea el menú de acuerdo al estado del usuario.
 		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, 
-												   android.R.id.text1, menuToShow));
-		
+				android.R.id.text1, menuToShow));
+
 		return true;
 	}
 

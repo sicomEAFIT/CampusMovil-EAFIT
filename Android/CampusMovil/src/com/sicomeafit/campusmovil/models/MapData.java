@@ -1,4 +1,4 @@
-package com.sicomeafit.campusmovil;
+package com.sicomeafit.campusmovil.models;
 
 import java.util.ArrayList;
 

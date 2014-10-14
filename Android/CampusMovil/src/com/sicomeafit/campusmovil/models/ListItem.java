@@ -1,4 +1,4 @@
-package com.sicomeafit.campusmovil;
+package com.sicomeafit.campusmovil.models;
 
 public class ListItem {
 
@@ -17,20 +17,20 @@ public class ListItem {
 		return title;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 	public String getSubtitle() {
 		return subtitle;
 	}
 
-	public void setSubtitle(String subtitle) {
-		this.subtitle = subtitle;
-	}
-
 	public String getCategory() {
 		return category;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
 	}
 
 	public void setCategory(String category) {

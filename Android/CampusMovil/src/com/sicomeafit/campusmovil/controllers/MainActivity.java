@@ -1,5 +1,6 @@
-package com.sicomeafit.campusmovil;
+package com.sicomeafit.campusmovil.controllers;
 
+import com.sicomeafit.campusmovil.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

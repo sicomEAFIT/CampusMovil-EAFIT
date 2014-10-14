@@ -32,7 +32,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.sicomeafit.campusmovil.MainActivity"
+            android:name="com.sicomeafit.campusmovil.controllers.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -42,7 +42,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.sicomeafit.campusmovil.MapHandler"
+            android:name="com.sicomeafit.campusmovil.controllers.MapHandler"
             android:label="@string/title_activity_interactive_map"
             android:launchMode="singleTop" >
              <intent-filter>
@@ -62,7 +62,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.sicomeafit.campusmovil.InformationManager"
+            android:name="com.sicomeafit.campusmovil.controllers.InformationManager"
             android:label="@string/title_activity_information_manager"
             android:screenOrientation="portrait" >
         </activity>
@@ -78,7 +78,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.sicomeafit.campusmovil.Places"
+            android:name="com.sicomeafit.campusmovil.controllers.Places"
             android:label="@string/title_activity_places"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -90,12 +90,12 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.sicomeafit.campusmovil.Suggestions"
+            android:name="com.sicomeafit.campusmovil.controllers.Suggestions"
             android:label="@string/title_activity_suggestions"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.sicomeafit.campusmovil.AboutUs"
+            android:name="com.sicomeafit.campusmovil.controllers.AboutUs"
             android:label="@string/title_activity_about_us"
             android:screenOrientation="portrait" >
         </activity>
@@ -104,7 +104,7 @@
             android:label="@string/title_activity_adapters" >
         </activity>
         <activity
-            android:name="com.sicomeafit.campusmovil.MapAccess"
+            android:name="com.sicomeafit.campusmovil.controllers.MapAccess"
             android:label="@string/title_activity_map_access" 
             android:screenOrientation="portrait">
         </activity>
