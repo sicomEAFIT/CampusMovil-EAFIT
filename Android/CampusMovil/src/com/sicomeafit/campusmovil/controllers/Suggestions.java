@@ -99,7 +99,7 @@ public class Suggestions extends Activity implements SubscribedActivities {
 			paramsForHttpPost.put("email", UserData.getEmail());
 			paramsForHttpPost.put("username", UserData.getUsername());
 			paramsForHttpPost.put("suggestion", suggestion);
-			paramsForHttpPost.put("suggestionUTF", convertToUTF8(suggestion));
+			paramsForHttpPost.put("suggestion", suggestion);
 			if(httpHandler.isInternetConnectionAvailable(this)){
 				//Se envía la petición al HttpHandler.
 				httpHandler.sendRequest(HttpHandler.API_V1, ACTION, "?auth=" + UserData.getToken(), 
@@ -111,17 +111,6 @@ public class Suggestions extends Activity implements SubscribedActivities {
 			}
 
 		}
-	}
-
-	//Convierte String a codificación UTF-8.
-	public static String convertToUTF8(String s) {
-		String out = null;
-		try {
-			out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
-		} catch (java.io.UnsupportedEncodingException e) {
-			return null;
-		}
-		return out;
 	}
 
 	public void logout(){

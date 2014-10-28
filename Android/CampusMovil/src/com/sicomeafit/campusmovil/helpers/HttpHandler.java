@@ -129,7 +129,7 @@ public class HttpHandler {
 		}
 
 		try{
-			if(responseText.charAt(0) != '['){ //Breve conversión a JSONArray si es un sólo un JSONObject.
+			if(responseText.charAt(0) != '['){ //Breve conversión a JSONArray si es un sólo JSONObject.
 				responseText = "[" + responseText + "]"; 
 			}
 
@@ -174,11 +174,16 @@ public class HttpHandler {
 				internJson.put("password", paramsForHttpPost.get("regPassword"));
 				json.put("user", internJson);
 				break;
-			case "/add_user_marker":
-
+			case "/create_user_marker":
+				internJson.put("latitude", Double.parseDouble(paramsForHttpPost.get("latitude")));
+				internJson.put("longitude", Double.parseDouble(paramsForHttpPost.get("longitude")));
+				internJson.put("title", convertToUTF8(paramsForHttpPost.get("title")));
+				internJson.put("subtitle", null);
+				internJson.put("category", "marcador usuario");
+				json.put("marker", internJson);
 				break;
 			case "/comment":
-				internJson.put("message", paramsForHttpPost.get("suggestionUTF"));
+				internJson.put("message", convertToUTF8(paramsForHttpPost.get("suggestion")));
 				json.put("comment", internJson);
 				break;
 			}
@@ -226,6 +231,17 @@ public class HttpHandler {
 		return connectionFound;
 	}
 
+	//Convierte String a codificación UTF-8.
+	public static String convertToUTF8(String s) {
+		String out = null;
+		try {
+			out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
+		} catch (java.io.UnsupportedEncodingException e) {
+			return null;
+		}
+		return out;
+	}
+
 	public void sendRequest(String nameSpace, String action, String queryParams, 
 			Map<String, String> paramsForHttpPostReceived, HttpRequest httpRequest, Context context){
 		this.nameSpace = nameSpace;
@@ -262,9 +278,8 @@ public class HttpHandler {
 			case "/markers":
 				progressDialog.setMessage(context.getString(R.string.loading_map_data));
 				break;
-			case "/add_user_marker":
-				//TODO
-				//this.progressDialog.setMessage(context.getString(R.string.sending_suggestion));
+			case "/create_user_marker":
+				this.progressDialog.setMessage(context.getString(R.string.creating_your_marker));
 				break;
 			case "/comment":
 				progressDialog.setMessage(context.getString(R.string.sending_suggestion));

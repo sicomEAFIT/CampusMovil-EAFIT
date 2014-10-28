@@ -36,7 +36,7 @@
         android:layout_marginTop="26dp"
         android:text="@string/log_in"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#2179FA"
+        android:textColor="@color/blue"
         android:textSize="17sp"
         android:onClick="returnToLoginView"
         android:clickable="true" />

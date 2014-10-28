@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.annotation.SuppressLint;
@@ -20,6 +21,9 @@ import android.os.Vibrator;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +41,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -54,8 +57,7 @@ import com.sicomeafit.campusmovil.models.UserData;
 
 
 public class MapHandler extends FragmentActivity implements SubscribedActivities,
-OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWindowClickListener,
-OnMapClickListener{  
+OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWindowClickListener{  
 
 	private GoogleMap campusMap;
 
@@ -75,10 +77,15 @@ OnMapClickListener{
 
 	private ArrayList<Marker> fixedMarkersList = new ArrayList<Marker>();
 	private Marker lastMarkerClicked;
+	private boolean isLastMarkerAFixedMarker;
+
+	//Contendrán la posición y el título de un marcador añadido por el usuario. 
+	private LatLng userMarkerPosition;
+	private String userMarkerTitle;		
 
 	private HttpHandler httpHandler = new HttpHandler();
 	private final String ACTION_MARKERS = "/markers";
-	private final String ACTION_ADD_USER_MARKER = "/add_user_marker";
+	private final String ACTION_CREATE_USER_MARKER = "/create_user_marker";
 	private Map<String, String> paramsForHttpPost = new HashMap<String, String>();
 
 	//Se declara el SearchView y su respectivo EditText para utilizarlo luego y poder setear un String 
@@ -191,8 +198,8 @@ OnMapClickListener{
 		}
 
 		if(httpHandler.isInternetConnectionAvailable(this)){
-			httpHandler.sendRequest(HttpHandler.API_V1, ACTION_MARKERS, "", paramsForHttpPost, 
-					new HttpGet(), MapHandler.this);
+			httpHandler.sendRequest(HttpHandler.API_V1, ACTION_MARKERS, "?auth=" + UserData.getToken(), 
+					paramsForHttpPost, new HttpGet(), MapHandler.this);
 		}else{
 			Toast.makeText(getApplicationContext(), getResources()
 					.getString(R.string.internet_connection_required), Toast.LENGTH_SHORT).show();
@@ -203,8 +210,7 @@ OnMapClickListener{
 		campusMap.setOnCameraChangeListener(this);
 		campusMap.setOnMarkerClickListener(this);
 		campusMap.setOnMapLongClickListener(this);
-		campusMap.setOnInfoWindowClickListener(this);
-		campusMap.setOnMapClickListener(this);   
+		campusMap.setOnInfoWindowClickListener(this);  
 	}
 
 	@Override
@@ -233,13 +239,16 @@ OnMapClickListener{
 					isMarkerAFixedMarker = true;
 				}
 			}
+			lastMarkerClicked = marker;
 			if(isMarkerAFixedMarker){
-				lastMarkerClicked = marker;
-				return false;
+				isLastMarkerAFixedMarker = true;
 			}else{
-				marker.remove();
-				return true;
+				isLastMarkerAFixedMarker = false;
+				//Se hace explícito, debido a que es un marcador propio y no tiene por defecto esa
+				//funcionalidad.
+				marker.showInfoWindow();
 			}
+			return false;
 		}else{
 			boolean isMarkerAFixedMarker = false;
 			for(int i = 0; i < fixedMarkersList.size() && !isMarkerAFixedMarker; i++){
@@ -247,19 +256,18 @@ OnMapClickListener{
 					isMarkerAFixedMarker = true;
 				}
 			}
-			if(isMarkerAFixedMarker){
-				if(lastMarkerClicked.equals(marker)){
-					marker.hideInfoWindow();
-					lastMarkerClicked = null;
-					return true;
-				}
-				return false;
-			}else{
-				marker.remove();
+			if(lastMarkerClicked.equals(marker)){
+				marker.hideInfoWindow();
 				lastMarkerClicked = null;
 				return true;
 			}
-
+			lastMarkerClicked = null;
+			if(isMarkerAFixedMarker){
+				isLastMarkerAFixedMarker = true;
+			}else{
+				isLastMarkerAFixedMarker = false;
+			}
+			return false;
 		}
 	}
 
@@ -267,24 +275,33 @@ OnMapClickListener{
 	public void onInfoWindowClick(Marker marker) {
 		String windowTitle = marker.getTitle();
 		String windowSubtitle = marker.getSnippet();
-		goToSelectedPlace(windowTitle, windowSubtitle);
+		if(isLastMarkerAFixedMarker){
+			goToSelectedPlace(windowTitle, windowSubtitle);
+		}else{
+			manageUserMarker(marker);
+		}
 	}
 
 	@Override
-	public void onMapLongClick(LatLng point) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void onMapClick(LatLng clickedPoint) {
+	public void onMapLongClick(LatLng pressedPoint) {
 		if(UserData.getToken() != null){
-			if(campusMapBounds.contains(new LatLng(clickedPoint.latitude, clickedPoint.longitude))){
-				//Es posible poner un marker en el punto clickeado.	
-				campusMap.addMarker(new MarkerOptions().position(clickedPoint)
-						.icon(BitmapDescriptorFactory
-								.fromResource(R.drawable.user_marker)));
+			if(campusMapBounds.contains(new LatLng(pressedPoint.latitude, pressedPoint.longitude))){
+				//Es posible poner un marker en el punto presionado.	
+				//Se muestra un AlertDialog que pide el título del marcador para poderlo agregar.
+				userMarkerPosition = pressedPoint;
+				setBuilder(ACTION_CREATE_USER_MARKER, null);
 			}
 		}
+	}
+
+	public void manageUserMarker(Marker userMarker){
+		Intent goToUserMarkersManager = new Intent(MapHandler.this, UserMarkersManager.class);
+		Bundle paramsBag = new Bundle();
+		paramsBag.putString("markerTitle", userMarker.getTitle());
+		paramsBag.putDouble("markerLat", userMarker.getPosition().latitude);
+		paramsBag.putDouble("markerLong", userMarker.getPosition().longitude);
+		goToUserMarkersManager.putExtras(paramsBag);
+		startActivity(goToUserMarkersManager);
 	}
 
 	public void saveSharedPreferences(){
@@ -426,29 +443,39 @@ OnMapClickListener{
 					ArrayList<String> markersTitles = new ArrayList<String>();
 					ArrayList<String> markersSubtitles = new ArrayList<String>();
 					ArrayList<String> markersCategories = new ArrayList<String>();
+					Map<LatLng, String> userMarkers = new HashMap<LatLng, String>();
 					for(int i = 0; i < responseJson.size()-1; i++){
 						double latitude = responseJson.get(i).getDouble("latitude");
 						double longitude = responseJson.get(i).getDouble("longitude");
 						String title = responseJson.get(i).getString("title");
-						String snippet = responseJson.get(i).getString("subtitle"); //Este sería 
-						//el subtítulo.	
-						Marker fixedMarker = campusMap.addMarker(new MarkerOptions()
-						.position(new LatLng(latitude, 
-								longitude))
-								.title(title)
-								.snippet(snippet) 
-								.icon(BitmapDescriptorFactory
-										.fromResource
-										(R.drawable.map_marker)));
-						markersTitles.add(fixedMarker.getTitle());
-						markersSubtitles.add(fixedMarker.getSnippet());
-						markersCategories.add(responseJson.get(i).getString("category"));
-						fixedMarkersList.add(fixedMarker);
+						//Este sería el subtítulo.	
+						String snippet = responseJson.get(i).getString("subtitle"); 
+						String category = responseJson.get(i).getString("category");
+						if(!category.equals("marcador usuario")){
+							Marker fixedMarker = campusMap.addMarker(new MarkerOptions()
+							.position(new LatLng(latitude, 
+									longitude))
+									.title(title)
+									.snippet(snippet) 
+									.icon(BitmapDescriptorFactory
+											.fromResource
+											(R.drawable.map_marker)));
+							markersTitles.add(fixedMarker.getTitle());
+							markersSubtitles.add(fixedMarker.getSnippet());
+							markersCategories.add(category);
+							fixedMarkersList.add(fixedMarker);
+						}else{
+							campusMap.addMarker(new MarkerOptions()
+							.position(new LatLng(latitude, longitude))
+							.title(title) 
+							.icon(BitmapDescriptorFactory
+									.fromResource(R.drawable.user_marker)));
+							//Con esto se almacenan los marcadores del usuario localmente.
+							userMarkers.put(new LatLng(latitude, longitude), title);
+						}
 					}
-					new MapData(markersTitles, markersSubtitles, markersCategories); 
-					//Se guardan los títulos, 
-					//subtítulos y categorías de los 
-					//markers en la clase MapData.
+					new MapData(markersTitles, markersSubtitles, markersCategories, userMarkers); 
+					//Se guardan los títulos, subtítulos y categorías de los markers en la clase MapData.
 					String username = "";
 					if(UserData.getUsername() != null){ //Si el usuario no estaba loggeado,
 						//entonces no se incluye en el mensaje de
@@ -459,45 +486,203 @@ OnMapClickListener{
 							.getString(R.string.welcome_msg) + " " + username + "!", 
 							Toast.LENGTH_LONG).show();
 				}else{
-					setBuilder(HttpHandler.SERVER_INTERNAL_ERROR_STRING, action);
+					if(responseJson.get(responseJson.size()-1).getInt("status") == 
+							HttpHandler.UNAUTHORIZED){
+						setBuilder(HttpHandler.UNAUTHORIZED_STRING, action);
+					}else{
+						setBuilder(HttpHandler.SERVER_INTERNAL_ERROR_STRING, action);
+					}
 				}
 			}catch (JSONException e) {
 				e.printStackTrace();
 			}
-		}else if(action.equals(ACTION_ADD_USER_MARKER)){
-			//TODO 
+		}else if(action.equals(ACTION_CREATE_USER_MARKER)){
+			try {
+				Log.i("responseJson", responseJson.toString());
+				if(responseJson.get(responseJson.size()-1).getInt("status") == HttpHandler.SUCCESS){
+					if(responseJson.get(0).getBoolean("success")){
+						userMarkerPosition = null;
+						userMarkerTitle = "";
+						double latitude = responseJson.get(0).getJSONObject("marker").getDouble("latitude");
+						double longitude = responseJson.get(0).getJSONObject("marker")
+								.getDouble("longitude");
+						String title = responseJson.get(0).getJSONObject("marker").getString("title");
+						campusMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+								.title(title)
+								.icon(BitmapDescriptorFactory
+										.fromResource(R.drawable.user_marker)));
+						//Se adiciona el marcador del usuario localmente para que pueda ser accedido 
+						//usando el SearchWidget.
+						MapData.addUserMarker(new LatLng(latitude, longitude), title);
+						Toast.makeText(getApplicationContext(), title + " " + 
+								getResources().getString(R.string.marker_successfully_created), 
+								Toast.LENGTH_SHORT).show();
+					}else{
+						//Se muestra un diálogo para reintentar o cancelar la creación del nuevo marker.
+						setBuilder(HttpHandler.NOT_SUCCEEDED_STRING, action);
+					}
+				}else{
+					if(responseJson.get(responseJson.size()-1).getInt("status") == 
+							HttpHandler.UNAUTHORIZED){
+						setBuilder(HttpHandler.UNAUTHORIZED_STRING, action);
+					}else{
+						setBuilder(HttpHandler.SERVER_INTERNAL_ERROR_STRING, action);
+					}
+				}
+			}catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 
 		paramsForHttpPost.clear();
 	} 
 
 	//La acción se pone como final String para que pueda ser accedida desde el .setPositiveButton().
+	//El parámetro pressedPoint solamente es necesario para la creación de un marcador de usuario.
 	public void setBuilder(String status, final String action){
 		AlertDialog.Builder builder = new AlertDialog.Builder(MapHandler.this);
-		builder.setTitle(getResources().getString(R.string.connection_error_title));
-		builder.setMessage(getResources().getString(R.string.connection_error));
+		final EditText etMarkerTitle = new EditText(this);
 
-		builder.setPositiveButton(getResources().getString(R.string.retry), new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if(action.equals(ACTION_MARKERS)){
-					httpHandler.sendRequest(HttpHandler.API_V1, ACTION_MARKERS, "", paramsForHttpPost, 
-							new HttpGet(), MapHandler.this);
-				}else if(action.equals(ACTION_ADD_USER_MARKER)){
-					//TODO
+		switch(status){
+		case HttpHandler.NOT_SUCCEEDED_STRING:
+			builder.setTitle(getResources().getString(R.string.oops));
+			builder.setMessage(getResources().getString(R.string.marker_not_created));
+
+			builder.setPositiveButton(getResources().getString(R.string.retry), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//Se intenta nuevamente la conexión con el servicio realizando 
+					//otra vez el proceso de createUserMarker(). 
+					createUserMarker();
 				}
-			}
-		});
+			});
 
-		builder.setNegativeButton(getResources().getString(R.string.exit), new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				exitApp();
-			}
-		});
+			builder.setNegativeButton(getResources().getString(R.string.cancel), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					userMarkerPosition = null;
+					userMarkerTitle = "";
+				}
+			});
 
-		AlertDialog mapHandlerAlertDialog = builder.create();
+			break;
+		case HttpHandler.UNAUTHORIZED_STRING:
+			builder.setTitle(getResources().getString(R.string.log_in));
+			builder.setMessage(getResources().getString(R.string.login_needed_2));
+
+			builder.setPositiveButton(getResources().getString(R.string.log_in), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//Se hace un startActivityForResult para que se borren
+					//los datos del usuario. Luego se pasa al Log in.
+					Intent clearUserData = new Intent(MapHandler.this, MapHandler.class);
+					Bundle actionCode = new Bundle();
+					actionCode.putInt("actionCode", CLEAR_USER_DATA);
+					actionCode.putBoolean("isActivityForResult", true);
+					clearUserData.putExtras(actionCode);
+					startActivityForResult(clearUserData, 1);
+					//El 1 indica que cuando la actividad finalice, retornara a
+					//onActivityResult de esta actividad.
+				}
+			});
+
+			builder.setNegativeButton(getResources().getString(R.string.exit), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					exitApp();
+				}
+			});
+
+			break;
+		case HttpHandler.SERVER_INTERNAL_ERROR_STRING:
+			builder.setTitle(getResources().getString(R.string.connection_error_title));
+			builder.setMessage(getResources().getString(R.string.connection_error));
+
+			builder.setPositiveButton(getResources().getString(R.string.retry), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					if(action.equals(ACTION_MARKERS)){
+						httpHandler.sendRequest(HttpHandler.API_V1, ACTION_MARKERS, "?auth=" + 
+								UserData.getToken(), paramsForHttpPost, new HttpGet(), 
+								MapHandler.this);
+					}else if(action.equals(ACTION_CREATE_USER_MARKER)){
+						createUserMarker();
+					}
+				}
+			});
+
+			builder.setNegativeButton(getResources().getString(R.string.exit), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					exitApp();
+				}
+			});
+
+			break;
+		case ACTION_CREATE_USER_MARKER:
+			etMarkerTitle.setHint(getResources().getString(R.string.enter_marker_name));
+			etMarkerTitle.setSingleLine(true);
+			etMarkerTitle.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+			builder.setIcon(getResources().getDrawable(R.drawable.user_marker));
+			builder.setTitle(getResources().getString(R.string.new_user_marker));
+			builder.setMessage(getResources().getString(R.string.give_marker_name));
+			builder.setView(etMarkerTitle);
+
+			builder.setPositiveButton(getResources().getString(R.string.create), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					userMarkerTitle = etMarkerTitle.getText().toString();
+					createUserMarker();
+				}
+			});
+
+			builder.setNegativeButton(getResources().getString(R.string.cancel), new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					userMarkerPosition = null;
+					userMarkerTitle = "";
+				}
+			});
+
+			break;
+		}
+
+		final AlertDialog mapHandlerAlertDialog = builder.create();
 		mapHandlerAlertDialog.show();
+
+		if(status.equals(ACTION_CREATE_USER_MARKER)){
+			mapHandlerAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+			//Solamente permite agregar un marcador al usuario cuando contiene un título.
+			etMarkerTitle.addTextChangedListener(new TextWatcher() {
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					if(etMarkerTitle.getText().toString().trim().isEmpty()) {
+						mapHandlerAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+					}else{
+						mapHandlerAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+					}
+				}
+			});
+		}
+	}
+
+	public void createUserMarker(){
+		paramsForHttpPost.put("latitude", String.valueOf(userMarkerPosition.latitude));
+		paramsForHttpPost.put("longitude", String.valueOf(userMarkerPosition.longitude));
+		paramsForHttpPost.put("title", userMarkerTitle);
+
+		httpHandler.sendRequest(HttpHandler.API_V1, ACTION_CREATE_USER_MARKER, "?auth=" + 
+				UserData.getToken(), paramsForHttpPost, new HttpPost(), MapHandler.this);
 	}
 
 	public void exitApp(){

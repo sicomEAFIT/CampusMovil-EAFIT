@@ -70,6 +70,12 @@ public class Adapters extends ArrayAdapter<ListItem> implements Filterable {
 		case "no resultados":
 			categoryIcon = context.getResources().getDrawable(R.drawable.no_results); 
 			break;
+		case "nueva nota":
+			categoryIcon = context.getResources().getDrawable(R.drawable.new_note); 
+			break;
+		case "marcador usuario":
+			categoryIcon = context.getResources().getDrawable(R.drawable.user_marker); 
+			break;
 
 		default:
 			break;

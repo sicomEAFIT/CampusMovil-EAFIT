@@ -45,7 +45,7 @@
             android:name="com.sicomeafit.campusmovil.controllers.MapHandler"
             android:label="@string/title_activity_interactive_map"
             android:launchMode="singleTop" >
-             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
@@ -68,7 +68,7 @@
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.SearchHandler"
-            android:label="@string/title_activity_search_handler"  >
+            android:label="@string/title_activity_search_handler" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -105,8 +105,12 @@
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.controllers.MapAccess"
-            android:label="@string/title_activity_map_access" 
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_map_access"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.sicomeafit.campusmovil.controllers.UserMarkersManager"
+            android:label="@string/title_activity_user_markers_manager" >
         </activity>
     </application>
 

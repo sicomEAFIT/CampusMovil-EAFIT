@@ -61,5 +61,13 @@
     <string name="login_needed_2">To make a suggestion, you need to log in.</string>
     <string name="log_out">Log out</string>
     <string name="no_results_found">No results found.</string>
+    <string name="title_activity_user_markers_manager">Notes in marker:</string>
+    <string name="enter_marker_name">Enter title</string>
+    <string name="new_user_marker">New marker</string>
+    <string name="give_marker_name">Give this marker a title! </string>
+    <string name="create">Create</string>
+    <string name="creating_your_marker">Creating your marker</string>
+    <string name="marker_successfully_created">was successfully created!</string>
+    <string name="marker_not_created">Your marker couldn\'t be created.</string>
 
 </resources>
