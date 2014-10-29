@@ -1,11 +1,11 @@
 package com.sicomeafit.campusmovil.models;
 
 public class UserData {
-	
+
 	private static String email;
 	private static String username;
 	private static String token;
-	
+
 	public UserData(String userEmail, String userUsername, String userToken){
 		email = userEmail;
 		username = userUsername;
@@ -23,11 +23,11 @@ public class UserData {
 	public static String getToken() {
 		return token;
 	}	
-	
+
 	public static void setEmail(String email) {
 		UserData.email = email;
 	}
-	
+
 	public static void setUsername(String username) {
 		UserData.username = username;
 	}

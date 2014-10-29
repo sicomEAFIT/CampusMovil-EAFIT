@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:singleLine="true"
-        		android:textColor="#000000" />
+        		android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/subtitle"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:singleLine="true"
-        		android:textColor="#7E7E7E" />
+        		android:textColor="@color/light_gray" />
             
         </LinearLayout>
 

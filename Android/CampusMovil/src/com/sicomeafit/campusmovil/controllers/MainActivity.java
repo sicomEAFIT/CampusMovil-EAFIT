@@ -8,7 +8,7 @@ import android.view.Menu;
 
 
 public class MainActivity extends Activity {
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -18,20 +18,20 @@ public class MainActivity extends Activity {
 			finish();
 		}else{
 			Thread splashTimer = new Thread(){
-		        public void run(){
-		          try{
-		            sleep(2000);
-		          }catch(InterruptedException e){
-		            e.printStackTrace();
-		          }finally{
-		        	Intent openMapAccess = new Intent(MainActivity.this, MapHandler.class);
-		      		startActivity(openMapAccess);
-		      		finish();                           
-		          }
-		        }
-		      };
-		      
-		      splashTimer.start();
+				public void run(){
+					try{
+						sleep(2000);
+					}catch(InterruptedException e){
+						e.printStackTrace();
+					}finally{
+						Intent openMapAccess = new Intent(MainActivity.this, MapHandler.class);
+						startActivity(openMapAccess);
+						finish();                           
+					}
+				}
+			};
+
+			splashTimer.start();
 		}	      
 	}
 
