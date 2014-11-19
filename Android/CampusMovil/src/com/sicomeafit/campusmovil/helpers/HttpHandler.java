@@ -284,6 +284,9 @@ public class HttpHandler {
 			case "/comment":
 				progressDialog.setMessage(context.getString(R.string.sending_suggestion));
 				break;
+			case "/notes":
+				progressDialog.setMessage(context.getString(R.string.retrieving_marker_notes));
+				break;
 			}
 
 			progressDialog.show();

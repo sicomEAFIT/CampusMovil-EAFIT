@@ -1,11 +1,12 @@
 package com.sicomeafit.campusmovil.controllers;
 
 import java.util.ArrayList;
+import java.util.Map;
+import com.google.android.gms.maps.model.LatLng;
 import com.sicomeafit.campusmovil.Adapters;
 import com.sicomeafit.campusmovil.R;
 import com.sicomeafit.campusmovil.models.ListItem;
 import com.sicomeafit.campusmovil.models.MapData;
-import com.sicomeafit.campusmovil.models.UserData;
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.app.SearchManager;
@@ -25,7 +26,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 
-public class Places extends ListActivity {
+public class UserMarkers extends ListActivity {
 
 	private Adapters adapter;
 
@@ -43,7 +44,7 @@ public class Places extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_places);
+		setContentView(R.layout.activity_user_markers);
 		setNavigationDrawer();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
@@ -84,26 +85,16 @@ public class Places extends ListActivity {
 
 	public static ArrayList<ListItem> generateData(){
 		ArrayList<ListItem> listItems = new ArrayList<ListItem>();
-		for (int i = 0; i < MapData.getMarkersTitles().size(); i++){
-			listItems.add(new ListItem(MapData.getMarkersTitles().get(i), 
-					MapData.getMarkersSubtitles().get(i),
-					MapData.getMarkersCategories().get(i), null));
+		for(Map.Entry<LatLng, String> userMarker : MapData.getUserMarkers().entrySet()){
+			listItems.add(new ListItem(userMarker.getValue(), "", UserMarkersManager.USER_MARKER_CATEGORY,
+					userMarker.getKey()));
 		}
 
 		return listItems;
 	}
 
-	public void goToSelectedPlace(String windowTitle, String windowSubtitle){
-		Intent openBuildingInfo = new Intent(Places.this, InformationManager.class); 					
-		Bundle windowInformation = new Bundle();                                                          
-		windowInformation.putString("windowTitle", windowTitle);
-		windowInformation.putString("windowSubtitle", windowSubtitle);
-		openBuildingInfo.putExtras(windowInformation);
-		startActivity(openBuildingInfo);
-	}
-
 	public void logout(){
-		Intent logOut = new Intent(Places.this, MapHandler.class);
+		Intent logOut = new Intent(UserMarkers.this, MapHandler.class);
 		Bundle actionCode = new Bundle();
 		actionCode.putInt("actionCode", MapHandler.CLEAR_USER_DATA);
 		logOut.putExtras(actionCode);
@@ -137,9 +128,9 @@ public class Places extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 		ListItem itemSelected = (ListItem) l.getItemAtPosition(position);
 		String windowTitle = itemSelected.getTitle();
-		String windowSubtitle = itemSelected.getSubtitle();
 		if(windowTitle != getResources().getString(R.string.no_results_found)){
-			goToSelectedPlace(windowTitle, windowSubtitle);  
+			LatLng windowPosition = itemSelected.getPosition();
+			MapHandler.manageUserMarker(windowPosition, windowTitle, UserMarkers.this);
 		}
 	}
 
@@ -147,20 +138,17 @@ public class Places extends ListActivity {
 		Intent openSelectedItem = null;
 		switch (itemSelected){
 		case R.string.map:
-			openSelectedItem = new Intent(Places.this, MapHandler.class); 
+			openSelectedItem = new Intent(UserMarkers.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			break;
-		case R.string.my_markers:
-			openSelectedItem = new Intent(Places.this, UserMarkers.class); 
-			break;
-		case R.string.log_in:
-			openSelectedItem = new Intent(Places.this, MapAccess.class); 
+		case R.string.places:
+			openSelectedItem = new Intent(UserMarkers.this, Places.class); 
 			break;
 		case R.string.suggestions:
-			openSelectedItem = new Intent(Places.this, Suggestions.class); 
+			openSelectedItem = new Intent(UserMarkers.this, Suggestions.class); 
 			break;
 		case R.string.about_us:
-			openSelectedItem = new Intent(Places.this, AboutUs.class); 
+			openSelectedItem = new Intent(UserMarkers.this, AboutUs.class); 
 			break;
 		case R.string.log_out:
 			logout();
@@ -177,20 +165,17 @@ public class Places extends ListActivity {
 		Intent openSelectedItem; 
 		switch (item.getItemId()){
 		case R.id.map:
-			openSelectedItem = new Intent(Places.this, MapHandler.class); 
+			openSelectedItem = new Intent(UserMarkers.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			break;
-		case R.id.myMarkers:
-			openSelectedItem = new Intent(Places.this, UserMarkers.class); 
-			break;
-		case R.id.login:
-			openSelectedItem = new Intent(Places.this, MapAccess.class); 
+		case R.id.places:
+			openSelectedItem = new Intent(UserMarkers.this, Places.class); 
 			break;
 		case R.id.suggestions:
-			openSelectedItem = new Intent(Places.this, Suggestions.class); 
+			openSelectedItem = new Intent(UserMarkers.this, Suggestions.class); 
 			break;
 		case R.id.aboutUs:
-			openSelectedItem = new Intent(Places.this, AboutUs.class); 
+			openSelectedItem = new Intent(UserMarkers.this, AboutUs.class); 
 			break;
 		case R.id.logout:
 			logout();
@@ -211,7 +196,7 @@ public class Places extends ListActivity {
 			@Override
 			public boolean onClose() {
 				adapter.getFilter().filter(null); //Se envía null para que se muestren nuevamente
-				//todos los lugares.
+				//todos los marcadores el usuario.
 				return false;
 			}
 		});
@@ -222,10 +207,10 @@ public class Places extends ListActivity {
 			public boolean onQueryTextSubmit(String query) {
 				ListItem itemSelected = (ListItem) adapter.getItem(0);
 				String windowTitle = itemSelected.getTitle();
-				String windowSubtitle = itemSelected.getSubtitle();
 				if(windowTitle != getResources().getString(R.string.no_results_found)){
 					//Esto llevaría la app al primer lugar en la lista.
-					goToSelectedPlace(windowTitle, windowSubtitle);  
+					LatLng windowPosition = itemSelected.getPosition();
+					MapHandler.manageUserMarker(windowPosition, windowTitle, UserMarkers.this);
 				}
 				return true;
 			}
@@ -243,46 +228,31 @@ public class Places extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		if(ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey()){
-			if (UserData.getToken() == null){  //El usuario no está loggeado.
-				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
-				menu.add(0, R.id.login, Menu.FIRST+2, getResources()
-						.getString(R.string.log_in));
-				menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
-			}else{
-				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
-				menu.add(0, R.id.myMarkers, Menu.FIRST+2, getResources().getString(R.string.my_markers));
-				menu.add(0, R.id.suggestions, Menu.FIRST+3, getResources().getString(R.string.suggestions));
-				menu.add(0, R.id.aboutUs, Menu.FIRST+4, getResources().getString(R.string.about_us));
-				menu.add(0, R.id.logout, Menu.FIRST+5, getResources().getString(R.string.log_out));
-			}
+			menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
+			menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
+			menu.add(0, R.id.suggestions, Menu.FIRST+3, getResources().getString(R.string.suggestions));
+			menu.add(0, R.id.aboutUs, Menu.FIRST+4, getResources().getString(R.string.about_us));
+			menu.add(0, R.id.logout, Menu.FIRST+5, getResources().getString(R.string.log_out));
 		}
-		getMenuInflater().inflate(R.menu.places, menu);
+		getMenuInflater().inflate(R.menu.user_markers, menu);
 		menu.findItem(R.id.action_guide).setVisible(false);  //Se esconde debido a que se va
 		//a mostrar el menú como un
 		//Navigation Drawer.
 		menuToShow.clear();       //Se borra el contenido del menú para setearlo correctamente.
 		menuToShowIds.clear();	  //También sus ids.
 
-		if (UserData.getToken() == null){  //El usuario no está loggeado.
-			menuToShow.add(getResources().getString(R.string.map));
-			menuToShow.add(getResources().getString(R.string.log_in));
-			menuToShow.add(getResources().getString(R.string.about_us));
-			menuToShowIds.add(R.string.map);
-			menuToShowIds.add(R.string.log_in);
-			menuToShowIds.add(R.string.about_us);
-		}else{
-			menuToShow.add(getResources().getString(R.string.map));
-			menuToShow.add(getResources().getString(R.string.my_markers));
-			menuToShow.add(getResources().getString(R.string.suggestions));
-			menuToShow.add(getResources().getString(R.string.about_us));
-			menuToShow.add(getResources().getString(R.string.log_out));
-			menuToShowIds.add(R.string.map);
-			menuToShowIds.add(R.string.my_markers);
-			menuToShowIds.add(R.string.suggestions);
-			menuToShowIds.add(R.string.about_us);
-			menuToShowIds.add(R.string.log_out);
-		}
-		//Se setea el menú de acuerdo al estado del usuario.
+		menuToShow.add(getResources().getString(R.string.map));
+		menuToShow.add(getResources().getString(R.string.places));
+		menuToShow.add(getResources().getString(R.string.suggestions));
+		menuToShow.add(getResources().getString(R.string.about_us));
+		menuToShow.add(getResources().getString(R.string.log_out));
+		menuToShowIds.add(R.string.map);
+		menuToShowIds.add(R.string.places);
+		menuToShowIds.add(R.string.suggestions);
+		menuToShowIds.add(R.string.about_us);
+		menuToShowIds.add(R.string.log_out);
+
+		//Se setea el menú lateral.
 		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, 
 				android.R.id.text1, menuToShow));
 		//Se agrega el SearchWidget.

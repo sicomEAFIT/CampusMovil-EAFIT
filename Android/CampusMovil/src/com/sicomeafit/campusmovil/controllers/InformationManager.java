@@ -98,6 +98,9 @@ public class InformationManager extends Activity {
 			openSelectedItem = new Intent(InformationManager.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			break;
+		case R.string.my_markers:
+			openSelectedItem = new Intent(InformationManager.this, UserMarkers.class); 
+			break;
 		case R.string.places:
 			openSelectedItem = new Intent(InformationManager.this, Places.class); 
 			break;
@@ -127,6 +130,9 @@ public class InformationManager extends Activity {
 		case R.id.map:
 			openSelectedItem = new Intent(InformationManager.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			break;
+		case R.id.myMarkers:
+			openSelectedItem = new Intent(InformationManager.this, UserMarkers.class); 
 			break;
 		case R.id.places:
 			openSelectedItem = new Intent(InformationManager.this, Places.class); 
@@ -165,11 +171,11 @@ public class InformationManager extends Activity {
 				menu.add(0, R.id.aboutUs, Menu.FIRST+4, getResources().getString(R.string.about_us));
 			}else{
 				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
-				menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
-				menu.add(0, R.id.suggestions, Menu.FIRST+3, getResources()
-						.getString(R.string.suggestions));
-				menu.add(0, R.id.aboutUs, Menu.FIRST+4, getResources().getString(R.string.about_us));
-				menu.add(0, R.id.logout, Menu.FIRST+5, getResources().getString(R.string.log_out));
+				menu.add(0, R.id.myMarkers, Menu.FIRST+2, getResources().getString(R.string.my_markers));
+				menu.add(0, R.id.places, Menu.FIRST+3, getResources().getString(R.string.places));
+				menu.add(0, R.id.suggestions, Menu.FIRST+4, getResources().getString(R.string.suggestions));
+				menu.add(0, R.id.aboutUs, Menu.FIRST+5, getResources().getString(R.string.about_us));
+				menu.add(0, R.id.logout, Menu.FIRST+6, getResources().getString(R.string.log_out));
 			}
 		}
 		getMenuInflater().inflate(R.menu.information_manager, menu);
@@ -190,11 +196,13 @@ public class InformationManager extends Activity {
 			menuToShowIds.add(R.string.about_us);
 		}else{
 			menuToShow.add(getResources().getString(R.string.map));
+			menuToShow.add(getResources().getString(R.string.my_markers));
 			menuToShow.add(getResources().getString(R.string.places));
 			menuToShow.add(getResources().getString(R.string.suggestions));
 			menuToShow.add(getResources().getString(R.string.about_us));
 			menuToShow.add(getResources().getString(R.string.log_out));
 			menuToShowIds.add(R.string.map);
+			menuToShowIds.add(R.string.my_markers);
 			menuToShowIds.add(R.string.places);
 			menuToShowIds.add(R.string.suggestions);
 			menuToShowIds.add(R.string.about_us);
