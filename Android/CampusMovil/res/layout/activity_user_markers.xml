@@ -1,0 +1,33 @@
+<android.support.v4.widget.DrawerLayout
+	 xmlns:android="http://schemas.android.com/apk/res/android"
+	 android:id="@+id/drawer_layout"
+	 android:layout_width="match_parent"
+	 android:layout_height="match_parent" >
+	 
+	<RelativeLayout 
+	    xmlns:tools="http://schemas.android.com/tools"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    tools:context=".Places" >
+	    
+	     <ListView
+	            android:id="@android:id/list"
+	            android:layout_height="wrap_content"
+	            android:layout_width="match_parent"
+	            android:dividerHeight="2dp" 
+	            android:divider="@color/green" />
+	     
+     </RelativeLayout>
+	     
+     
+	<!-- Navigation Drawer -->
+	 
+	<ListView
+		 android:id="@+id/drawer"
+		 android:layout_width="240dp"
+		 android:layout_height="match_parent"
+		 android:layout_gravity="left"
+		 android:background="@color/navigation_drawer_list" />
+	 
+	
+</android.support.v4.widget.DrawerLayout>

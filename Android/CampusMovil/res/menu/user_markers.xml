@@ -1,7 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.sicomeafit.campusmovil.Suggestions" >
+    tools:context="com.sicomeafit.campusmovil.UserMarkers" >
 
+      <item
+       android:id="@+id/options_menu_main_search"
+       android:title="@string/search_label"
+       android:icon="@drawable/ic_action_search"
+       android:showAsAction="always" 
+       android:actionViewClass="android.widget.SearchView"/>
+        
      <item
         android:id="@+id/action_guide"
         android:icon="@drawable/ic_action_overflow"
@@ -11,10 +18,10 @@
         <menu>
             <item android:id="@+id/map"
                   android:title="@string/map" />
-            <item android:id="@+id/myMarkers"
-                  android:title="@string/my_markers" />
             <item android:id="@+id/places"
                   android:title="@string/places" />
+            <item android:id="@+id/suggestions"
+                  android:title="@string/suggestions" />
             <item android:id="@+id/aboutUs"
                   android:title="@string/about_us" />
             <item android:id="@+id/logout"

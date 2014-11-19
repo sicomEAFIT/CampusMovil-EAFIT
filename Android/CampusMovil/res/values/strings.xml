@@ -69,5 +69,7 @@
     <string name="creating_your_marker">Creating your marker</string>
     <string name="marker_successfully_created">was successfully created!</string>
     <string name="marker_not_created">Your marker couldn\'t be created.</string>
+    <string name="my_markers">My markers</string>
+    <string name="retrieving_marker_notes">Retrieving marker notes</string>
 
 </resources>

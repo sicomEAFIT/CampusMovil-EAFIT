@@ -155,6 +155,9 @@ public class Suggestions extends Activity implements SubscribedActivities {
 			openSelectedItem = new Intent(Suggestions.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			break;
+		case R.string.my_markers:
+			openSelectedItem = new Intent(Suggestions.this, UserMarkers.class); 
+			break;
 		case R.string.places:
 			openSelectedItem = new Intent(Suggestions.this, Places.class); 
 			break;
@@ -178,6 +181,9 @@ public class Suggestions extends Activity implements SubscribedActivities {
 		case R.id.map:
 			openSelectedItem = new Intent(Suggestions.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			break;
+		case R.id.myMarkers:
+			openSelectedItem = new Intent(Suggestions.this, UserMarkers.class); 
 			break;
 		case R.id.places:
 			openSelectedItem = new Intent(Suggestions.this, Places.class); 
@@ -272,7 +278,7 @@ public class Suggestions extends Activity implements SubscribedActivities {
 					actionCode.putBoolean("isActivityForResult", true);
 					clearUserData.putExtras(actionCode);
 					startActivityForResult(clearUserData, 1);
-					//El 1 indica que cuando la actividad finalice, retornara a
+					//El 1 indica que cuando la actividad finalice, retornará a
 					//onActivityResult de esta actividad.
 				}
 			});
@@ -328,9 +334,10 @@ public class Suggestions extends Activity implements SubscribedActivities {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		if(ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey()){
 			menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
-			menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
-			menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
-			menu.add(0, R.id.logout, Menu.FIRST+4, getResources().getString(R.string.log_out));
+			menu.add(0, R.id.myMarkers, Menu.FIRST+2, getResources().getString(R.string.my_markers));
+			menu.add(0, R.id.places, Menu.FIRST+3, getResources().getString(R.string.places));
+			menu.add(0, R.id.aboutUs, Menu.FIRST+4, getResources().getString(R.string.about_us));
+			menu.add(0, R.id.logout, Menu.FIRST+5, getResources().getString(R.string.log_out));
 		}
 		getMenuInflater().inflate(R.menu.suggestions, menu);
 		menu.findItem(R.id.action_guide).setVisible(false);  //Se esconde debido a que se va
@@ -340,10 +347,12 @@ public class Suggestions extends Activity implements SubscribedActivities {
 		menuToShowIds.clear();	  //También sus ids.
 
 		menuToShow.add(getResources().getString(R.string.map));
+		menuToShow.add(getResources().getString(R.string.my_markers));
 		menuToShow.add(getResources().getString(R.string.places));
 		menuToShow.add(getResources().getString(R.string.about_us));
 		menuToShow.add(getResources().getString(R.string.log_out));
 		menuToShowIds.add(R.string.map);
+		menuToShowIds.add(R.string.my_markers);
 		menuToShowIds.add(R.string.places);
 		menuToShowIds.add(R.string.about_us);
 		menuToShowIds.add(R.string.log_out);

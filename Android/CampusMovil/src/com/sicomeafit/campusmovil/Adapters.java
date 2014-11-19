@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 import com.sicomeafit.campusmovil.controllers.Places;
+import com.sicomeafit.campusmovil.controllers.UserMarkers;
+import com.sicomeafit.campusmovil.controllers.UserMarkersManager;
 import com.sicomeafit.campusmovil.models.ListItem;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -76,6 +78,9 @@ public class Adapters extends ArrayAdapter<ListItem> implements Filterable {
 		case "marcador usuario":
 			categoryIcon = context.getResources().getDrawable(R.drawable.user_marker); 
 			break;
+		case "nota usuario":
+			categoryIcon = context.getResources().getDrawable(R.drawable.user_note); 
+			break;
 
 		default:
 			break;
@@ -102,7 +107,15 @@ public class Adapters extends ArrayAdapter<ListItem> implements Filterable {
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 			ArrayList<ListItem> itemsArrayListCopy = new ArrayList<ListItem>();
-			itemsArrayListCopy = Places.generateData();  //Esta sería la lista original.
+
+			if(context instanceof Places){
+				itemsArrayListCopy = Places.generateData();
+			}else if(context instanceof UserMarkers){
+				itemsArrayListCopy = UserMarkers.generateData();
+			}else if(context instanceof UserMarkersManager){
+				itemsArrayListCopy = UserMarkersManager.generateData();
+			}
+
 			FilterResults results = new FilterResults();
 			//Se limpia cualquier resultado previo.
 			results.values = new ArrayList<ListItem>();
@@ -151,7 +164,7 @@ public class Adapters extends ArrayAdapter<ListItem> implements Filterable {
 			if (results.count == 0){
 				ListItem noResultsFound = new ListItem(context.getResources()
 						.getString(R.string.no_results_found), "", 
-						"no resultados");
+						"no resultados", null);
 				itemsArrayList.add(noResultsFound);
 			}else {
 				itemsArrayList.addAll((ArrayList<ListItem>) results.values);

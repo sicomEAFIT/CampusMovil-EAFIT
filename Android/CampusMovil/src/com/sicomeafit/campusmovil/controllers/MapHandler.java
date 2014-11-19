@@ -76,6 +76,7 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 	public static final int CLEAR_USER_DATA = -1;
 
 	private ArrayList<Marker> fixedMarkersList = new ArrayList<Marker>();
+	private ArrayList<Marker> markersListForQuerying = new ArrayList<Marker>();
 	private Marker lastMarkerClicked;
 	private boolean isLastMarkerAFixedMarker;
 
@@ -278,7 +279,7 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 		if(isLastMarkerAFixedMarker){
 			goToSelectedPlace(windowTitle, windowSubtitle);
 		}else{
-			manageUserMarker(marker);
+			manageUserMarker(marker.getPosition(), marker.getTitle(), MapHandler.this);
 		}
 	}
 
@@ -294,14 +295,14 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 		}
 	}
 
-	public void manageUserMarker(Marker userMarker){
-		Intent goToUserMarkersManager = new Intent(MapHandler.this, UserMarkersManager.class);
+	public static void manageUserMarker(LatLng position, String title, Context context){
+		Intent goToUserMarkersManager = new Intent(context, UserMarkersManager.class);
 		Bundle paramsBag = new Bundle();
-		paramsBag.putString("markerTitle", userMarker.getTitle());
-		paramsBag.putDouble("markerLat", userMarker.getPosition().latitude);
-		paramsBag.putDouble("markerLong", userMarker.getPosition().longitude);
+		paramsBag.putDouble("markerLat", position.latitude);
+		paramsBag.putDouble("markerLong", position.longitude);
+		paramsBag.putString("markerTitle", title);
 		goToUserMarkersManager.putExtras(paramsBag);
-		startActivity(goToUserMarkersManager);
+		context.startActivity(goToUserMarkersManager);
 	}
 
 	public void saveSharedPreferences(){
@@ -386,6 +387,9 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 	public void handleMenuEvents(int itemSelected){
 		Intent openSelectedItem = null;
 		switch (itemSelected){
+		case R.string.my_markers:
+			openSelectedItem = new Intent(MapHandler.this, UserMarkers.class); 
+			break;
 		case R.string.places:
 			openSelectedItem = new Intent(MapHandler.this, Places.class); 
 			break;
@@ -412,6 +416,9 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 		} 
 		Intent openSelectedItem; 
 		switch (item.getItemId()){
+		case R.id.myMarkers:
+			openSelectedItem = new Intent(MapHandler.this, UserMarkers.class); 
+			break;
 		case R.id.places:
 			openSelectedItem = new Intent(MapHandler.this, Places.class); 
 			break;
@@ -451,7 +458,7 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 						//Este sería el subtítulo.	
 						String snippet = responseJson.get(i).getString("subtitle"); 
 						String category = responseJson.get(i).getString("category");
-						if(!category.equals("marcador usuario")){
+						if(!category.equals(UserMarkersManager.USER_MARKER_CATEGORY)){
 							Marker fixedMarker = campusMap.addMarker(new MarkerOptions()
 							.position(new LatLng(latitude, 
 									longitude))
@@ -464,14 +471,17 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 							markersSubtitles.add(fixedMarker.getSnippet());
 							markersCategories.add(category);
 							fixedMarkersList.add(fixedMarker);
+							markersListForQuerying.add(fixedMarker);
 						}else{
-							campusMap.addMarker(new MarkerOptions()
+							Marker userMarker = campusMap.addMarker(new MarkerOptions()
 							.position(new LatLng(latitude, longitude))
 							.title(title) 
+							.snippet("")
 							.icon(BitmapDescriptorFactory
 									.fromResource(R.drawable.user_marker)));
 							//Con esto se almacenan los marcadores del usuario localmente.
 							userMarkers.put(new LatLng(latitude, longitude), title);
+							markersListForQuerying.add(userMarker);
 						}
 					}
 					new MapData(markersTitles, markersSubtitles, markersCategories, userMarkers); 
@@ -581,7 +591,7 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 					actionCode.putBoolean("isActivityForResult", true);
 					clearUserData.putExtras(actionCode);
 					startActivityForResult(clearUserData, 1);
-					//El 1 indica que cuando la actividad finalice, retornara a
+					//El 1 indica que cuando la actividad finalice, retornará a
 					//onActivityResult de esta actividad.
 				}
 			});
@@ -700,8 +710,8 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 
 			@Override
 			public boolean onClose() {
-				for(int k = 0; k < fixedMarkersList.size(); k++){
-					Marker marker = fixedMarkersList.get(k);
+				for(int k = 0; k < markersListForQuerying.size(); k++){
+					Marker marker = markersListForQuerying.get(k);
 					marker.setVisible(true);
 				}
 
@@ -744,13 +754,13 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 
 	@SuppressLint("DefaultLocale")
 	public ArrayList<Marker> getQueryMarkers(String query, ArrayList<Marker> queryMarkers){
-		for(int i = 0; i < fixedMarkersList.size(); i++){
-			Marker marker = fixedMarkersList.get(i);
+		for(int i = 0; i < markersListForQuerying.size(); i++){
+			Marker marker = markersListForQuerying.get(i);
 			marker.setVisible(false);
 		}
 		if (query != null && query.length() != 0) {
 			queryMarkers = new ArrayList<Marker>();
-			for (Marker m : fixedMarkersList) {
+			for (Marker m : markersListForQuerying) {
 				String titleWithoutSpCh = m.getTitle().replaceAll("á", "a").replaceAll("é", "e")
 						.replaceAll("í", "i").replaceAll("ó", "o")
 						.replaceAll("ú", "u");
@@ -806,8 +816,8 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 			}
 
 			//Si no hay texto a buscar, todos los markers son visibles.
-			for(int k = 0; k < fixedMarkersList.size(); k++){
-				Marker marker = fixedMarkersList.get(k);
+			for(int k = 0; k < markersListForQuerying.size(); k++){
+				Marker marker = markersListForQuerying.get(k);
 				marker.setVisible(true);
 			}
 			campusMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UniEafit, minZoom));
@@ -826,11 +836,11 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 						.getString(R.string.log_in));
 				menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
 			}else{
-				menu.add(0, R.id.places, Menu.FIRST+1, getResources().getString(R.string.places));
-				menu.add(0, R.id.suggestions, Menu.FIRST+2, getResources()
-						.getString(R.string.suggestions));
-				menu.add(0, R.id.aboutUs, Menu.FIRST+3, getResources().getString(R.string.about_us));
-				menu.add(0, R.id.logout, Menu.FIRST+4, getResources().getString(R.string.log_out));
+				menu.add(0, R.id.myMarkers, Menu.FIRST+1, getResources().getString(R.string.my_markers));
+				menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
+				menu.add(0, R.id.suggestions, Menu.FIRST+3, getResources().getString(R.string.suggestions));
+				menu.add(0, R.id.aboutUs, Menu.FIRST+4, getResources().getString(R.string.about_us));
+				menu.add(0, R.id.logout, Menu.FIRST+5, getResources().getString(R.string.log_out));
 			}
 		}
 		getMenuInflater().inflate(R.menu.map_handler, menu);
@@ -848,10 +858,12 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 			menuToShowIds.add(R.string.log_in);
 			menuToShowIds.add(R.string.about_us);
 		}else{
+			menuToShow.add(getResources().getString(R.string.my_markers));
 			menuToShow.add(getResources().getString(R.string.places));
 			menuToShow.add(getResources().getString(R.string.suggestions));
 			menuToShow.add(getResources().getString(R.string.about_us));
 			menuToShow.add(getResources().getString(R.string.log_out));
+			menuToShowIds.add(R.string.my_markers);
 			menuToShowIds.add(R.string.places);
 			menuToShowIds.add(R.string.suggestions);
 			menuToShowIds.add(R.string.about_us);

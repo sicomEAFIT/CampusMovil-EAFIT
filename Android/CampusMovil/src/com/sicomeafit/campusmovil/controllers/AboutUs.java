@@ -88,6 +88,9 @@ public class AboutUs extends Activity {
 			openSelectedItem = new Intent(AboutUs.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			break;
+		case R.string.my_markers:
+			openSelectedItem = new Intent(AboutUs.this, UserMarkers.class); 
+			break;
 		case R.string.places:
 			openSelectedItem = new Intent(AboutUs.this, Places.class); 
 			break;
@@ -114,6 +117,9 @@ public class AboutUs extends Activity {
 		case R.id.map:
 			openSelectedItem = new Intent(AboutUs.this, MapHandler.class); 
 			openSelectedItem.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			break;
+		case R.id.myMarkers:
+			openSelectedItem = new Intent(AboutUs.this, UserMarkers.class); 
 			break;
 		case R.id.places:
 			openSelectedItem = new Intent(AboutUs.this, Places.class); 
@@ -148,10 +154,10 @@ public class AboutUs extends Activity {
 						.getString(R.string.log_in));
 			}else{
 				menu.add(0, R.id.map, Menu.FIRST+1, getResources().getString(R.string.map));
-				menu.add(0, R.id.places, Menu.FIRST+2, getResources().getString(R.string.places));
-				menu.add(0, R.id.suggestions, Menu.FIRST+3, getResources()
-						.getString(R.string.suggestions));
-				menu.add(0, R.id.logout, Menu.FIRST+4, getResources().getString(R.string.log_out));
+				menu.add(0, R.id.myMarkers, Menu.FIRST+2, getResources().getString(R.string.my_markers));
+				menu.add(0, R.id.places, Menu.FIRST+3, getResources().getString(R.string.places));
+				menu.add(0, R.id.suggestions, Menu.FIRST+4, getResources().getString(R.string.suggestions));
+				menu.add(0, R.id.logout, Menu.FIRST+5, getResources().getString(R.string.log_out));
 			}
 		}
 		getMenuInflater().inflate(R.menu.about_us, menu);
@@ -171,10 +177,12 @@ public class AboutUs extends Activity {
 			menuToShowIds.add(R.string.log_in);
 		}else{
 			menuToShow.add(getResources().getString(R.string.map));
+			menuToShow.add(getResources().getString(R.string.my_markers));
 			menuToShow.add(getResources().getString(R.string.places));
 			menuToShow.add(getResources().getString(R.string.suggestions));
 			menuToShow.add(getResources().getString(R.string.log_out));
 			menuToShowIds.add(R.string.map);
+			menuToShowIds.add(R.string.my_markers);
 			menuToShowIds.add(R.string.places);
 			menuToShowIds.add(R.string.suggestions);
 			menuToShowIds.add(R.string.log_out);

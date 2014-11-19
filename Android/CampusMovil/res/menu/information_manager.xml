@@ -10,9 +10,11 @@
         <menu>
             <item android:id="@+id/map"
                   android:title="@string/map" />
+            <item android:id="@+id/myMarkers"
+                  android:title="@string/my_markers" />
             <item android:id="@+id/places"
                   android:title="@string/places" />
-              <item android:id="@+id/login"
+            <item android:id="@+id/login"
                   android:title="@string/log_in" />
             <item android:id="@+id/suggestions"
                   android:title="@string/suggestions" />
