@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+	
+	<!-- SHADOW -->   
+	<item>
+	    <shape android:shape="rectangle">
+	        <solid android:color="@color/red_shadow"/>
+	    </shape>
+	</item>
+	<!-- BUTTON -->
+	<item android:bottom="5px">
+	    <shape android:shape="rectangle">
+	        <solid android:color="@color/red"/>
+	    </shape>
+	</item>
+</layer-list> 
