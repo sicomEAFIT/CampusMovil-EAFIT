@@ -595,7 +595,7 @@ OnCameraChangeListener, OnMarkerClickListener, OnMapLongClickListener, OnInfoWin
 			break;
 		case HttpHandler.UNAUTHORIZED_STRING:
 			builder.setTitle(getResources().getString(R.string.log_in));
-			builder.setMessage(getResources().getString(R.string.login_needed_2));
+			builder.setMessage(getResources().getString(R.string.login_needed_1));
 
 			builder.setPositiveButton(getResources().getString(R.string.log_in), new OnClickListener() {
 				@Override

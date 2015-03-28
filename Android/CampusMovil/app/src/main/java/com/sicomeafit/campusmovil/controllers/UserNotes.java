@@ -7,12 +7,17 @@ import java.util.Map;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -28,6 +33,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.sicomeafit.campusmovil.R;
 import com.sicomeafit.campusmovil.helpers.HttpHandler;
 import com.sicomeafit.campusmovil.models.MapData;
@@ -57,21 +63,14 @@ public class UserNotes extends Activity implements SubscribedActivities {
     private String[] daysOfTheWeekStrings = new String[] {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 
     //Datos provenientes de la nota seleccionada.
-    private String latitude;
-    private String longitude;
-    private String title;
+    private int markerId;
     private String noteTitle;
+
+    //Servirá para saber si se debe utilizar POST o PUT para enviar la nota.
+    //Es decir, si es una nota nueva o se trata de una modificación en una existente.
     private boolean isNoteToModify = false;
 
-    //Datos para presentar una nota ya existente.
-    private String exTitle;
-    private String exNote;
-    private int exHour;
-    private int exMinute;
-    private String exDays;
-
     private HttpHandler httpHandler = new HttpHandler();
-    private final String ACTION_NOTE_DATA = "/open_note"; // TODO nombre de la action
     private final String ACTION_SAVE_NOTE = "/save_note"; // TODO nombre de la action
     private Map<String, String> paramsForHttpPost = new HashMap<String, String>();
 
@@ -93,14 +92,13 @@ public class UserNotes extends Activity implements SubscribedActivities {
         addViewsToDaysRow();
 
         Bundle paramsBag = getIntent().getExtras();
-        latitude = String.valueOf(paramsBag.getDouble("markerLat"));
-        longitude = String.valueOf(paramsBag.getDouble("markerLong"));
-        title = paramsBag.getString("markerTitle");
+        markerId = paramsBag.getInt("markerId");
         noteTitle = paramsBag.getString("noteTitle");
 
         if (!noteTitle.equals(UserMarkersManager.NEW_NOTE_TITLE)) {
             //El usuario pretende ver/modificar una nota ya creada.
-            //Por eso, se debe hacer una petici�n al server de los datos de la nota seleccionada.
+            //Por eso, se deberá hacer una petici�n al server tipo PUT en caso de
+            //querer modificar la nota seleccionada.
             isNoteToModify = true;
             setNoteData();
         }
@@ -156,22 +154,16 @@ public class UserNotes extends Activity implements SubscribedActivities {
     }
 
     public void setNoteData() {
-        Note note = MapData.getUserNotes().get(noteTitle);
+        Note note = UserData.getUserNotes().get(noteTitle);
 
-        exTitle = note.getTitle();
-        exNote = note.getContent();
-        exHour = note.getHour();
-        exMinute = note.getMinute();
-        exDays = note.getDays();
-
-        etTitle.setText(exTitle);
-        etNote.setText(exNote);
-        if (exHour != -1 && exMinute != -1) {
-            timePicker.setCurrentHour(exHour);
-            timePicker.setCurrentMinute(exMinute);
+        etTitle.setText(note.getTitle());
+        etNote.setText(note.getContent());
+        if (note.getHour() != -1 && note.getMinute() != -1) {
+            timePicker.setCurrentHour(note.getHour());
+            timePicker.setCurrentMinute(note.getMinute());
         }
-        if (!exDays.isEmpty()) {
-            String[] splitDays = exDays.split(",");
+        if (!note.getDays().isEmpty()) {
+            String[] splitDays = note.getDays().split(",");
             for (int i = 0; i < daysOfTheWeekStrings.length; ++i) {
                 TextView d = (TextView) daysRow.getChildAt(i);
                 for (int j = 0; j < splitDays.length; ++j) {
@@ -221,17 +213,25 @@ public class UserNotes extends Activity implements SubscribedActivities {
 
     public void saveCurrentNote(String noteTitle, String note, int hour, int minute, String days) {
         if (httpHandler.isInternetConnectionAvailable(this)) {
-            paramsForHttpPost.put("latitude", latitude);
-            paramsForHttpPost.put("longitude", longitude);
-            paramsForHttpPost.put("markerTitle", title);
             paramsForHttpPost.put("title", noteTitle);
             paramsForHttpPost.put("note", note);
             paramsForHttpPost.put("hour", String.valueOf(hour));
             paramsForHttpPost.put("minute", String.valueOf(minute));
             paramsForHttpPost.put("days", days);
-            httpHandler.sendRequest(HttpHandler.API_V1, ACTION_SAVE_NOTE,
-                    "?auth=" + UserData.getToken(), paramsForHttpPost,
-                    new HttpPost(), UserNotes.this);
+            //Se debe enviar el id del marcador para poderlo relacionar dentro de la DB.
+            paramsForHttpPost.put("markerId", String.valueOf(markerId));
+            if (!isNoteToModify) {
+                httpHandler.sendRequest(HttpHandler.API_V1, ACTION_SAVE_NOTE,
+                        "?auth=" + UserData.getToken(), paramsForHttpPost,
+                        new HttpPost(), UserNotes.this);
+            }
+            else {
+                //Cuando se intenta modificar una nota existente, lo único que cambia
+                //es que la petición será PUT y no POST.
+                httpHandler.sendRequest(HttpHandler.API_V1, ACTION_SAVE_NOTE,
+                        "?auth=" + UserData.getToken(), paramsForHttpPost,
+                        new HttpPut(), UserNotes.this);
+            }
         } else {
             Toast.makeText(getApplicationContext(), getResources()
                             .getString(R.string.internet_connection_required),
@@ -263,7 +263,151 @@ public class UserNotes extends Activity implements SubscribedActivities {
 
     @Override
     public void notify(String action, ArrayList<JSONObject> responseJson) {
-        // TODO Auto-generated method stub
+        try {
+            Log.i("responseJson", responseJson.toString());
+            if(responseJson.get(responseJson.size()-1).getInt("status") == HttpHandler.SUCCESS){
+                if(responseJson.get(0).getBoolean("success")){
+                    etTitle.setText("");
+                    etNote.setText("");
+                    Time tNow = new Time();
+                    tNow.setToNow();
+                    int cHour = tNow.hour;
+                    int cMinute = tNow.minute;
+                    timePicker.setCurrentHour(cHour);
+                    timePicker.setCurrentMinute(cMinute);
+                    if (!isNoteToModify){
+                        Toast.makeText(getApplicationContext(), getResources()
+                                .getString(R.string.note_created), Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), getResources()
+                                .getString(R.string.note_updated), Toast.LENGTH_LONG).show();
+                    }
+                    Intent openUserMarkersManager = new Intent(UserNotes.this, UserMarkersManager.class);
+                    //Esto le hace saber al UserMarkersManager si es necesario actualizar
+                    //la lista de notas.
+                    openUserMarkersManager.putExtra("noteJustCreated", "noteCreated");
+                    openUserMarkersManager.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(openUserMarkersManager);
+                    finish();
+                }else{
+                    //Se muestra un diálogo para reintentar o cancelar el envío de la nota.
+                    setBuilder(HttpHandler.NOT_SUCCEEDED_STRING);
+                }
+            }else{
+                if(responseJson.get(responseJson.size()-1).getInt("status") == HttpHandler.UNAUTHORIZED){
+                    setBuilder(HttpHandler.UNAUTHORIZED_STRING);
+                }else{
+                    setBuilder(HttpHandler.SERVER_INTERNAL_ERROR_STRING);
+                }
+            }
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
 
+        paramsForHttpPost.clear();
+
+    }
+
+    //Este método no requiere recibir la acción dado que en esta actividad se ejecuta un único servicio.
+    public void setBuilder(String status){
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserNotes.this);
+        switch(status){
+            case HttpHandler.NOT_SUCCEEDED_STRING:
+                builder.setTitle(getResources().getString(R.string.oops));
+                builder.setMessage(getResources().getString(R.string.note_not_saved));
+
+                builder.setPositiveButton(getResources().getString(R.string.retry), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Se intenta nuevamente la conexión con el servicio realizando
+                        //otra vez el proceso desde saveNote().
+                        //El parámetro es nulo porque en este caso no es requerido.
+                        saveNote(null);
+                    }
+                });
+
+                builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        etTitle.setText("");
+                        etNote.setText("");
+                        Time tNow = new Time();
+                        tNow.setToNow();
+                        int cHour = tNow.hour;
+                        int cMinute = tNow.minute;
+                        timePicker.setCurrentHour(cHour);
+                        timePicker.setCurrentMinute(cMinute);
+                        Intent openMap = new Intent(UserNotes.this, MapHandler.class);
+                        openMap.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(openMap);
+                    }
+                });
+
+                break;
+            case HttpHandler.UNAUTHORIZED_STRING:
+                builder.setTitle(getResources().getString(R.string.log_in));
+                builder.setMessage(getResources().getString(R.string.login_needed_4));
+
+                builder.setPositiveButton(getResources().getString(R.string.log_in), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Se hace un startActivityForResult para que se borren
+                        //los datos del usuario. Luego se pasa al Log in.
+                        Intent clearUserData = new Intent(UserNotes.this, MapHandler.class);
+                        Bundle actionCode = new Bundle();
+                        actionCode.putInt("actionCode", MapHandler.CLEAR_USER_DATA);
+                        actionCode.putBoolean("isActivityForResult", true);
+                        clearUserData.putExtras(actionCode);
+                        startActivityForResult(clearUserData, 1);
+                        //El 1 indica que cuando la actividad finalice, retornará a
+                        //onActivityResult de esta actividad.
+                    }
+                });
+
+                builder.setNegativeButton(getResources().getString(R.string.exit), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        exitApp();
+                    }
+                });
+
+                break;
+            case HttpHandler.SERVER_INTERNAL_ERROR_STRING:
+                builder.setTitle(getResources().getString(R.string.connection_error_title));
+                builder.setMessage(getResources().getString(R.string.connection_error));
+
+                builder.setPositiveButton(getResources().getString(R.string.retry), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Se intenta nuevamente la conexión con el servicio realizando
+                        //otra vez el proceso desde saveNote().
+                        //El parámetro es nulo porque en este caso no es requerido.
+                        saveNote(null);
+                    }
+                });
+
+                builder.setNegativeButton(getResources().getString(R.string.exit), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        exitApp();
+                    }
+                });
+
+                break;
+        }
+
+        AlertDialog userNoteAlertDialog = builder.create();
+        userNoteAlertDialog.show();
+    }
+
+    public void exitApp(){
+        Intent exitApp = new Intent(UserNotes.this, MainActivity.class);
+        Bundle userActionInfo = new Bundle();
+        userActionInfo.putBoolean("exit", true);
+        exitApp.putExtras(userActionInfo);
+        exitApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(exitApp);
+        finish();
     }
 }

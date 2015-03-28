@@ -57,8 +57,10 @@
     <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
     <string name="exit">Exit</string>
-    <string name="login_needed">To see the map, you need to log in.</string>
+    <string name="login_needed_1">To use the map, you need to log in.</string>
     <string name="login_needed_2">To make a suggestion, you need to log in.</string>
+    <string name="login_needed_3">To see the marker notes, you need to log in.</string>
+    <string name="login_needed_4">To save a note, you need to log in.</string>
     <string name="log_out">Log out</string>
     <string name="no_results_found">No results found.</string>
     <string name="title_activity_user_markers_manager">Notes in marker:</string>
@@ -80,5 +82,8 @@
     <string name="fill_this_field">Fill this field, please.</string>
     <string name="saving_note">Saving your note</string>
     <string name="retrieving_note">Retrieving note data</string>
+    <string name="note_created">Your note has been created!</string>
+    <string name="note_updated">Your note has been updated!</string>
+    <string name="note_not_saved">Your note couldn\'t be saved.</string>
 
 </resources>

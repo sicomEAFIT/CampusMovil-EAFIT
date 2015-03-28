@@ -16,8 +16,6 @@ public class MapData {
 	public static Map<LatLng, String> userMarkers;
     public static Map<LatLng, Integer> userMarkersIds;
 
-    //Mapa que contiene la información de las notas guardadas por el usuario.
-    public static Map<String, Note> userNotes = new HashMap<String, Note>();
 
 	public MapData(ArrayList<String> markersTitlesCreated, ArrayList<String> markersSubtitlesCreated,
 			ArrayList<String> markersCategoriesCreated, Map<LatLng, String> userMarkersCreated,
@@ -75,14 +73,6 @@ public class MapData {
         return userMarkersIdsCopied;
     }
 
-    public static Map<String, Note> getUserNotes() {
-        Map<String, Note> userNotesCopied = new HashMap<String, Note>();
-        for(Map.Entry<String, Note> userNote : userNotes.entrySet()){
-            userNotesCopied.put(userNote.getKey(), userNote.getValue());
-        }
-        return userNotesCopied;
-    }
-
     public static void addUserMarker(LatLng pressedPoint, String title){
         userMarkers.put(pressedPoint, title);
     }
@@ -91,11 +81,4 @@ public class MapData {
         userMarkersIds.put(pressedPoint, id);
     }
 
-    public static void addUserNote(String title, Note note){
-        userNotes.put(title, note);
-    }
-
-    public static void clearUserNotes(){
-        userNotes.clear();
-    }
 }

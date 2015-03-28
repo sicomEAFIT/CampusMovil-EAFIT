@@ -221,6 +221,7 @@ public class Suggestions extends Activity implements SubscribedActivities {
 					Intent openMap = new Intent(Suggestions.this, MapHandler.class); 
 					openMap.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 					startActivity(openMap);
+                    finish();
 				}else{
 					//Se muestra un diálogo para reintentar o cancelar el envío de la sugerencia.
 					setBuilder(HttpHandler.NOT_SUCCEEDED_STRING);
