@@ -15,6 +15,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
@@ -73,6 +74,7 @@ public class HttpHandler {
 
         HttpGet httpGet = null;
         HttpPost httpPost = null;
+        HttpPut httpPut = null;
         String url = DOMAIN + nameSpace + action + queryParams;
         String responseText = "";
         HttpClient httpClient = new DefaultHttpClient();
@@ -97,6 +99,15 @@ public class HttpHandler {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+        } else if (httpRequest instanceof HttpPut) {
+            httpPut = new HttpPut(url);
+            httpPut.setHeader("Accept", "application/json");
+            httpPut.setHeader("Content-type", "application/json");
+            try {
+                httpPut.setEntity(new StringEntity(json.toString()));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
 
         //Se ejecuta la petición.
@@ -105,6 +116,9 @@ public class HttpHandler {
                 httpResponse = httpClient.execute(httpGet);
             } else if (httpRequest instanceof HttpPost) {
                 httpResponse = httpClient.execute(httpPost);
+            } else if (httpRequest instanceof HttpPut) {
+                Log.i("put", json.toString());
+                httpResponse = httpClient.execute(httpPut);
             }
             responseStatusCode = httpResponse.getStatusLine().getStatusCode();
 
@@ -193,14 +207,13 @@ public class HttpHandler {
                     json.put("marker", internJson);
                     break;
                 case "/save_note":
-                    internJson.put("latitude", Double.parseDouble(paramsForHttpPost.get("latitude")));
-                    internJson.put("longitude", Double.parseDouble(paramsForHttpPost.get("longitude")));
-                    internJson.put("markerTitle", convertToUTF8(paramsForHttpPost.get("markerTitle")));
                     internJson.put("title", convertToUTF8(paramsForHttpPost.get("title")));
-                    internJson.put("note", convertToUTF8(paramsForHttpPost.get("note")));
+                    internJson.put("content", convertToUTF8(paramsForHttpPost.get("note")));
                     internJson.put("hour", Integer.parseInt(paramsForHttpPost.get("hour")));
                     internJson.put("minute", Integer.parseInt(paramsForHttpPost.get("minute")));
                     internJson.put("days", paramsForHttpPost.get("days"));
+                    internJson.put("marker_id", Integer.parseInt(paramsForHttpPost
+                                                                .get("markerId")));
                     json.put("note", internJson);
                     break;
             }
@@ -303,9 +316,6 @@ public class HttpHandler {
                     break;
                 case "/notes":
                     progressDialog.setMessage(context.getString(R.string.retrieving_marker_notes));
-                    break;
-                case "/open_note":
-                    progressDialog.setMessage(context.getString(R.string.retrieving_note));
                     break;
                 case "/save_note":
                     progressDialog.setMessage(context.getString(R.string.saving_note));

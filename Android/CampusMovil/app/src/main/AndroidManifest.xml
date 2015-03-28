@@ -28,12 +28,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/campusmovil_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.sicomeafit.campusmovil.controllers.MainActivity"
             android:label="@string/app_name"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

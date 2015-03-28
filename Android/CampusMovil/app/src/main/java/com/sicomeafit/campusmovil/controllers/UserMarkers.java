@@ -2,6 +2,8 @@ package com.sicomeafit.campusmovil.controllers;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.sicomeafit.campusmovil.Adapters;
 import com.sicomeafit.campusmovil.R;
@@ -86,10 +88,20 @@ public class UserMarkers extends ListActivity {
 
 	public static ArrayList<ListItem> generateData(){
 		ArrayList<ListItem> listItems = new ArrayList<ListItem>();
+
+        //Se hace esto para obtener los marcadores del usuario en orden alfabético, ya que
+        //el TreeMap ordena los nombres a medida que se van insertando.
+        //Básicamente es cambiar de ordenar por posición a ordenar por nombre del marcador.
+        Map<String, LatLng> userMarkers = new TreeMap<String, LatLng>();
+
 		for(Map.Entry<LatLng, String> userMarker : MapData.getUserMarkers().entrySet()){
-			listItems.add(new ListItem(userMarker.getValue(), "", USER_MARKER_CATEGORY,
-					userMarker.getKey()));
+			userMarkers.put(userMarker.getValue(), userMarker.getKey());
 		}
+
+        for(Map.Entry<String, LatLng> userMarker : userMarkers.entrySet()){
+            listItems.add(new ListItem(userMarker.getKey(), "", USER_MARKER_CATEGORY,
+                    userMarker.getValue()));
+        }
 
 		return listItems;
 	}

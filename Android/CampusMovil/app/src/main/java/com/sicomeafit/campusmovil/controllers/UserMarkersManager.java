@@ -5,6 +5,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -141,7 +143,7 @@ public class UserMarkersManager extends ListActivity implements SubscribedActivi
     public static ArrayList<ListItem> generateData(){
         ArrayList<ListItem> listItems = new ArrayList<ListItem>();
         listItems.add(new ListItem(NEW_NOTE_TITLE, NEW_NOTE_SUBTITLE, NEW_NOTE_CATEGORY, null));
-        for(Map.Entry<String, Note> userMarkerNote : MapData.getUserNotes().entrySet()){
+        for(Map.Entry<String, Note> userMarkerNote : UserData.getUserNotes().entrySet()){
             listItems.add(new ListItem(userMarkerNote.getKey(), "", USER_MARKER_NOTE_CATEGORY,
                                         null));
         }
@@ -153,9 +155,8 @@ public class UserMarkersManager extends ListActivity implements SubscribedActivi
 		Intent openNote = new Intent(UserMarkersManager.this, UserNotes.class);
         openNote.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 		Bundle noteInformation = new Bundle(); 
-		noteInformation.putDouble("markerLat", latitude);
-		noteInformation.putDouble("markerLong", longitude);
-		noteInformation.putString("markerTitle", title);
+		noteInformation.putInt("markerId", MapData.getUserMarkersIds()
+                                                       .get(new LatLng(latitude, longitude)));
 		noteInformation.putString("noteTitle", noteTitle);
 		openNote.putExtras(noteInformation);
 		startActivity(openNote);
@@ -190,6 +191,10 @@ public class UserMarkersManager extends ListActivity implements SubscribedActivi
 					getSystemService(INPUT_METHOD_SERVICE);
 			inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 		}
+        if (intent.getExtras().getString("noteJustCreated") != null) {
+            //Se hace actualización de la lista pues se acaba de crear una nueva nota.
+            retrieveUserMarkerNotes();
+        }
 	}
 
 	protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -279,7 +284,7 @@ public class UserMarkersManager extends ListActivity implements SubscribedActivi
 				if(responseJson.get(responseJson.size()-1).getInt("status") == HttpHandler.SUCCESS){
 					listItems.clear();
                     //Se hace para tener en memoria sólo aquellas posibles notas a abrir.
-                    MapData.clearUserNotes();
+                    UserData.clearUserNotes();
 					//Primer item de la lista que ofrece la posibilidad de agregar una nueva nota.
 					listItems.add(new ListItem(NEW_NOTE_TITLE, NEW_NOTE_SUBTITLE, NEW_NOTE_CATEGORY, null));
 					for(int i = 0; i < responseJson.size()-1; i++){
@@ -289,7 +294,7 @@ public class UserMarkersManager extends ListActivity implements SubscribedActivi
                         int minute = responseJson.get(i).getInt("minute");
                         String days = responseJson.get(i).getString("days");
 						listItems.add(new ListItem(title, "", USER_MARKER_NOTE_CATEGORY, null));
-                        MapData.addUserNote(title, new Note(title, content, hour, minute, days));
+                        UserData.addUserNote(title, new Note(title, content, hour, minute, days));
 					}
 
 					//Cuando se tienen las notas asociadas al presente marcador de usuario, entonces
@@ -317,7 +322,7 @@ public class UserMarkersManager extends ListActivity implements SubscribedActivi
 		switch(status){
 		case HttpHandler.UNAUTHORIZED_STRING:
 			builder.setTitle(getResources().getString(R.string.log_in));
-			builder.setMessage(getResources().getString(R.string.login_needed_2));
+			builder.setMessage(getResources().getString(R.string.login_needed_3));
 
 			builder.setPositiveButton(getResources().getString(R.string.log_in), new OnClickListener() {
 				@Override

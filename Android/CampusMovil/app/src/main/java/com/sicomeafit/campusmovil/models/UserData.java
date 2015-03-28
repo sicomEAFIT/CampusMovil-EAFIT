@@ -1,10 +1,16 @@
 package com.sicomeafit.campusmovil.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserData {
 
 	private static String email;
 	private static String username;
 	private static String token;
+
+    //Mapa que contiene la información de las notas guardadas por el usuario.
+    public static Map<String, Note> userNotes = new HashMap<String, Note>();
 
 	public UserData(String userEmail, String userUsername, String userToken){
 		email = userEmail;
@@ -35,5 +41,21 @@ public class UserData {
 	public static void setToken(String token) {
 		UserData.token = token;
 	}
+
+    public static Map<String, Note> getUserNotes() {
+        Map<String, Note> userNotesCopied = new HashMap<String, Note>();
+        for(Map.Entry<String, Note> userNote : userNotes.entrySet()){
+            userNotesCopied.put(userNote.getKey(), userNote.getValue());
+        }
+        return userNotesCopied;
+    }
+
+    public static void addUserNote(String title, Note note){
+        userNotes.put(title, note);
+    }
+
+    public static void clearUserNotes(){
+        userNotes.clear();
+    }
 
 }
