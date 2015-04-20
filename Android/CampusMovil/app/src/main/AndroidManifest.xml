@@ -68,20 +68,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.sicomeafit.campusmovil.SearchHandler"
-            android:label="@string/title_activity_search_handler" >
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
-        <activity
             android:name="com.sicomeafit.campusmovil.controllers.Places"
             android:label="@string/title_activity_places"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -101,10 +91,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.sicomeafit.campusmovil.Adapters"
-            android:label="@string/title_activity_adapters" >
-        </activity>
-        <activity
             android:name="com.sicomeafit.campusmovil.controllers.MapAccess"
             android:label="@string/title_activity_map_access"
             android:screenOrientation="portrait" >
@@ -112,7 +98,8 @@
         <activity
             android:name="com.sicomeafit.campusmovil.controllers.UserMarkersManager"
             android:label="@string/title_activity_user_markers_manager"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -124,7 +111,8 @@
         <activity
             android:name="com.sicomeafit.campusmovil.controllers.UserMarkers"
             android:label="@string/my_markers"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -135,7 +123,8 @@
         </activity>
         <activity
             android:name="com.sicomeafit.campusmovil.controllers.UserNotes"
-            android:label="@string/title_activity_user_notes" >
+            android:label="@string/title_activity_user_notes"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
