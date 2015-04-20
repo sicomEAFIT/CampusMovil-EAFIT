@@ -52,8 +52,8 @@ public class HttpHandler {
     public static final String SERVER_INTERNAL_ERROR_STRING = "server_internal_error";
 
     //Dominio del servidor.
-    private static final String DOMAIN = "http://campusmovilapp.herokuapp.com/";//"http://104.236.191.184/";
-    public static final String API_V1 = "api/v1";
+    private static final String DOMAIN = "http://campusmovilapp.herokuapp.com";//"http://104.236.191.184/";
+    public static final String API_V1 = "/api/v1";
 
     private SubscribedActivities listeningActivity;
 
@@ -321,7 +321,7 @@ public class HttpHandler {
                     progressDialog.setMessage(context.getString(R.string.saving_note));
                     break;
             }
-
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
         }
 
